@@ -11,17 +11,24 @@
     <select id="emb"><option value="umap">UMAP</option><option value="tsne">t-SNE</option></select></span>
   <span><label>Colour by</label>
     <select id="mode"><option value="arm">Treatment arm</option><option value="cluster">Cluster</option></select></span>
-  <span><label>Overlay</label>
-    <input id="heatAlpha" type="range" min="0" max="1" step="0.05" value="0.65" style="vertical-align:middle;width:90px"></span>
-  <span style="color:#999;font-size:12px">hover a dot → tile image (top-right) + its location lights up on that mouse's heatmap (bottom-right)</span>
+  <span style="color:#999;font-size:12px">hover a dot → tile (top-left of scatter) + its location lights up on that mouse's heatmap (right)</span>
 </div>
-<div class="layout">
-  <div id="plot" class="plotbig"></div>
-  <div class="toppanel">
-    <div id="preview" class="tile" style="width:150px;height:150px;flex:0 0 150px"></div>
-    <div id="info" class="kv" style="color:#999">Hover a point…</div>
+<div class="layout2">
+  <div class="plotwrap">
+    <div id="plot"></div>
+    <div id="tilecard">
+      <div id="preview" class="tile" style="width:118px;height:118px;flex:0 0 118px"></div>
+      <div id="info" class="kv" style="color:#999;font-size:12px">Hover a point…</div>
+    </div>
   </div>
-  <div id="heatgrid" class="heatgrid"></div>
+  <div class="heatside">
+    <div class="overlaybar">
+      <span class="olabel">Cluster overlay</span>
+      <input id="heatAlpha" type="range" min="0" max="1" step="0.05" value="0.65">
+      <span class="oval" id="alphaVal">65%</span>
+    </div>
+    <div id="heatgrid" class="heatgrid2"></div>
+  </div>
 </div>
 <script src="app.js"></script>
 <script>
@@ -74,9 +81,15 @@ function placeMarker(gi){
   const mouse=M.mouse[gi];
   for(const m in panels){ panels[m].mark.style.display="none"; panels[m].panel.classList.remove("active"); }
   const p=panels[mouse]; if(!p) return;
-  const g=p.g, ds=p.base.clientWidth/g.w;
-  const cx=(M.x[gi]*g.scale - g.x0 + g.tp/2)*ds;
-  const cy=(M.y[gi]*g.scale - g.y0 + g.tp/2)*ds;
+  const g=p.g, cw=p.box.clientWidth, ch=p.box.clientHeight;
+  if(!cw||!ch) return;
+  // image is object-fit:contain inside the box -> compute its displayed rect
+  const aspect=g.w/g.h; let dw,dh,ox,oy;
+  if(cw/ch > aspect){ dh=ch; dw=ch*aspect; ox=(cw-dw)/2; oy=0; }
+  else { dw=cw; dh=cw/aspect; ox=0; oy=(ch-dh)/2; }
+  const ds=dw/g.w;
+  const cx=ox + (M.x[gi]*g.scale - g.x0 + g.tp/2)*ds;
+  const cy=oy + (M.y[gi]*g.scale - g.y0 + g.tp/2)*ds;
   const sz=Math.max(12, g.tp*ds*1.8);
   p.mark.style.width=sz+"px"; p.mark.style.height=sz+"px";
   p.mark.style.left=(cx-sz/2)+"px"; p.mark.style.top=(cy-sz/2)+"px";
@@ -84,7 +97,7 @@ function placeMarker(gi){
 }
 function showInfo(gi){
   lastGi=gi;
-  atlasStyle(elPrev, gi, M, 150);
+  atlasStyle(elPrev, gi, M, 118);
   const c=M.cluster[gi], mouse=M.mouse[gi];
   elInfo.innerHTML =
     `<div class="kv"><b>tile</b> ${M.tile_id[gi]}</div>`+
@@ -102,7 +115,9 @@ function showInfo(gi){
   GD.on("plotly_hover", d=> showInfo(d.points[0].customdata));
   document.getElementById("mode").onchange = draw;
   document.getElementById("emb").onchange  = draw;
-  elAlpha.oninput = ()=>{ for(const m in panels) panels[m].over.style.opacity=elAlpha.value; };
+  const elAlphaVal=document.getElementById("alphaVal");
+  elAlpha.oninput = ()=>{ for(const m in panels) panels[m].over.style.opacity=elAlpha.value;
+    elAlphaVal.textContent=Math.round(elAlpha.value*100)+"%"; };
   window.addEventListener("resize", ()=>{ if(lastGi!=null) placeMarker(lastGi); });
   // images may finish loading after first paint; reposition the marker once they do
   for(const m in panels) panels[m].base.onload = ()=>{ if(lastGi!=null) placeMarker(lastGi); };
