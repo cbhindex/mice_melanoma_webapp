@@ -11,20 +11,35 @@
     <select id="emb"><option value="umap">UMAP</option><option value="tsne">t-SNE</option></select></span>
   <span><label>Colour by</label>
     <select id="mode"><option value="arm">Treatment arm</option><option value="cluster">Cluster</option></select></span>
-  <span style="color:#999;font-size:12px">hover a dot → tile image on the right</span>
+  <span style="color:#999;font-size:12px">hover a dot → tile image + its location on the heatmap →</span>
 </div>
 <div class="wrap">
   <div id="plot"></div>
   <div class="side">
-    <div id="preview" class="tile" style="width:240px;height:240px"></div>
-    <div id="info" class="kv" style="margin-top:12px;color:#999">Hover a point…</div>
+    <div class="paneltop">
+      <div id="preview" class="tile" style="width:140px;height:140px;flex:0 0 140px"></div>
+      <div id="info" class="kv" style="color:#999">Hover a point…</div>
+    </div>
+    <div class="heathead">
+      <span id="heatlabel">Heatmap</span>
+      <label>overlay <input id="heatAlpha" type="range" min="0" max="1" step="0.05" value="0.65"></label>
+    </div>
+    <div id="heatwrap" class="heatwrap">
+      <img id="heatBase" alt="tissue">
+      <img id="heatOver" style="opacity:0.65" alt="clusters">
+      <div id="marker" class="marker"></div>
+    </div>
   </div>
 </div>
 <script src="app.js"></script>
 <script>
-let M, GD = document.getElementById("plot");
+let M, HM, GD=document.getElementById("plot"), curMouse=null, lastGi=null;
+const elPrev=document.getElementById("preview"), elInfo=document.getElementById("info"),
+      elBase=document.getElementById("heatBase"), elOver=document.getElementById("heatOver"),
+      elMark=document.getElementById("marker"), elWrap=document.getElementById("heatwrap"),
+      elLab=document.getElementById("heatlabel"), elAlpha=document.getElementById("heatAlpha");
 function buildTraces(mode, emb){
-  const [X,Y] = embXY(M, emb), tr = [];
+  const [X,Y]=embXY(M,emb), tr=[];
   const groups = mode==="arm" ? ARM_ORDER : [...Array(kOf(M)).keys()];
   for(const g of groups){
     const xs=[],ys=[],cd=[];
@@ -34,34 +49,59 @@ function buildTraces(mode, emb){
     }
     tr.push({x:xs,y:ys,customdata:cd,mode:"markers",type:"scattergl",
       name: mode==="arm"? g : "C"+g,
-      marker:{size:3.2, opacity:0.62,
-        color: mode==="arm"? armColor(g): clusterColor(g)}});
+      marker:{size:3.2,opacity:0.62, color: mode==="arm"? armColor(g): clusterColor(g)}});
   }
   return tr;
 }
-const LAYOUT = {hovermode:"closest", margin:{l:8,r:8,t:8,b:8},
-  xaxis:{visible:false}, yaxis:{visible:false},
-  legend:{itemsizing:"constant", font:{size:11}}, dragmode:"pan"};
+const LAYOUT={hovermode:"closest",margin:{l:8,r:8,t:8,b:8},
+  xaxis:{visible:false},yaxis:{visible:false},
+  legend:{itemsizing:"constant",font:{size:11}},dragmode:"pan"};
 function draw(){
-  const mode=document.getElementById("mode").value, emb=document.getElementById("emb").value;
-  Plotly.react(GD, buildTraces(mode,emb), LAYOUT, {responsive:true, scrollZoom:true, displaylogo:false});
+  Plotly.react(GD, buildTraces(document.getElementById("mode").value,
+    document.getElementById("emb").value), LAYOUT,
+    {responsive:true,scrollZoom:true,displaylogo:false});
 }
-function onHover(d){
-  const gi = d.points[0].customdata;
-  atlasStyle(document.getElementById("preview"), gi, M, 240);
-  const c = M.cluster[gi];
-  document.getElementById("info").innerHTML =
+function placeMarker(gi){
+  const g=HM[M.mouse[gi]]; if(!g) return;
+  const ds=elWrap.clientWidth/g.w;
+  const cx=(M.x[gi]*g.scale - g.x0 + g.tp/2)*ds;
+  const cy=(M.y[gi]*g.scale - g.y0 + g.tp/2)*ds;
+  const sz=Math.max(13, g.tp*ds*1.6);
+  elMark.style.width=sz+"px"; elMark.style.height=sz+"px";
+  elMark.style.left=(cx-sz/2)+"px"; elMark.style.top=(cy-sz/2)+"px";
+  elMark.style.display="block";
+}
+function showInfo(gi){
+  lastGi=gi;
+  atlasStyle(elPrev, gi, M, 140);
+  const c=M.cluster[gi], mouse=M.mouse[gi];
+  elInfo.innerHTML =
     `<div class="kv"><b>tile</b> ${M.tile_id[gi]}</div>`+
-    `<div class="kv"><b>mouse</b> ${M.mouse[gi]}</div>`+
+    `<div class="kv"><b>mouse</b> ${mouse}</div>`+
     `<div class="kv"><b>arm</b> <span class="swatch" style="background:${armColor(M.arms[gi])}"></span> ${M.arms[gi]}</div>`+
     `<div class="kv"><b>cluster</b> <span class="swatch" style="background:${clusterColor(c)}"></span> C${c}</div>`+
     `<div class="kv"><b>pos</b> (${M.x[gi]}, ${M.y[gi]})</div>`;
+  if(mouse!==curMouse){
+    const g=HM[mouse];
+    elBase.src="assets/"+g.base; elOver.src="assets/"+g.overlay;
+    elLab.textContent=`Heatmap — mouse ${mouse} (${g.arm})`;
+    curMouse=mouse;
+    elBase.onload=()=>placeMarker(gi);   // wait for new image box before placing
+  } else {
+    placeMarker(gi);
+  }
 }
 (async()=>{
-  M = await loadJSON("assets/meta.json");
+  M  = await loadJSON("assets/meta.json");
+  HM = await loadJSON("assets/heatmaps.json");
   draw();
-  GD.on("plotly_hover", onHover);
+  GD.on("plotly_hover", d=> showInfo(d.points[0].customdata));
   document.getElementById("mode").onchange = draw;
-  document.getElementById("emb").onchange = draw;
+  document.getElementById("emb").onchange  = draw;
+  elAlpha.oninput = ()=> elOver.style.opacity = elAlpha.value;
+  window.addEventListener("resize", ()=>{ if(lastGi!=null) placeMarker(lastGi); });
+  // default view: a central tile of mouse 365 (largest tumour) so the preview shows tissue
+  let idx365=[]; for(let i=0;i<M.n;i++) if(M.mouse[i]==="365") idx365.push(i);
+  showInfo(idx365.length ? idx365[Math.floor(idx365.length/2)] : 0);
 })();
 </script></body></html>

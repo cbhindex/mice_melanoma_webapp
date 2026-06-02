@@ -15,7 +15,17 @@ select,button{ font:inherit; padding:3px 8px; border:1px solid #ccc; border-radi
   background:#fff; cursor:pointer; }
 .wrap{ display:flex; height:calc(100vh - 58px); }
 #plot{ flex:1 1 auto; min-width:0; }
-.side{ width:300px; border-left:1px solid var(--line); padding:14px; overflow:auto; }
+.side{ width:480px; flex:0 0 480px; border-left:1px solid var(--line); padding:14px; overflow:auto; }
+.paneltop{ display:flex; gap:12px; align-items:flex-start; }
+.heathead{ display:flex; justify-content:space-between; align-items:center;
+  margin:16px 0 6px; font-size:13px; color:var(--muted); }
+.heathead input[type=range]{ vertical-align:middle; width:90px; }
+.heatwrap{ position:relative; width:100%; line-height:0; border:1px solid var(--line); border-radius:4px; overflow:hidden; }
+#heatBase{ position:relative; width:100%; display:block; }
+#heatOver{ position:absolute; top:0; left:0; width:100%; display:block; }
+.marker{ position:absolute; border:2px solid #00e5ff;
+  box-shadow:0 0 0 1.6px rgba(0,0,0,.85), 0 0 6px rgba(0,229,255,.8);
+  border-radius:2px; pointer-events:none; display:none; }
 .tile{ background:#f3f3f3; border:1px solid #ddd; border-radius:4px; }
 .kv{ font-size:13px; color:var(--fg); margin:8px 0; line-height:1.5; }
 .kv b{ color:var(--muted); font-weight:400; display:inline-block; width:64px; }
