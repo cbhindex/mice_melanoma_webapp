@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Mouse melanoma · UNI-v2 explorer</title><link rel="stylesheet" href="style.css"></head>
+<body><header>
+  <h1>Mouse melanoma · UNI-v2 explorer</h1>
+  <nav class="crumbs"><a href="index.html">Home</a><a href="scatter.html">Embedding</a><a href="similarity.html">Similarity</a></nav>
+  <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
+</header>
+<div class="home">
+<h2>Group 1 — WM2664 (BRAF-inhibitor sensitive)</h2>
+<p>Interactive exploration of UNI-v2 (UNI2-h) tile embeddings from four H&amp;E whole-slide images:
+two <b style="color:#4C72B0">Vehicle</b> mice (366, 364) and two <b style="color:#C44E52">PLX-4720</b>
+mice (365, 363). One slide per mouse; 21,113 tiles at 20× / 256&nbsp;px.</p>
+<p style="color:#666;font-size:13px">⚠ With n = 2 mice per arm every comparison is preliminary and
+hypothesis-generating — look for candidate signals, treat apparent arm differences cautiously
+(they may be driven by a single mouse).</p>
+<div class="cards">
+  <a class="card" href="scatter.html"><h3>Embedding scatter →</h3>
+    <p>UMAP / t-SNE of all tiles. Hover any dot to see the tile image and its metadata.
+       Colour by treatment arm or by morphological cluster.</p></a>
+  <a class="card" href="similarity.html"><h3>Similarity search →</h3>
+    <p>Click a tile to retrieve its most similar tiles across all slides
+       (cosine similarity of UNI-v2 embeddings).</p></a>
+</div>
+<p style="margin-top:28px;font-size:12px;color:#999">Author: Dr Binghao Chai.</p>
+</div></body></html>

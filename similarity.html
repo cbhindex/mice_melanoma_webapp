@@ -1,0 +1,71 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Similarity · UNI-v2 explorer</title><link rel="stylesheet" href="style.css">
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script></head>
+<body><header>
+  <h1>Mouse melanoma · UNI-v2 explorer</h1>
+  <nav class="crumbs"><a href="index.html">Home</a><a href="scatter.html">Embedding</a><a href="similarity.html">Similarity</a></nav>
+  <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
+</header>
+<div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
+  <button id="rand">🎲 Random tile</button>
+  <span style="color:#999;font-size:12px">click a dot (or a result tile) → most similar tiles by UNI-v2 cosine similarity</span>
+</div>
+<div class="wrap">
+  <div id="plot"></div>
+  <div class="side" style="width:420px">
+    <div style="display:flex;gap:14px;align-items:flex-start">
+      <div><div id="qtile" class="tile" style="width:150px;height:150px"></div></div>
+      <div id="qinfo" class="kv" style="color:#999">Pick a tile…</div>
+    </div>
+    <h3 style="font-size:14px;margin:16px 0 8px">Most similar tiles</h3>
+    <div id="grid" class="grid"></div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+let M, KNN, GD = document.getElementById("plot");
+function nbrs(gi){ const k=KNN.k, s=gi*k;
+  return {idx: KNN.idx.slice(s,s+k), sim: KNN.sim.slice(s,s+k)}; }
+function showQuery(gi){
+  atlasStyle(document.getElementById("qtile"), gi, M, 150);
+  const c=M.cluster[gi];
+  document.getElementById("qinfo").innerHTML =
+    `<div class="kv"><b>tile</b> ${M.tile_id[gi]}</div>`+
+    `<div class="kv"><b>mouse</b> ${M.mouse[gi]}</div>`+
+    `<div class="kv"><b>arm</b> <span class="swatch" style="background:${armColor(M.arms[gi])}"></span> ${M.arms[gi]}</div>`+
+    `<div class="kv"><b>cluster</b> <span class="swatch" style="background:${clusterColor(c)}"></span> C${c}</div>`;
+  const g=document.getElementById("grid"); g.innerHTML="";
+  const {idx,sim}=nbrs(gi);
+  idx.forEach((ni,j)=>{
+    const cell=document.createElement("div"); cell.className="cell";
+    const th=document.createElement("div"); th.className="thumb";
+    atlasStyle(th, ni, M, 82); th.style.borderColor=armColor(M.arms[ni]);
+    const cap=document.createElement("div"); cap.className="cap";
+    cap.innerHTML=`${sim[j].toFixed(2)} · M${M.mouse[ni]}<br>C${M.cluster[ni]}`;
+    cell.appendChild(th); cell.appendChild(cap);
+    cell.onclick=()=>showQuery(ni);
+    g.appendChild(cell);
+  });
+}
+function draw(){
+  const tr=[], k=kOf(M);
+  for(let c=0;c<k;c++){
+    const xs=[],ys=[],cd=[];
+    for(let i=0;i<M.n;i++) if(M.cluster[i]===c){ xs.push(M.umap_x[i]); ys.push(M.umap_y[i]); cd.push(i); }
+    tr.push({x:xs,y:ys,customdata:cd,mode:"markers",type:"scattergl",name:"C"+c,
+      marker:{size:3,opacity:0.5,color:clusterColor(c)}});
+  }
+  Plotly.react(GD, tr, {hovermode:"closest",margin:{l:8,r:8,t:8,b:8},
+    xaxis:{visible:false},yaxis:{visible:false},dragmode:"pan",
+    legend:{itemsizing:"constant",font:{size:11}}},
+    {responsive:true,scrollZoom:true,displaylogo:false});
+}
+(async()=>{
+  M = await loadJSON("assets/meta.json");
+  KNN = await loadJSON("assets/knn.json");
+  draw();
+  GD.on("plotly_click", d=> showQuery(d.points[0].customdata));
+  document.getElementById("rand").onclick=()=> showQuery(Math.floor(Math.random()*M.n));
+  showQuery(0);
+})();
+</script></body></html>

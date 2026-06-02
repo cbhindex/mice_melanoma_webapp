@@ -1,0 +1,67 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Embedding · UNI-v2 explorer</title><link rel="stylesheet" href="style.css">
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script></head>
+<body><header>
+  <h1>Mouse melanoma · UNI-v2 explorer</h1>
+  <nav class="crumbs"><a href="index.html">Home</a><a href="scatter.html">Embedding</a><a href="similarity.html">Similarity</a></nav>
+  <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
+</header>
+<div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
+  <span><label>Embedding</label>
+    <select id="emb"><option value="umap">UMAP</option><option value="tsne">t-SNE</option></select></span>
+  <span><label>Colour by</label>
+    <select id="mode"><option value="arm">Treatment arm</option><option value="cluster">Cluster</option></select></span>
+  <span style="color:#999;font-size:12px">hover a dot → tile image on the right</span>
+</div>
+<div class="wrap">
+  <div id="plot"></div>
+  <div class="side">
+    <div id="preview" class="tile" style="width:240px;height:240px"></div>
+    <div id="info" class="kv" style="margin-top:12px;color:#999">Hover a point…</div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+let M, GD = document.getElementById("plot");
+function buildTraces(mode, emb){
+  const [X,Y] = embXY(M, emb), tr = [];
+  const groups = mode==="arm" ? ARM_ORDER : [...Array(kOf(M)).keys()];
+  for(const g of groups){
+    const xs=[],ys=[],cd=[];
+    for(let i=0;i<M.n;i++){
+      const match = mode==="arm" ? M.arms[i]===g : M.cluster[i]===g;
+      if(match){ xs.push(X[i]); ys.push(Y[i]); cd.push(i); }
+    }
+    tr.push({x:xs,y:ys,customdata:cd,mode:"markers",type:"scattergl",
+      name: mode==="arm"? g : "C"+g,
+      marker:{size:3.2, opacity:0.62,
+        color: mode==="arm"? armColor(g): clusterColor(g)}});
+  }
+  return tr;
+}
+const LAYOUT = {hovermode:"closest", margin:{l:8,r:8,t:8,b:8},
+  xaxis:{visible:false}, yaxis:{visible:false},
+  legend:{itemsizing:"constant", font:{size:11}}, dragmode:"pan"};
+function draw(){
+  const mode=document.getElementById("mode").value, emb=document.getElementById("emb").value;
+  Plotly.react(GD, buildTraces(mode,emb), LAYOUT, {responsive:true, scrollZoom:true, displaylogo:false});
+}
+function onHover(d){
+  const gi = d.points[0].customdata;
+  atlasStyle(document.getElementById("preview"), gi, M, 240);
+  const c = M.cluster[gi];
+  document.getElementById("info").innerHTML =
+    `<div class="kv"><b>tile</b> ${M.tile_id[gi]}</div>`+
+    `<div class="kv"><b>mouse</b> ${M.mouse[gi]}</div>`+
+    `<div class="kv"><b>arm</b> <span class="swatch" style="background:${armColor(M.arms[gi])}"></span> ${M.arms[gi]}</div>`+
+    `<div class="kv"><b>cluster</b> <span class="swatch" style="background:${clusterColor(c)}"></span> C${c}</div>`+
+    `<div class="kv"><b>pos</b> (${M.x[gi]}, ${M.y[gi]})</div>`;
+}
+(async()=>{
+  M = await loadJSON("assets/meta.json");
+  draw();
+  GD.on("plotly_hover", onHover);
+  document.getElementById("mode").onchange = draw;
+  document.getElementById("emb").onchange = draw;
+})();
+</script></body></html>
