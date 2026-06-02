@@ -1,0 +1,104 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Cell map · explorer</title><link rel="stylesheet" href="style.css">
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script></head>
+<body><header>
+  <h1>Mouse melanoma · UNI-v2 explorer</h1>
+  <nav class="crumbs"><a href="index.html">Home</a><a href="scatter.html">Tile embedding</a><a href="similarity.html">Tile similarity</a><a href="cells_scatter.html">Cell map</a><a href="cells.html">Cell stats</a></nav>
+  <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
+</header>
+<div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
+  <span><label>Embedding</label><select id="emb"><option value="u">UMAP</option><option value="t" selected>t-SNE</option></select></span>
+  <span><label>Colour by</label><select id="mode"><option value="class">Cell class</option><option value="arm">Arm</option><option value="feat">Feature</option></select></span>
+  <span id="featwrap" style="display:none"><label>Feature</label><select id="feat">
+    <option value="area">area</option><option value="ediam">diameter</option><option value="compactness">compactness</option>
+    <option value="ecc">eccentricity</option><option value="solidity">solidity</option>
+    <option value="hema">haematoxylin OD</option><option value="eosin">eosin OD</option></select></span>
+  <span class="hint">Hover a cell to preview its crop + metadata (top-left); its location lights up on that mouse's cell-class map (right). <b>Tip:</b> scroll to zoom the scatter.</span>
+</div>
+<div class="layout2">
+  <div class="plotwrap"><div id="plot"></div>
+    <div id="tilecard">
+      <div id="prev" class="tile" style="width:96px;height:96px;flex:0 0 96px"></div>
+      <div id="info" class="kv" style="color:#999;font-size:12px">Hover a cell…</div>
+    </div>
+  </div>
+  <div class="heatside">
+    <div class="overlaybar"><span class="olabel">Cell-class overlay</span>
+      <input id="ov" type="range" min="0" max="1" step="0.05" value="0.75"><span class="oval" id="ovv">75%</span></div>
+    <div id="grid" class="heatgrid2"></div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+let CM, SP, GD=document.getElementById("plot"), panels={}, lastGi=null;
+const FEATLAB={area:"nuclear area (µm²)",ediam:"equiv. diameter (µm)",compactness:"compactness",
+  ecc:"eccentricity",solidity:"solidity",hema:"haematoxylin OD",eosin:"eosin OD"};
+const $=id=>document.getElementById(id);
+const sc=()=>"3";   // cell map presents 3 classes only
+const classArr=()=> sc()==="3"?CM.class3:CM.class5;
+const classCols=()=> sc()==="3"?CM.colors3:CM.colors5;
+const classList=()=> sc()==="3"?["Neoplastic","Inflammation+Connective","Other"]
+  :["Neoplastic","Inflammatory","Connective","Dead","Epithelial"];
+const cellXY=()=> $("emb").value==="t"?[CM.tx,CM.ty]:[CM.ux,CM.uy];
+const LAYOUT={hovermode:"closest",margin:{l:8,r:8,t:8,b:8},xaxis:{visible:false},yaxis:{visible:false},
+  legend:{itemsizing:"constant",font:{size:10}},dragmode:"pan"};
+function buildTraces(){
+  const mode=$("mode").value,[X,Y]=cellXY();
+  if(mode==="feat"){ const f=$("feat").value;
+    return [{x:X,y:Y,customdata:[...Array(CM.n).keys()],mode:"markers",type:"scattergl",showlegend:false,
+      marker:{size:3,opacity:.6,color:CM[f],colorscale:"Viridis",colorbar:{title:f,thickness:10,len:.6}}}]; }
+  const groups=mode==="arm"?ARM_ORDER:classList(), arr=mode==="arm"?CM.arm:classArr(),
+        colf=mode==="arm"?(g=>ARM_COLORS[g]):(g=>classCols()[g]), tr=[];
+  for(const g of groups){const xs=[],ys=[],cd=[];
+    for(let i=0;i<CM.n;i++) if(arr[i]===g){xs.push(X[i]);ys.push(Y[i]);cd.push(i);}
+    tr.push({x:xs,y:ys,customdata:cd,mode:"markers",type:"scattergl",name:g,marker:{size:3,opacity:.6,color:colf(g)}});}
+  return tr;
+}
+function draw(){ $("featwrap").style.display=$("mode").value==="feat"?"":"none";
+  Plotly.react(GD,buildTraces(),LAYOUT,{responsive:true,scrollZoom:true,displaylogo:false}); }
+function buildPanels(){
+  const order=Object.keys(SP).sort((a,b)=>SP[a].arm===SP[b].arm?a.localeCompare(b):(SP[a].arm==="Vehicle"?-1:1));
+  for(const m of order){const g=SP[m];
+    const p=document.createElement("div");p.className="hpanel";p.style.setProperty("--hl",armColor(g.arm));
+    const lab=document.createElement("div");lab.className="hlabel";
+    lab.innerHTML='<span class="swatch" style="background:'+armColor(g.arm)+'"></span> M'+m+" · "+g.arm;
+    const box=document.createElement("div");box.className="hbox";
+    const base=document.createElement("img");base.className="hbase";base.src="assets/"+g.base;
+    const over=document.createElement("img");over.className="hover";
+    const mark=document.createElement("div");mark.className="hmark";
+    box.append(base,over,mark);p.append(lab,box);$("grid").append(p);
+    panels[m]={panel:p,box,base,over,mark,g};}
+  setOverlays();
+}
+function setOverlays(){ const v=$("ov").value;
+  for(const m in panels){ panels[m].over.src="assets/"+(sc()==="3"?panels[m].g.overlay3:panels[m].g.overlay5);
+    panels[m].over.style.opacity=v; } $("ovv").textContent=Math.round(v*100)+"%"; }
+function placeMarker(gi){
+  const m=CM.mouse[gi]; for(const k in panels){panels[k].mark.style.display="none";panels[k].panel.classList.remove("active");}
+  const p=panels[m]; if(!p) return; const g=p.g, cw=p.box.clientWidth, ch=p.box.clientHeight; if(!cw||!ch) return;
+  const asp=g.w/g.h; let dw,dh,ox,oy; if(cw/ch>asp){dh=ch;dw=ch*asp;ox=(cw-dw)/2;oy=0;}else{dw=cw;dh=cw/asp;ox=0;oy=(ch-dh)/2;}
+  const ds=dw/g.w, x=ox+(CM.cx[gi]*g.scale-g.x0)*ds, y=oy+(CM.cy[gi]*g.scale-g.y0)*ds, s=12;
+  p.mark.style.width=s+"px";p.mark.style.height=s+"px";p.mark.style.left=(x-s/2)+"px";p.mark.style.top=(y-s/2)+"px";
+  p.mark.style.display="block";p.panel.classList.add("active");
+}
+function showCell(gi){ lastGi=gi; atlasStyle($("prev"),gi,CM,96,"cells_atlas");
+  $("info").innerHTML=
+    '<div class="kv"><b>mouse</b> '+CM.mouse[gi]+'</div>'+
+    '<div class="kv"><b>arm</b> <span class="swatch" style="background:'+armColor(CM.arm[gi])+'"></span> '+CM.arm[gi]+'</div>'+
+    '<div class="kv"><b>class</b> <span class="swatch" style="background:'+classCols()[classArr()[gi]]+'"></span> '+classArr()[gi]+'</div>'+
+    '<div class="kv"><b>area</b> '+CM.area[gi]+' µm² · <b>ecc</b> '+CM.ecc[gi]+'</div>'+
+    '<div class="kv"><b>H/E OD</b> '+CM.hema[gi]+' / '+CM.eosin[gi]+'</div>';
+  placeMarker(gi);
+}
+(async()=>{
+  CM=await loadJSON("assets/cells_meta.json"); SP=await loadJSON("assets/cell_spatial.json");
+  draw(); buildPanels();
+  GD.on("plotly_hover",d=>showCell(d.points[0].customdata));
+  $("emb").onchange=draw; $("feat").onchange=draw;
+  $("mode").onchange=draw;
+  $("ov").oninput=setOverlays;
+  window.addEventListener("resize",()=>{ if(lastGi!=null) placeMarker(lastGi); });
+  for(const m in panels) panels[m].base.onload=()=>{ if(lastGi!=null) placeMarker(lastGi); };
+  let d=CM.mouse.indexOf("365"); showCell(d<0?0:d);
+})();
+</script></body></html>

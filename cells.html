@@ -1,0 +1,77 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Cell stats · explorer</title><link rel="stylesheet" href="style.css">
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<style>
+.cellsgrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;
+  height:calc(100vh - 96px);padding:10px;box-sizing:border-box}
+.cellsgrid>div{min-width:0;min-height:0;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.cellnote{padding:18px;color:#555;font-size:13px;line-height:1.7}
+.cellnote h3{margin:0 0 8px;color:var(--accent);font-size:15px}
+.cellnote .sw{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:middle;margin-right:5px}
+</style></head>
+<body><header>
+  <h1>Mouse melanoma · UNI-v2 explorer</h1>
+  <nav class="crumbs"><a href="index.html">Home</a><a href="scatter.html">Tile embedding</a><a href="similarity.html">Tile similarity</a><a href="cells_scatter.html">Cell map</a><a href="cells.html">Cell stats</a></nav>
+  <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
+</header>
+<div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
+  <span><label>Box feature</label><select id="feat">
+    <option value="area">nuclear area</option><option value="ediam">diameter</option><option value="compactness">compactness</option>
+    <option value="ecc">eccentricity</option><option value="solidity">solidity</option>
+    <option value="hema">haematoxylin OD</option><option value="eosin">eosin OD</option></select></span>
+  <span class="hint">CellViT cell-level summaries across the four mice (3 classes). n = 2 mice/arm — preliminary, hypothesis-generating.</span>
+</div>
+<div class="cellsgrid">
+  <div id="p_prop"></div>
+  <div id="p_dens"></div>
+  <div id="p_box"></div>
+  <div class="cellnote">
+    <h3>CellViT cell-level summary</h3>
+    <p><b>1,784,296 nuclei</b> across 4 mice (2 Vehicle, 2 PLX-4720), in 3 classes:
+      <span class="sw" style="background:#d62728"></span>Neoplastic,
+      <span class="sw" style="background:#1f77b4"></span>Inflammation+Connective,
+      <span class="sw" style="background:#7f7f7f"></span>Other.</p>
+    <p><b>Top-left:</b> cell-type composition per mouse. &nbsp;<b>Top-right:</b> nuclear density by
+      class &amp; arm (dots = the two mice). &nbsp;<b>Bottom-left:</b> by-class distribution of the
+      selected feature (subsample of 31,865 nuclei) — change it with the “Box feature” menu.</p>
+    <p style="color:#999"><b>n = 2 mice/arm</b> — all comparisons are preliminary / hypothesis-generating.</p>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+let S, CM; const $=id=>document.getElementById(id);
+const sc=()=>"3";   // cell stats presents 3 classes only
+const tmap=()=> sc()==="3"?S.type_map3:S.type_map5;
+const classList=()=> Object.values(tmap());
+const classCols=()=> sc()==="3"?S.colors3:S.colors5;
+function counts(m){ // {className: count} for current scheme
+  const c5=S[m].counts5, out={};
+  for(const id in c5){ const nm = sc()==="3"?S.type_map3[S.remap[id]]:S.type_map5[id];
+    out[nm]=(out[nm]||0)+c5[id]; } return out; }
+function frac(m){ const c=counts(m), tot=Object.values(c).reduce((a,b)=>a+b,0), o={};
+  for(const k in c) o[k]=c[k]/tot; return o; }
+function dens(m){ const c=counts(m), o={}; for(const k in c) o[k]=c[k]/S[m].tissue_mm2; return o; }
+const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
+function drawProp(){ const cls=classList(), cols=classCols(), mice=S.mice;
+  const tr=cls.map(c=>({x:mice.map(m=>"M"+m+" "+S.arm[m][0]), y:mice.map(m=>frac(m)[c]||0),
+    name:c,type:"bar",marker:{color:cols[c]}}));
+  Plotly.react("p_prop",tr,{barmode:"stack",title:"Cell-type composition per mouse ("+sc()+"-class)",
+    yaxis:{title:"fraction of nuclei",range:[0,1]},legend:{font:{size:11}},margin:{t:40,b:60}},{responsive:true,displaylogo:false}); }
+function drawDens(){ const cls=classList(), tr=[];
+  for(const arm of ARM_ORDER){ const mice=S.mice.filter(m=>S.arm[m]===arm);
+    tr.push({x:cls,y:cls.map(c=>mean(mice.map(m=>dens(m)[c]||0))),name:arm,type:"bar",
+      marker:{color:ARM_COLORS[arm],opacity:.45}});
+    for(const m of mice) tr.push({x:cls,y:cls.map(c=>dens(m)[c]||0),mode:"markers",type:"scatter",
+      marker:{color:ARM_COLORS[arm],size:8,line:{color:"#fff",width:1}},showlegend:false}); }
+  Plotly.react("p_dens",tr,{barmode:"group",title:"Nuclear density by class & arm (nuclei/mm²; dots = mice)",
+    legend:{font:{size:11}},margin:{t:40,b:60}},{responsive:true,displaylogo:false}); }
+function drawBox(){ const f=$("feat").value, cls=classList(), cols=classCols(),
+    arr= sc()==="3"?CM.class3:CM.class5, tr=[];
+  for(const c of cls){ const y=[]; for(let i=0;i<CM.n;i++) if(arr[i]===c) y.push(CM[f][i]);
+    tr.push({y,name:c,type:"box",marker:{color:cols[c]},boxpoints:false}); }
+  Plotly.react("p_box",tr,{title:"By-class "+f+" (subsample of "+CM.n+" nuclei)",
+    showlegend:false,margin:{t:40,b:60}},{responsive:true,displaylogo:false}); }
+function drawAll(){ drawProp(); drawDens(); drawBox(); }
+(async()=>{ S=await loadJSON("assets/cells_stats.json"); CM=await loadJSON("assets/cells_meta.json");
+  drawAll(); $("feat").onchange=drawBox; window.addEventListener("resize",drawAll); })();
+</script></body></html>

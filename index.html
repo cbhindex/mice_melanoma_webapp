@@ -2,7 +2,7 @@
 <title>Mouse melanoma · UNI-v2 explorer</title><link rel="stylesheet" href="style.css"></head>
 <body><header>
   <h1>Mouse melanoma · UNI-v2 explorer</h1>
-  <nav class="crumbs"><a href="index.html">Home</a><a href="scatter.html">Embedding</a><a href="similarity.html">Similarity</a></nav>
+  <nav class="crumbs"><a href="index.html">Home</a><a href="scatter.html">Tile embedding</a><a href="similarity.html">Tile similarity</a><a href="cells_scatter.html">Cell map</a><a href="cells.html">Cell stats</a></nav>
   <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
 </header>
 <div class="home">
@@ -17,9 +17,15 @@ hypothesis-generating — look for candidate signals, treat apparent arm differe
   <a class="card" href="scatter.html"><h3>Embedding scatter →</h3>
     <p>UMAP / t-SNE of all tiles. Hover any dot to see the tile image and its metadata.
        Colour by treatment arm or by morphological cluster.</p></a>
-  <a class="card" href="similarity.html"><h3>Similarity search →</h3>
+  <a class="card" href="similarity.html"><h3>Tile similarity →</h3>
     <p>Click a tile to retrieve its most similar tiles across all slides
        (cosine similarity of UNI-v2 embeddings).</p></a>
+  <a class="card" href="cells_scatter.html"><h3>Cell map →</h3>
+    <p>Nucleus-level UMAP/t-SNE (1 dot = 1 cell, CellViT). Hover a cell for its crop and metadata;
+       its location lights up on the per-mouse cell-class maps.</p></a>
+  <a class="card" href="cells.html"><h3>Cell stats →</h3>
+    <p>Cell-type proportions, by-class morphology &amp; H&amp;E stain, and nuclear density —
+       interactive, with a 3-class ⇄ 5-class toggle.</p></a>
 </div>
 <p style="margin-top:28px;font-size:12px;color:#999">Author: Dr Binghao Chai.</p>
 </div></body></html>

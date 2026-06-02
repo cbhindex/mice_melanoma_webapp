@@ -8,12 +8,13 @@ async function loadJSON(u){ const r = await fetch(u); return await r.json(); }
 function clusterColor(c){ return TAB10[c % TAB10.length]; }
 function armColor(a){ return ARM_COLORS[a] || "#888"; }
 // paint element `el` with tile global-index `gi` from the sprite atlas, sized DxD
-function atlasStyle(el, gi, M, D){
+function atlasStyle(el, gi, M, D, prefix){
+  prefix = prefix || "atlas";
   const per = M.per_atlas, cols = M.cols;
   const a = Math.floor(gi / per), w = gi % per;
   const row = Math.floor(w / cols), col = w % cols;
   el.style.width = D + "px"; el.style.height = D + "px";
-  el.style.backgroundImage = `url(assets/atlas_${a}.jpg)`;
+  el.style.backgroundImage = `url(assets/${prefix}_${a}.jpg)`;
   el.style.backgroundSize = `${cols*D}px ${cols*D}px`;
   el.style.backgroundPosition = `-${col*D}px -${row*D}px`;
   el.style.imageRendering = "auto";
