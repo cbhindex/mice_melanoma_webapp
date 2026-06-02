@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Embedding · UNI-v2 explorer</title><link rel="stylesheet" href="style.css">
+<title>Embedding · UNI-v2 explorer</title><link rel="stylesheet" href="style.css?v=20260602151138">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script></head>
 <body><header>
   <h1>Mouse melanoma · UNI-v2 explorer</h1>
@@ -30,7 +30,7 @@
     <div id="heatgrid" class="heatgrid2"></div>
   </div>
 </div>
-<script src="app.js"></script>
+<script src="app.js?v=20260602151138"></script>
 <script>
 let M, HM, GD=document.getElementById("plot"), lastGi=null, panels={};
 const elPrev=document.getElementById("preview"), elInfo=document.getElementById("info"),
@@ -69,8 +69,8 @@ function buildHeatmaps(){
     const lab=document.createElement("div"); lab.className="hlabel";
     lab.innerHTML=`<span class="swatch" style="background:${armColor(g.arm)}"></span> M${m} · ${g.arm}`;
     const box=document.createElement("div"); box.className="hbox";
-    const base=document.createElement("img"); base.className="hbase"; base.src="assets/"+g.base;
-    const over=document.createElement("img"); over.className="hover"; over.src="assets/"+g.overlay;
+    const base=document.createElement("img"); base.className="hbase"; base.src=av("assets/"+g.base);
+    const over=document.createElement("img"); over.className="hover"; over.src=av("assets/"+g.overlay);
     over.style.opacity=elAlpha.value;
     const mark=document.createElement("div"); mark.className="hmark";
     box.append(base,over,mark); panel.append(lab,box); elGrid.append(panel);
