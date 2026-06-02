@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Mouse melanoma · UNI-v2 explorer</title><link rel="stylesheet" href="style.css?v=20260602151138"></head>
+<title>Mouse melanoma · UNI-v2 explorer</title><link rel="stylesheet" href="style.css?v=20260602153105"></head>
 <body><header>
   <h1>Mouse melanoma · UNI-v2 explorer</h1>
   <nav class="crumbs"><a href="index.html">Home</a><a href="scatter.html">Tile embedding</a><a href="similarity.html">Tile similarity</a><a href="cells_scatter.html">Cell map</a><a href="cells.html">Cell stats</a></nav>
@@ -7,25 +7,28 @@
 </header>
 <div class="home">
 <h2>Group 1 — WM2664 (BRAF-inhibitor sensitive)</h2>
-<p>Interactive exploration of UNI-v2 (UNI2-h) tile embeddings from four H&amp;E whole-slide images:
-two <b style="color:#4C72B0">Vehicle</b> mice (366, 364) and two <b style="color:#C44E52">PLX-4720</b>
-mice (365, 363). One slide per mouse; 21,113 tiles at 20× / 256&nbsp;px.</p>
+<p>Interactive exploration of four H&amp;E whole-slide images — <b>UNI-v2 (UNI2-h)</b> tile
+embeddings and <b>CellViT++</b> cell-level analysis: two <b style="color:#4C72B0">Vehicle</b>
+mice (366, 364) and two <b style="color:#C44E52">PLX-4720</b> mice (365, 363). One slide per mouse;
+21,113 tiles at 20× / 256&nbsp;px; 1,784,296 nuclei.</p>
 <p style="color:#666;font-size:13px">⚠ With n = 2 mice per arm every comparison is preliminary and
 hypothesis-generating — look for candidate signals, treat apparent arm differences cautiously
 (they may be driven by a single mouse).</p>
 <div class="cards">
-  <a class="card" href="scatter.html"><h3>Embedding scatter →</h3>
-    <p>UMAP / t-SNE of all tiles. Hover any dot to see the tile image and its metadata.
-       Colour by treatment arm or by morphological cluster.</p></a>
+  <a class="card" href="scatter.html"><h3>Tile embedding →</h3>
+    <p>UMAP / t-SNE of all 21,113 tiles. Hover any dot to see the tile image and its metadata;
+       its location lights up on the per-mouse architecture heatmaps. Colour by treatment arm or
+       by morphological cluster.</p></a>
   <a class="card" href="similarity.html"><h3>Tile similarity →</h3>
     <p>Click a tile to retrieve its most similar tiles across all slides
        (cosine similarity of UNI-v2 embeddings).</p></a>
   <a class="card" href="cells_scatter.html"><h3>Cell map →</h3>
-    <p>Nucleus-level UMAP/t-SNE (1 dot = 1 cell, CellViT). Hover a cell for its crop and metadata;
-       its location lights up on the per-mouse cell-class maps.</p></a>
+    <p>Nucleus-level t-SNE / UMAP (1 dot = 1 cell, CellViT++; 3 classes). Hover a cell for its crop
+       and metadata; its location lights up on the per-mouse cell-class maps. Colour by class, arm,
+       or a morphometric / stain feature.</p></a>
   <a class="card" href="cells.html"><h3>Cell stats →</h3>
     <p>Cell-type proportions, by-class morphology &amp; H&amp;E stain, and nuclear density —
-       interactive, with a 3-class ⇄ 5-class toggle.</p></a>
+       interactive panels for the 3 classes (Neoplastic / Inflammation+Connective / Other).</p></a>
 </div>
 <p style="margin-top:28px;font-size:12px;color:#999">Author: Dr Binghao Chai.</p>
 </div></body></html>

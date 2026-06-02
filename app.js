@@ -1,4 +1,4 @@
-const ASSET_V="20260602151138";
+const ASSET_V="20260602153105";
 
 // shared helpers for the melanoma UNI-v2 explorer
 const ARM_ORDER = ["Vehicle", "PLX4720"];
