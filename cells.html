@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Cell stats · explorer</title><link rel="stylesheet" href="style.css?v=20260602153105">
+<title>Cell stats · explorer</title><link rel="stylesheet" href="style.css?v=20260710223205">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
 .cellsgrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;
@@ -10,8 +10,8 @@
 .cellnote .sw{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:middle;margin-right:5px}
 </style></head>
 <body><header>
-  <h1>Mouse melanoma · UNI-v2 explorer</h1>
-  <nav class="crumbs"><a href="index.html">Home</a><a href="scatter.html">Tile embedding</a><a href="similarity.html">Tile similarity</a><a href="cells_scatter.html">Cell map</a><a href="cells.html">Cell stats</a></nav>
+  <h1>Mouse melanoma · morphology explorer</h1>
+  <nav class="crumbs"><a href="index.html">Home</a><a href="experiments.html">Evidence summary</a><a href="scatter.html">Tile map</a><a href="similarity.html">Similarity</a><a href="cells_scatter.html">Cell map</a></nav>
   <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
 </header>
 <div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
@@ -37,7 +37,7 @@
     <p style="color:#999"><b>n = 2 mice/arm</b> — all comparisons are preliminary / hypothesis-generating.</p>
   </div>
 </div>
-<script src="app.js?v=20260602153105"></script>
+<script src="app.js?v=20260710223205"></script>
 <script>
 let S, CM; const $=id=>document.getElementById(id);
 const sc=()=>"3";   // cell stats presents 3 classes only

@@ -1,0 +1,412 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Evidence summary · mouse melanoma morphology (Vehicle vs BRAF inhibitor)</title>
+<link rel="stylesheet" href="style.css?v=20260710223205">
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<style>
+:root{--brand:#244c93}
+.expnav{display:flex;gap:6px;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line);
+  overflow:auto;position:sticky;top:0;background:#fff;z-index:9}
+.expnav a{border-radius:6px;border:1px solid #ccc;background:#fff;padding:6px 11px;white-space:nowrap;
+  font-size:12.5px;color:#333;text-decoration:none}
+.expnav a:hover{background:#f0f4fb}.expnav a.appx{margin-left:auto}
+.expbody{max-width:1240px;margin:0 auto;padding:16px 20px 60px}
+.intro{border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:#f8fbff;margin:6px 0 18px}
+.intro h2{margin:0 0 8px;font-size:19px;color:#16233f}
+.intro p{font-size:14px;line-height:1.6;color:#333;margin:6px 0;max-width:1000px}
+.cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:14px 0 6px}
+.card{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#fff}
+.card h3{font-size:13px;margin:0 0 3px;color:#222}
+.card .num{font-size:22px;font-weight:700;color:var(--brand);margin:2px 0}
+.card .num.flat{color:#556}.card p{font-size:12px;color:#555;line-height:1.5;margin:3px 0 0}
+.sec{scroll-margin-top:56px;margin:30px 0 0}
+.sec>h2{font-size:18px;color:#16233f;border-bottom:2px solid var(--brand);padding-bottom:6px;margin:0 0 4px}
+.sec>.secintro{font-size:13.5px;color:#444;line-height:1.6;margin:8px 0 4px;max-width:1000px}
+.step{border:1px solid var(--line);border-radius:9px;padding:14px 16px;margin:14px 0;background:#fff}
+.step .motiv{font-size:13px;color:#6a5b2e;background:#fdfaf0;border-left:3px solid #d7b45a;
+  padding:7px 12px;border-radius:0 4px 4px 0;margin:0 0 10px;line-height:1.55}
+.step .motiv::before{content:"Why ask this — ";font-weight:600;color:#8a6d1e}
+.step .q{font-size:15px;font-weight:600;color:#16233f;margin:0 0 4px}
+.step .q::before{content:"Q  ";color:var(--brand);font-weight:700}
+.step .method{font-size:12.5px;color:#586;line-height:1.55;margin:0 0 12px}
+.step .method::before{content:"Method — ";color:#8a93a0;font-weight:600}
+.step .method .term{border-bottom:1px dotted #99a;cursor:help}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.chartbox{min-height:330px}.chartbox.short{min-height:250px}.chartbox.tall{min-height:440px}
+.oi{margin:12px 0 0;border-radius:0 5px 5px 0}
+.oi .obs,.oi .interp{font-size:13px;line-height:1.55;padding:8px 12px}
+.oi .obs{background:#f6f9fc;border-left:3px solid var(--brand)}
+.oi .obs::before{content:"Observation. ";font-weight:600;color:var(--brand)}
+.oi .interp{background:#f4f8f5;border-left:3px solid #4c9a63;margin-top:6px}
+.oi .interp::before{content:"Interpretation. ";font-weight:600;color:#2f7d48}
+.pill{display:inline-block;padding:2px 7px;border-radius:999px;font-size:11px;background:#eef1f5;color:#333;white-space:nowrap}
+.pill.up{background:#fde7e9;color:#8f1d2b}.pill.down{background:#e5edfb;color:#1e3a8a}.pill.flat{background:#eef1f5;color:#555}
+.pill.warn{background:#fff3d6;color:#8a5a00}.pill.ok{background:#e3f4e7;color:#1c6b34}
+.controlrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:0 0 10px;font-size:13px}
+.controlrow label{color:#666}.controlrow select{min-width:180px;padding:4px}
+.smalltable{border-collapse:collapse;width:100%;font-size:12px}
+.smalltable th,.smalltable td{border-bottom:1px solid #eee;padding:6px 8px;text-align:left;vertical-align:top}
+.smalltable th{color:#555;background:#fafafa}
+.imgwrap{border:1px solid var(--line);border-radius:6px;padding:8px;background:#fff}.imgwrap img{width:100%;display:block}
+.glossary{font-size:12.5px;color:#555;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0}
+.glossary b{color:#333}.glossary li{margin:3px 0;line-height:1.5}
+.deemph{opacity:.9}
+.tileviewer{width:100%;height:600px;border:1px solid var(--line);border-radius:6px}
+.viewerbtns{display:flex;gap:8px;margin:0 0 8px}.viewerbtns button{border:1px solid #cbd5e1;border-radius:6px;padding:6px 10px;color:var(--brand);background:#fff;cursor:pointer}
+.viewerbtns button.active{background:var(--brand);color:#fff}
+.spatialgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.spatialpanel{border:1px solid var(--line);border-radius:6px;padding:6px}.spatialpanel .lab{font-size:12px;margin:0 0 4px}
+.spatialbox{position:relative;height:300px;background:#fafafa}.spatialbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.overlayimg{opacity:.8}
+.appxwrap{display:none}.appxwrap.show{display:block}
+@media(max-width:900px){.grid2,.cards,.spatialgrid{grid-template-columns:1fr}}
+</style></head>
+<body><header>
+  <h1>Mouse melanoma · morphology explorer</h1>
+  <nav class="crumbs"><a href="index.html">Home</a><a href="experiments.html">Evidence summary</a><a href="scatter.html">Tile map</a><a href="similarity.html">Similarity</a><a href="cells_scatter.html">Cell map</a></nav>
+  <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
+</header>
+<div class="expnav">
+  <a href="#top">Summary</a>
+  <a href="#compare">1 · Comparable groups?</a>
+  <a href="#wholeslide">2 · Whole-slide nuclei</a>
+  <a href="#region">3 · Region-based nuclei</a>
+  <a href="#artifact">4 · Real or artefact?</a>
+  <a href="#meaning">5 · What it means</a>
+  <a href="#appendix" class="appx" id="appxlink">Appendix ▸</a>
+</div>
+<div class="expbody">
+
+  <div id="top" class="intro">
+    <h2>Do BRAF-inhibitor–treated melanoma nuclei look different on H&amp;E?</h2>
+    <p><b>Clinical motivation.</b> BRAF inhibitors (e.g. PLX-4720) are frontline therapy for BRAF-V600E
+    melanoma, but tumours acquire drug tolerance — often through a <b>phenotype switch</b> from a
+    proliferative/melanocytic state toward an invasive/mesenchymal-like state, which classically looks
+    more <b>spindled</b>. If that switch leaves a fingerprint visible on routine H&amp;E, nuclear
+    morphology could become a cheap read-out of drug response. This page asks whether such a fingerprint
+    is detectable in these 4 slides.</p>
+    <p><b>Design.</b> 4 whole-slide images, one per mouse: 2 <b style="color:#4C72B0">Vehicle</b>
+    (366, 364) vs 2 <b style="color:#C44E52">PLX-4720</b> (365, 363). Each <b>mouse is one observation</b>;
+    the millions of nuclei within a slide are summarised per mouse, not treated as independent animals.
+    Everything here is <b>preliminary / hypothesis-generating</b> (n = 2 per arm).</p>
+    <div id="cards" class="cards"></div>
+  </div>
+
+  <!-- =============== §1 COMPARABLE GROUPS =============== -->
+  <div id="compare" class="sec">
+    <h2>1 · Are the two groups even comparable?</h2>
+    <p class="secintro">With only 2 mice per arm, tumours can differ for reasons unrelated to treatment.
+    Before attributing any nuclear difference to the drug, we check the tumours are broadly comparable —
+    and this section also defines the tissue and the cells we measure later.</p>
+    <div class="glossary"><b>Terms used throughout</b>
+      <ul>
+        <li><b>Neoplastic nucleus</b> — a tumour-cell nucleus (CellViT++ PanNuke class), as opposed to immune or connective/stromal nuclei.</li>
+        <li><b>Confident neoplastic</b> — a per-nucleus <i>quality filter</i> (not a region): the nucleus is classified neoplastic with model probability ≥ 0.70 and has a valid size/shape, so segmentation and classification errors are removed. ~98% of neoplastic nuclei pass.</li>
+        <li><b>Viable tumour region</b> — H&amp;E tiles (256 px) that UNI-v2 groups as living tumour sheets; excludes necrosis/haemorrhage-like and edge/background-like tissue. This is a <i>region</i>, not a per-cell filter.</li>
+        <li><b>Eccentricity</b> — 0 = a perfect circle, closer to 1 = a more elongated ellipse. Each dot in the plots is one mouse.</li>
+      </ul>
+    </div>
+    <div class="step">
+      <div class="motiv">If the two groups' tumours have very different cellular make-up, any nuclear difference could be secondary to that rather than a direct drug effect.</div>
+      <div class="q">Is the cellular make-up of the tumours comparable between groups?</div>
+      <div class="method">CellViT++ segmented and classified all 1,784,296 nuclei. Per mouse: fraction that are neoplastic, fraction inflammation+connective, and nuclear density (nuclei per mm² of tissue).</div>
+      <div id="comp_makeup" class="chartbox"></div>
+      <div class="oi"><div class="obs" id="comp_makeup_obs"></div><div class="interp">Make-up varies more <b>between the two mice within a group</b> than between groups, so no cell-type or density difference is treatment-associated at n=2. The tumours are similar enough to compare their neoplastic nuclei — provided we control for tissue context. <a href="cells.html">Full cell-type / stain breakdown →</a></div></div>
+    </div>
+    <div class="step">
+      <div class="motiv">"Whole-slide" comparisons can be misled if the groups contain different amounts of each tissue type, and — without stain normalization — unsupervised tissue clusters can simply track individual slides.</div>
+      <div class="q">Is the tissue architecture comparable, and do the tissue clusters reflect treatment or individual mice?</div>
+      <div class="method">UNI-v2 embeds each H&amp;E tile and groups tiles into architectural regions (viable tumour, spindled/dense foci, necrosis-like, edge-like). Left: each mouse's tissue-region mix. Right: for each cluster, the largest fraction of its tiles coming from a single mouse.</div>
+      <div class="grid2"><div id="comp_arch" class="chartbox"></div><div id="comp_share" class="chartbox"></div></div>
+      <div class="oi"><div class="obs" id="comp_arch_obs"></div><div class="interp">Because several clusters are &gt;90% one mouse, cluster-level "treatment shifts" are unreliable, and whole-slide comparisons mix different tissue types. This motivates two things below: <b>restrict</b> nuclear measurements to viable tumour, and <b>compare within matched regions</b> rather than across whole slides.</div></div>
+    </div>
+  </div>
+
+  <!-- =============== §2 WHOLE-SLIDE BASELINE =============== -->
+  <div id="wholeslide" class="sec">
+    <h2>2 · Whole-slide nuclear morphology — is there any signal?</h2>
+    <p class="secintro">The simplest analysis: pool every confident neoplastic nucleus on the whole slide
+    and compare the two groups. This is the baseline the rest of the page has to beat.</p>
+    <div class="step">
+      <div class="motiv">Start with the least-processed comparison so we know whether anything survives at all before adding tissue context.</div>
+      <div class="q">Across all confident neoplastic nuclei on the whole slide, do the groups differ in nuclear size or shape?</div>
+      <div class="method">Every confident neoplastic nucleus (any tissue), summarised to one median per mouse for each measurement; bars = per-mouse PLX-minus-Vehicle difference as a % of the measurement. A measurement "separates the groups" only when both PLX mice are beyond both Vehicle mice (exact rank p = 1/6 ≈ 0.17, the best attainable at n=2).</div>
+      <div id="ws_bars" class="chartbox"></div>
+      <div class="oi"><div class="obs" id="ws_obs"></div><div class="interp">Whole-slide, nuclear <b>size</b> and most measurements do <b>not</b> separate the groups (the mice overlap) — they are mouse-specific. The one exception is a small, consistent-direction increase in <b>elongation</b>. But a whole-slide difference could still be a tissue-<i>composition</i> effect (the groups have different region mixes). That question drives Section 3.</div></div>
+    </div>
+  </div>
+
+  <!-- =============== §3 REGION-BASED (THE FINDING) =============== -->
+  <div id="region" class="sec">
+    <h2>3 · Region-based nuclear morphology — the candidate finding</h2>
+    <p class="secintro">To remove tissue-composition and slide-identity confounds, we now (a) restrict to
+    viable tumour and (b) compare the groups <b>within each tissue region separately</b> — nucleus-level
+    statistics, region by region.</p>
+    <div class="step">
+      <div class="motiv">Necrosis and edge tissue add noise, and clusters track individual mice; restricting to viable tumour gives the fairest like-for-like nuclear comparison.</div>
+      <div class="q">Within viable tumour, are neoplastic nuclei more elongated after BRAF inhibition?</div>
+      <div class="method">Confident neoplastic nuclei inside <span class="term" title="256px H&amp;E tiles grouped by UNI-v2 as living tumour sheets">viable tumour regions</span>. Left: the within-slide distribution of eccentricity, one curve per mouse. Right: the proportion of nuclei above a per-mouse-balanced elongation cut-off, one value per mouse, with the exact rank p and leave-one-mouse-out check.</div>
+      <div class="grid2"><div id="rg_quant" class="chartbox"></div><div id="rg_elong" class="chartbox"></div></div>
+      <div class="oi"><div class="obs" id="rg_obs"></div><div class="interp">The whole eccentricity distribution shifts up slightly in both PLX mice (not just a few outliers), and the same appears as a higher proportion of elongated nuclei. Eccentricity and axis ratio are the <b>same</b> measurement, so this is <b>one</b> signal, not several.</div></div>
+    </div>
+    <div class="step">
+      <div class="motiv">If elongation were only a by-product of the groups having different tissue mixes, it would vanish once we compare like tissue with like. So we test it region by region.</div>
+      <div class="q">Does the elongation hold when the groups are compared <b>within the same tissue region</b>?</div>
+      <div class="method">For every UNI-v2 tile cluster present in both groups, the PLX-minus-Vehicle difference in median neoplastic eccentricity (per-mouse medians; darker bars = clusters with 2 mice per group). The size measurement is shown alongside for contrast.</div>
+      <div class="controlrow"><label>Measurement</label><select id="rg_region_metric"></select></div>
+      <div id="rg_region" class="chartbox"></div>
+      <div class="oi"><div class="obs" id="rg_region_obs"></div><div class="interp">Because eccentricity is higher in PLX <b>within every comparable region</b>, the elongation is a genuine property of the tumour cells, <b>not</b> an artefact of the two groups containing different amounts of each tissue. This is the strongest evidence available at n=2 — though the effect is still small and not statistically powered.</div></div>
+    </div>
+  </div>
+
+  <!-- =============== §4 REAL OR ARTEFACT =============== -->
+  <div id="artifact" class="sec">
+    <h2>4 · Is the elongation real, or a technical artefact?</h2>
+    <p class="secintro">Even region-matched, three things could fake a shape signal at n=2 with no stain
+    normalization: whole-slide staining/scanner differences, segmentation errors, and the cells sitting
+    in different neighbourhoods. Each is checked here.</p>
+    <div class="step">
+      <div class="motiv">Stain- and texture-based measurements react to how darkly a slide was stained and how sharply it was scanned; shape measurements do not. We must know which bucket the signal is in.</div>
+      <div class="q">Which measurements can we trust at n=2 without stain normalization?</div>
+      <div class="method">Each measurement is tagged shape/size (robust to staining) or stain/texture (confounded by un-normalized H&amp;E and scanner focus). Eccentricity is shape-based; the "smoother chromatin" texture trend is not.</div>
+      <div style="overflow:auto"><table class="smalltable" id="art_features"></table></div>
+      <div class="oi"><div class="obs" id="art_feat_obs"></div><div class="interp">The elongation signal sits in the <b>shape</b> bucket (robust to staining); the "smoother chromatin" trend sits in the stain/texture bucket and cannot be separated from staining/scanner differences here — so it is demoted to the Appendix.</div></div>
+    </div>
+    <div class="step">
+      <div class="motiv">Two touching or fragmented nuclei can be mis-segmented into one elongated shape, which would inflate eccentricity for reasons unrelated to biology.</div>
+      <div class="q">Are the "most elongated" nuclei real spindled tumour nuclei, or segmentation errors?</div>
+      <div class="method">Crops of the most elongated neoplastic nuclei in each group, at native resolution, for direct pathologist review (segmentation QC).</div>
+      <div class="imgwrap"><img id="art_qc" alt="Most elongated neoplastic nuclei per group"></div>
+      <div class="oi"><div class="obs">Reviewer's call: judge whether these are genuine spindled nuclei.</div><div class="interp">If these crops are dominated by touching/fragmented nuclei, the elongation is partly a segmentation artefact and should be discounted. A blinded pathologist review of these crops is the honest way to confirm the signal.</div></div>
+    </div>
+    <div class="step">
+      <div class="motiv">A morphology difference could simply reflect the cells being packed differently or sitting nearer necrosis, rather than an intrinsic shape change.</div>
+      <div class="q">Is the difference explained by where the cells sit in the tumour? (negative control)</div>
+      <div class="method">For sampled neoplastic nuclei: local neoplastic density and distance to necrosis-like / edge-like regions, per mouse.</div>
+      <div id="art_spatial" class="chartbox"></div>
+      <div class="oi"><div class="obs" id="art_spatial_obs"></div><div class="interp">Local density and distance-to-necrosis are mouse-specific with no group separation, so the elongation is not obviously a neighbourhood effect — a passed negative control.</div></div>
+    </div>
+  </div>
+
+  <!-- =============== §5 WHAT IT MEANS =============== -->
+  <div id="meaning" class="sec">
+    <h2>5 · What it means, and what would confirm it</h2>
+    <p class="secintro">Putting the pieces together.</p>
+    <div class="step">
+      <div class="q">Bottom line</div>
+      <div class="oi">
+        <div class="obs">Across these 4 slides, the only consistent-direction morphological difference is a <b>small increase in neoplastic-nucleus elongation</b> in both BRAF-inhibitor–treated mice (eccentricity ≈ +1.5%, axis ratio ≈ +1.9%). It is shape-based (not a staining artefact), it persists within matched tissue regions, and nothing else (size, density, cell-type mix, texture) separates the groups.</div>
+        <div class="interp">This is biologically coherent as a morphological correlate of BRAF-inhibitor <b>phenotype-switching</b> toward a more spindled/invasive state — but it is <b>tiny, sub-visual, and rests on 2 mice per arm</b> (exact rank p ≈ 0.17). It is a hypothesis to test, not an established effect.</div>
+      </div>
+      <ul class="glossary"><b>What would move this from hypothesis to finding</b>
+        <li>Blinded pathologist review of the elongated-nucleus crops (Section 4) to confirm they are real spindled nuclei.</li>
+        <li>More mice per arm to reach an interpretable p-value.</li>
+        <li>A stain-matched replicate (or stain normalization) before trusting any chromatin-texture signal.</li>
+        <li>Foundation-model cell-crop embeddings as an independent, model-free cross-check of the elongation (logged in TODO).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- =============== APPENDIX =============== -->
+  <div class="sec"><h2 id="appendix" style="cursor:pointer" onclick="toggleAppx()">Appendix — supplementary analyses <span id="appxcaret" style="font-size:13px;color:#888">(click to show ▸)</span></h2>
+  <div id="appxwrap" class="appxwrap">
+    <p class="secintro">Kept for completeness and review; each is redundant with, weaker than, or confounded relative to the main story, and none is an independent treatment finding.</p>
+    <div class="step"><div class="q">Nuclear size (mouse-specific)</div>
+      <div class="method">Per-mouse median nuclear area / diameter, PLX minus Vehicle.</div>
+      <div id="ap_size" class="chartbox short"></div>
+      <div class="oi"><div class="interp">Size trends slightly larger in PLX but does not separate the groups at the mouse level (overlap) — demoted.</div></div></div>
+    <div class="step"><div class="q">Chromatin texture ("smoother in PLX") <span class="pill warn">stain/scanner sensitive</span></div>
+      <div class="method">Within-nucleus haematoxylin texture (GLCM contrast, per-nucleus normalized) on sampled nuclei, per mouse.</div>
+      <div id="ap_texture" class="chartbox short"></div>
+      <div class="oi"><div class="interp">A small "smoother texture" trend exists, but haematoxylin level itself does not separate the groups and there is no stain normalization, so it cannot be separated from staining/scanner/segmentation differences at n=2.</div></div></div>
+    <div class="step"><div class="q">Geometry morphology states</div>
+      <div class="method">Confident neoplastic nuclei clustered by geometry into 5 states (size-coupled). Crops for sanity-checking.</div>
+      <div class="controlrow"><label>Cell population</label><select id="state_gate"></select></div>
+      <div class="grid2"><div id="state_frac" class="chartbox"></div><div class="imgwrap"><img id="state_ex" alt="state crops"></div></div>
+      <div class="oi"><div class="interp">These states are distinct from the eccentricity "elongated" morphotype and can disagree with it (the small "elongated/irregular" state is slightly higher in Vehicle). Illustration only.</div></div>
+      <div id="state_maps" class="spatialgrid" style="margin-top:10px"></div></div>
+    <div class="step"><div class="q">Robustness to gating (nested gates)</div>
+      <div class="method">PLX-minus-Vehicle descriptive scaled difference across the 4 confidence/architecture gates. The gates are <b>nested and share ≥93% of the same nuclei</b>, so this tests robustness to filtering, not independent replication.</div>
+      <div id="ap_gategrid" class="chartbox tall"></div></div>
+    <div class="step"><div class="q">Spatial autocorrelation (diagnostic only)</div>
+      <div class="method">kNN Moran's I per mouse for area, eccentricity, haematoxylin OD.</div>
+      <div id="ap_moran" class="chartbox short"></div>
+      <div class="oi"><div class="interp">Does not separate the groups (≈0 for eccentricity); a diagnostic that neighbouring nuclei are weakly correlated, adding nothing to the treatment comparison.</div></div></div>
+    <div class="step"><div class="q">Full measurement table</div>
+      <div class="method">Per-mouse PLX-minus-Vehicle for every measurement and gate: raw difference, % of measurement, exact rank p, leave-one-mouse-out consistency, feature type.</div>
+      <div class="controlrow"><label>Cell population (gate)</label><select id="ap_table_gate"></select></div>
+      <div style="max-height:440px;overflow:auto"><table class="smalltable" id="ap_table"></table></div></div>
+    <div class="step"><div class="q">Interactive tile explorer</div>
+      <div class="method">UNI-v2 tile embedding map (hover→tile) and similarity search (click→neighbours).</div>
+      <div class="viewerbtns"><button class="active" data-viewer-src="scatter_embed.html">Embedding map</button><button data-viewer-src="similarity_embed.html">Similarity search</button></div>
+      <iframe id="tile_viewer" class="tileviewer" src="scatter_embed.html" title="Tile embedding map"></iframe></div>
+  </div></div>
+
+</div>
+
+<script src="app.js?v=20260710223205"></script>
+<script>
+let D;
+const $=id=>document.getElementById(id);
+const PCFG={responsive:true,displaylogo:false,displayModeBar:false};
+const ARMO=["Vehicle","PLX4720"];
+const PRIMARY="non_necrotic_architecture";
+const GATE_SHORT={all_neoplastic:"All neoplastic",high_conf:"High confidence",non_necrotic_architecture:"Viable (non-necrotic)",strict_viable_architecture:"Strict viable"};
+const CLASS_LABEL={shape:"shape (robust)",size:"size (robust)",stain:"stain (sensitive)",texture:"texture (sensitive)",spatial:"spatial",quality:"quality"};
+const metricLabel=m=>({area_um2:"nuclear size (area)",ediam_um:"nuclear diameter",compactness:"roundness / compactness",
+  ecc:"elongation (eccentricity)",solidity:"contour solidity",axis_ratio:"long/short axis ratio",
+  H_OD:"haematoxylin intensity",H_OD_std:"haematoxylin variation",H_OD_entropy:"haematoxylin entropy",
+  H_glcm_contrast:"chromatin texture contrast",nn_neoplastic_um:"nearest neoplastic-cell distance",
+  density_50um_per_mm2:"local neoplastic density",dist_to_necrosis_like_um:"distance to necrosis-like tissue"}[m]||m.replaceAll("_"," "));
+function fmt(x,d=3){return x==null||Number.isNaN(+x)?"—":(+x).toFixed(d)}
+function pct(x,d=1){return x==null?"—":((+x)*100).toFixed(d)+"%"}
+function pp(x){return x==null?"—":(x>=0?"+":"")+(x*100).toFixed(1)+" pp"}
+function relpct(x){return x==null?"—":(x>=0?"+":"")+(x*100).toFixed(1)+"%"}
+function armColorSafe(a){return (typeof armColor!=="undefined")?armColor(a):(a==="Vehicle"?"#4C72B0":"#C44E52")}
+function mouseSort(a,b){const o={Vehicle:0,PLX4720:1};return (o[a.arm]-o[b.arm])||String(a.mouse).localeCompare(String(b.mouse))}
+function permText(p){return p==null?"":"exact rank p = "+(+p).toFixed(2)+((+p)<=0.1667+1e-6?" (strongest possible at n=2)":"")}
+function effect(metric,gate,source){return (D.effects||[]).find(r=>r.metric===metric&&r.gate===(gate||PRIMARY)&&(source?r.source===source:true))}
+function morphEffect(pheno,gate){return (D.morphotypeEffects||[]).find(r=>r.phenotype===pheno&&r.gate===(gate||PRIMARY))}
+function consPill(s){const c=s&&s.includes("higher")?"up":s&&s.includes("lower")?"down":"flat";return '<span class="pill '+c+'">'+s+"</span>";}
+function table(el,cols,rows){el.innerHTML="<thead><tr>"+cols.map(c=>"<th>"+c.h+"</th>").join("")+"</tr></thead><tbody>"+rows.map(r=>"<tr>"+cols.map(c=>"<td>"+(c.f?c.f(r):r[c.k])+"</td>").join("")+"</tr>").join("")+"</tbody>";}
+
+function dotPlot(div,metric,gate,source,title,yunit){
+  const e=effect(metric,gate,source); if(!e)return;
+  const traces=[{x:ARMO,y:[e.vehicle_mean,e.plx_mean],type:"bar",marker:{color:ARMO.map(a=>armColorSafe(a)),opacity:.16},width:.5,hoverinfo:"skip",showlegend:false}];
+  ARMO.forEach(a=>{const vals=a==="Vehicle"?e.vehicle_values:e.plx_values;traces.push({x:vals.map(()=>a),y:vals,mode:"markers",marker:{color:armColorSafe(a),size:15,line:{color:"#333",width:1}},showlegend:false,hovertemplate:"%{x}<br>"+metricLabel(metric)+": %{y:.3f}<extra></extra>"});});
+  Plotly.react(div,traces,{title:{text:title,font:{size:13}},margin:{t:40,b:34,l:60,r:12},yaxis:{title:yunit||metricLabel(metric),zeroline:false},xaxis:{categoryorder:"array",categoryarray:ARMO}},PCFG);
+}
+
+function drawCards(){
+  const e=effect("ecc",PRIMARY,"all_cells_geometry"), ax=effect("axis_ratio",PRIMARY,"subsample_shape_stain_texture");
+  $("cards").innerHTML=[
+    {h:"More elongated nuclei in PLX",num:relpct(ax?ax.delta_rel:e.delta_rel),cls:"",p:`Eccentricity ${fmt(e.vehicle_mean)}→${fmt(e.plx_mean)}. Higher in <b>both</b> PLX mice; ${permText(e.perm_p_one_sided)}.`},
+    {h:"Everything else",num:"unchanged",cls:"flat",p:"Nuclear size, density and cell-type composition vary between mice, not between treatments."},
+    {h:"Strength of evidence",num:"Exploratory",cls:"flat",p:"n = 2 mice/arm; a hypothesis-generating correlate of BRAFi phenotype-switching, not a powered effect."}
+  ].map(c=>`<div class="card"><h3>${c.h}</h3><div class="num ${c.cls}">${c.num}</div><p>${c.p}</p></div>`).join("");
+}
+
+function drawCompare(){
+  const g=(D.groupComparability||[]).slice().sort(mouseSort), x=g.map(r=>"M"+r.mouse+"<br>"+r.arm);
+  Plotly.react("comp_makeup",[
+    {x,y:g.map(r=>r.frac_neoplastic),name:"neoplastic",type:"bar",marker:{color:"#c0504d"},hovertemplate:"%{x}<br>neoplastic %{y:.1%}<extra></extra>"},
+    {x,y:g.map(r=>r.frac_inflammation_connective),name:"inflammation+connective",type:"bar",marker:{color:"#4472a8"},hovertemplate:"%{x}<br>%{y:.1%}<extra></extra>"},
+    {x,y:g.map(r=>r.density_per_mm2),name:"nuclei/mm²",yaxis:"y2",type:"scatter",mode:"markers",marker:{color:"#333",size:11,symbol:"diamond"},hovertemplate:"%{x}<br>%{y:.0f}/mm²<extra></extra>"}
+  ],{barmode:"group",title:{text:"Tumour make-up per mouse",font:{size:13}},margin:{t:40,b:40,l:50,r:52},yaxis:{title:"fraction",tickformat:".0%",range:[0,1]},yaxis2:{title:"nuclei/mm²",overlaying:"y",side:"right",showgrid:false,rangemode:"tozero"},legend:{font:{size:10},orientation:"h",y:-0.16}},PCFG);
+  const inf=g.map(r=>r.frac_inflammation_connective);
+  $("comp_makeup_obs").innerHTML=`Neoplastic fraction ranges ${pct(Math.min(...g.map(r=>r.frac_neoplastic)))}–${pct(Math.max(...g.map(r=>r.frac_neoplastic)))} and inflammation+connective ${pct(Math.min(...inf))}–${pct(Math.max(...inf))} across the four mice, with the two mice of a group often further apart than the group means.`;
+  const roles=[["region_viable_tumour","viable tumour","#4C72B0"],["region_spindled_or_dense","spindled / dense","#8a9bbf"],["region_necrosis_like","necrosis-like","#c9a24b"],["region_edge_like","edge-like","#b0b6be"]];
+  Plotly.react("comp_arch",roles.map(([k,lab,c])=>({x,y:g.map(r=>r[k]||0),name:lab,type:"bar",marker:{color:c},hovertemplate:"%{x}<br>"+lab+": %{y:.1%}<extra></extra>"})),
+    {barmode:"stack",title:{text:"Tissue-region composition per mouse",font:{size:12}},margin:{t:38,b:40,l:50,r:8},yaxis:{title:"fraction of tissue",tickformat:".0%",range:[0,1]},legend:{font:{size:10},orientation:"h",y:-0.18}},PCFG);
+  const cs=(D.clusterMouseShare||[]).slice().sort((a,b)=>b.max_single_mouse_share-a.max_single_mouse_share);
+  Plotly.react("comp_share",[{x:cs.map(r=>"C"+r.tile_cluster),y:cs.map(r=>r.max_single_mouse_share),type:"bar",marker:{color:cs.map(r=>r.max_single_mouse_share>=0.8?"#c0504d":"#7488c0")},customdata:cs.map(r=>[r.dominant_mouse,r.dominant_arm]),hovertemplate:"%{x}<br>%{y:.0%} from M%{customdata[0]} (%{customdata[1]})<extra></extra>"}],
+    {title:{text:"Largest single-mouse share of each tissue cluster",font:{size:12}},margin:{t:38,b:36,l:44,r:8},yaxis:{title:"max single-mouse share",tickformat:".0%",range:[0,1]},shapes:[{type:"line",x0:-.5,x1:cs.length-.5,y0:.8,y1:.8,line:{color:"#c0504d",width:1,dash:"dot"}}]},PCFG);
+  const n80=cs.filter(r=>r.max_single_mouse_share>=0.8).length;
+  $("comp_arch_obs").innerHTML=`Each mouse has a different tissue-region mix, and ${n80} of ${cs.length} architectural clusters draw &gt;80% of their tiles from a single mouse (dotted line).`;
+}
+
+function drawWholeSlide(){
+  // one shape metric per axis of variation (ecc = elongation; drop axis_ratio which is the same number)
+  const metrics=[["ecc","all_cells_geometry"],["solidity","all_cells_geometry"],["compactness","all_cells_geometry"],["area_um2","all_cells_geometry"],["ediam_um","all_cells_geometry"]];
+  const rows=metrics.map(([m,s])=>effect(m,"all_neoplastic",s)).filter(Boolean);
+  const ys=rows.map(r=>r.delta_rel*100), ymax=Math.max(...ys,0), ymin=Math.min(...ys,0);
+  Plotly.react("ws_bars",[{x:rows.map(r=>metricLabel(r.metric)),y:ys,type:"bar",cliponaxis:false,
+    marker:{color:rows.map(r=>r.consistency.includes("both")?"#c07480":"#b9c0cc")},
+    // only label the separating (red) bars; grey = mouse-specific, conveyed by colour + the observation
+    text:rows.map(r=>r.consistency.includes("both")?("separates · p="+(+r.perm_p_one_sided).toFixed(2)):""),
+    textposition:"outside",textfont:{size:11,color:"#8f1d2b"},
+    customdata:rows.map(r=>r.consistency.includes("both")?"separates the groups":"mouse-specific (overlap)"),
+    hovertemplate:"%{x}<br>PLX − Vehicle: %{y:.1f}%<br>%{customdata}<extra></extra>"}],
+    {title:{text:"Whole-slide: PLX − Vehicle per measurement (% of measurement)",font:{size:13}},
+     margin:{t:40,b:100,l:50,r:14},yaxis:{title:"% difference",range:[ymin-0.4,ymax*1.18+0.6]},
+     xaxis:{tickangle:-25,automargin:true},
+     shapes:[{type:"line",x0:-.5,x1:rows.length-.5,y0:0,y1:0,line:{color:"#888",width:1}}]},PCFG);
+  const sep=rows.filter(r=>r.consistency.includes("both")).map(r=>metricLabel(r.metric));
+  $("ws_obs").innerHTML=`Nuclear <b>size</b> (area, diameter) does <b>not</b> separate the two groups — the mice overlap (grey bars). The only measurements where both PLX mice exceed both Vehicle mice are shape ones — <b>${sep.join(", ")||"none"}</b> — and all are small.`;
+}
+
+function drawRegion(){
+  const q=(D.quantiles||[]).filter(r=>r.metric==="ecc"), traces=[];
+  for(const m of [...new Set(q.map(r=>r.mouse))].sort()){const gr=q.filter(r=>r.mouse===m).sort((a,b)=>a.q-b.q),arm=gr[0].arm;
+    traces.push({x:gr.map(r=>r.q),y:gr.map(r=>r.value),mode:"lines+markers",name:"M"+m+" "+arm,line:{color:armColorSafe(arm),dash:(m==="365"||m==="366")?"dot":"solid"},hovertemplate:"pct %{x:.0%}<br>ecc %{y:.3f}<extra>%{fullData.name}</extra>"});}
+  Plotly.react("rg_quant",traces,{title:{text:"Eccentricity distribution per mouse (viable tumour)",font:{size:12}},margin:{t:38,b:42,l:52,r:8},xaxis:{title:"cell percentile",tickformat:".0%"},yaxis:{title:"eccentricity"}},PCFG);
+  const mf=(D.morphotypeFractions||[]).filter(r=>r.phenotype==="elongated"&&r.gate===PRIMARY&&r.source==="all_cells_geometry").slice().sort(mouseSort);
+  Plotly.react("rg_elong",ARMO.map(a=>({x:mf.filter(r=>r.arm===a).map(r=>"M"+r.mouse),y:mf.filter(r=>r.arm===a).map(r=>r.frac),type:"bar",name:a,marker:{color:armColorSafe(a)},hovertemplate:"%{x} "+a+"<br>elongated %{y:.1%}<extra></extra>"})),
+    {title:{text:"Proportion of elongated nuclei",font:{size:12}},margin:{t:38,b:38,l:50,r:8},yaxis:{title:"proportion",tickformat:".0%"},barmode:"group",legend:{font:{size:10}}},PCFG);
+  const e=effect("ecc",PRIMARY,"all_cells_geometry"), me=morphEffect("elongated",PRIMARY);
+  $("rg_obs").innerHTML=`In viable tumour the eccentricity curves for both PLX mice sit above both Vehicle mice; the elongated-nucleus proportion is ${pct(me.vehicle_mean_frac)} (Vehicle) vs ${pct(me.plx_mean_frac)} (PLX), ${consPill(me.consistency)}, ${permText(me.perm_p_one_sided)}, leave-one-mouse-out consistent: ${me.lomo_sign_consistent?"yes":"no"}.`;
+  // region-stratified control
+  const mets=[...new Set((D.withinRegion||[]).map(r=>r.metric))];
+  const pref=["ecc","area_um2","solidity","compactness"];
+  $("rg_region_metric").innerHTML=mets.sort((a,b)=>pref.indexOf(a)-pref.indexOf(b)).map(m=>`<option value="${m}">${metricLabel(m)}</option>`).join("");
+  $("rg_region_metric").value="ecc"; $("rg_region_metric").onchange=drawRegionStrat; drawRegionStrat();
+}
+function drawRegionStrat(){
+  const m=$("rg_region_metric").value, wr=(D.withinRegion||[]).filter(r=>r.metric===m).sort((a,b)=>a.tile_cluster-b.tile_cluster);
+  Plotly.react("rg_region",[{x:wr.map(r=>"C"+r.tile_cluster+"<br>"+r.role_label.split(" ")[0]),y:wr.map(r=>r.delta_rel*100),type:"bar",
+    marker:{color:wr.map(r=>r.both_arms_2mice?"#c07480":"#e3c0c5")},
+    customdata:wr.map(r=>[r.both_arms_2mice?"2 mice/group":"partial",r.role_label,r.perm_p_one_sided==null?"—":r.perm_p_one_sided]),
+    hovertemplate:"%{x} — %{customdata[1]}<br>PLX−Veh: %{y:.1f}%<br>%{customdata[0]}, rank p=%{customdata[2]}<extra></extra>"}],
+    {title:{text:"PLX − Vehicle "+metricLabel(m)+" WITHIN each tissue region",font:{size:12}},margin:{t:40,b:52,l:52,r:8},yaxis:{title:"% difference (PLX − Vehicle)"},shapes:[{type:"line",x0:-.5,x1:wr.length-.5,y0:0,y1:0,line:{color:"#888",width:1}}]},PCFG);
+  const pos=wr.filter(r=>r.delta_plx_minus_vehicle>0).length, full=wr.filter(r=>r.both_arms_2mice), posFull=full.filter(r=>r.delta_plx_minus_vehicle>0).length;
+  $("rg_region_obs").innerHTML= m==="ecc"
+    ? `Eccentricity is higher in PLX in <b>${pos} of ${wr.length}</b> regions (and ${posFull}/${full.length} of the regions with 2 mice per group).`
+    : `${metricLabel(m)}: PLX higher in ${pos} of ${wr.length} regions — ${pos===wr.length?"consistent direction but":"mixed and"} weaker than the eccentricity signal.`;
+}
+
+function drawArtifact(){
+  const wanted=["ecc","axis_ratio","solidity","area_um2","H_glcm_contrast","H_OD_entropy","H_OD"];
+  const rows=wanted.map(m=>effect(m,PRIMARY,"all_cells_geometry")||effect(m,PRIMARY,"subsample_shape_stain_texture")).filter(Boolean);
+  table($("art_features"),[
+    {h:"Measurement",f:r=>metricLabel(r.metric)},
+    {h:"Type",f:r=>{const c=r.feature_class,cls=(c==="stain"||c==="texture")?"warn":"ok";return `<span class="pill ${cls}">${CLASS_LABEL[c]||c}</span>`;}},
+    {h:"PLX − Vehicle",f:r=>relpct(r.delta_rel)},
+    {h:"Both mice?",f:r=>consPill(r.consistency)},
+    {h:"Rank p",f:r=>r.perm_p_one_sided!=null?(+r.perm_p_one_sided).toFixed(2):"—"},
+    {h:"Trust at n=2",f:r=>(r.feature_class==="stain"||r.feature_class==="texture")?"needs stain-matched validation":"robust to staining"}
+  ],rows);
+  $("art_feat_obs").innerHTML="Eccentricity and axis ratio (shape) are robust to staining; the haematoxylin texture / intensity measurements are stain/scanner-sensitive.";
+  $("art_qc").src=av("assets/high_ecc_qc.png");
+  const sp=(D.spatial||[]),metrics=["density_50um_per_mm2","dist_to_necrosis_like_um"];
+  const g=[...new Map(sp.map(r=>[r.mouse,r])).values()].sort(mouseSort);
+  Plotly.react("art_spatial",metrics.map((mt,i)=>({x:g.map(r=>"M"+r.mouse+"<br>"+r.arm),y:g.map(r=>{const h=sp.find(s=>s.mouse===r.mouse&&s.metric===mt);return h?h.median:null}),type:"bar",name:metricLabel(mt),yaxis:i?"y2":"y",marker:{opacity:.8},hovertemplate:"%{x}<br>%{y:.0f}<extra></extra>"})),
+    {barmode:"group",title:{text:"Neighbourhood of neoplastic nuclei (negative control)",font:{size:13}},margin:{t:40,b:38,l:54,r:54},yaxis:{title:"nuclei/mm²"},yaxis2:{title:"µm to necrosis-like",overlaying:"y",side:"right",showgrid:false},legend:{font:{size:10},orientation:"h",y:-0.2}},PCFG);
+  $("art_spatial_obs").innerHTML="Local density (~6,000/mm²) and distance to necrosis-like tissue are mouse-specific with no group pattern.";
+}
+
+// ---------------- Appendix ----------------
+let appxDrawn=false;
+function toggleAppx(){const w=$("appxwrap");w.classList.toggle("show");$("appxcaret").textContent=w.classList.contains("show")?"(click to hide ▾)":"(click to show ▸)";
+  if(w.classList.contains("show")&&!appxDrawn){appxDrawn=true;drawAppendix();}window.dispatchEvent(new Event("resize"));}
+function drawAppendix(){
+  const sz=["area_um2","ediam_um"].map(m=>effect(m,PRIMARY,"all_cells_geometry")).filter(Boolean);
+  Plotly.react("ap_size",[{x:sz.map(r=>metricLabel(r.metric)),y:sz.map(r=>r.delta_rel*100),type:"bar",marker:{color:"#8a9bbf"},hovertemplate:"%{x}<br>%{y:.1f}%<extra></extra>"}],{title:{text:"Nuclear size difference (%)",font:{size:13}},margin:{t:36,b:40,l:46,r:8},yaxis:{title:"%"},shapes:[{type:"line",x0:-.5,x1:sz.length-.5,y0:0,y1:0,line:{color:"#888",width:1}}]},PCFG);
+  dotPlot("ap_texture","H_glcm_contrast",PRIMARY,"subsample_shape_stain_texture","Chromatin texture contrast per mouse (lower = smoother)","GLCM contrast");
+  const gates=[...new Set((D.stateFractions||[]).map(r=>r.gate))];
+  $("state_gate").innerHTML=gates.map(gt=>`<option value="${gt}">${GATE_SHORT[gt]||gt}</option>`).join("");
+  $("state_gate").value=PRIMARY; $("state_gate").onchange=drawStates;
+  $("state_ex").src=av("assets/neoplastic_state_exemplars.png"); drawStates(); buildStateMaps();
+  drawGateGrid();
+  const mo=(D.moran||[]),mets=[...new Set(mo.map(r=>r.metric))];
+  Plotly.react("ap_moran",mets.map(mt=>{const gr=mo.filter(r=>r.metric===mt).sort(mouseSort);return {x:gr.map(r=>"M"+r.mouse+"<br>"+r.arm),y:gr.map(r=>r.moran_i_k8),mode:"markers+lines",name:metricLabel(mt)};}),
+    {title:{text:"Spatial autocorrelation (Moran's I)",font:{size:13}},margin:{t:36,b:38,l:46,r:8},yaxis:{title:"Moran's I"},shapes:[{type:"line",x0:-.5,x1:3.5,y0:0,y1:0,line:{color:"#888",width:1}}],legend:{font:{size:10}}},PCFG);
+  const tg=[...new Set((D.effects||[]).map(r=>r.gate))];
+  $("ap_table_gate").innerHTML=tg.map(gt=>`<option value="${gt}">${GATE_SHORT[gt]||gt}</option>`).join("");
+  $("ap_table_gate").value=PRIMARY; $("ap_table_gate").onchange=drawFullTable; drawFullTable();
+}
+function drawStates(){const gt=$("state_gate").value,rows=(D.stateFractions||[]).filter(r=>r.gate===gt),mice=[...new Map(rows.map(r=>[r.mouse,r])).values()].sort(mouseSort);
+  Plotly.react("state_frac",(D.states||[]).map(s=>({x:mice.map(r=>"M"+r.mouse+"<br>"+r.arm),y:mice.map(m=>{const h=rows.find(r=>r.mouse===m.mouse&&r.state===s.state);return h?h.frac:0}),name:s.label,type:"bar",marker:{color:s.color},hovertemplate:"%{y:.1%}<extra>%{fullData.name}</extra>"})),{barmode:"stack",title:{text:"Geometry state mixture",font:{size:12}},margin:{t:36,b:40,l:46,r:8},yaxis:{title:"fraction",tickformat:".0%",range:[0,1]},legend:{font:{size:9}}},PCFG);}
+function buildStateMaps(){const grid=$("state_maps");grid.innerHTML="";Object.keys(D.overlays||{}).sort((a,b)=>D.overlays[a].arm===D.overlays[b].arm?a.localeCompare(b):(D.overlays[a].arm==="Vehicle"?-1:1)).forEach(mo=>{const g=D.overlays[mo],p=document.createElement("div");p.className="spatialpanel";p.innerHTML=`<div class="lab"><span class="pill" style="background:${armColorSafe(g.arm)};color:#fff">M${mo} · ${g.arm}</span></div><div class="spatialbox"><img src="${av('assets/'+g.base)}"><img class="overlayimg" src="${av('assets/'+g.overlay)}"></div>`;grid.appendChild(p);});}
+function drawGateGrid(){const src="all_cells_geometry",order=["all_neoplastic","high_conf","non_necrotic_architecture","strict_viable_architecture"],metrics=["ecc","solidity","compactness","area_um2","ediam_um"];
+  const rows=(D.effects||[]).filter(r=>r.source===src&&metrics.includes(r.metric));
+  Plotly.react("ap_gategrid",[{z:metrics.map(m=>order.map(g=>{const h=rows.find(r=>r.metric===m&&r.gate===g);return h?h.spread_scaled_delta:null})),x:order.map(g=>GATE_SHORT[g]),y:metrics.map(metricLabel),type:"heatmap",zmin:-2,zmax:2,colorscale:"RdBu",reversescale:true,colorbar:{title:{text:"Δ/SD of 4 mice",side:"right",font:{size:9}}},hovertemplate:"%{y} · %{x}<br>%{z:.2f}<extra></extra>"}],{title:{text:"Across nested gates (≥93% shared nuclei)",font:{size:12}},margin:{t:38,b:56,l:150,r:8}},PCFG);}
+function drawFullTable(){const gt=$("ap_table_gate").value,rows=(D.effects||[]).filter(r=>r.gate===gt).sort((a,b)=>Math.abs(b.delta_rel||0)-Math.abs(a.delta_rel||0));
+  table($("ap_table"),[{h:"Measurement",f:r=>metricLabel(r.metric)},{h:"Type",f:r=>CLASS_LABEL[r.feature_class]||r.feature_class},{h:"Vehicle",f:r=>fmt(r.vehicle_mean)},{h:"PLX",f:r=>fmt(r.plx_mean)},{h:"PLX−Veh",f:r=>relpct(r.delta_rel)},{h:"Both mice?",f:r=>consPill(r.consistency)},{h:"Rank p",f:r=>r.perm_p_one_sided!=null?(+r.perm_p_one_sided).toFixed(2):"—"},{h:"LOMO",f:r=>r.lomo_sign_consistent?"yes":"no"}],rows);}
+function initViewer(){const f=$("tile_viewer");document.querySelectorAll("[data-viewer-src]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-viewer-src]").forEach(x=>x.classList.toggle("active",x===b));f.src=b.dataset.viewerSrc;});}
+
+(async()=>{
+  initViewer();
+  if(location.hash==="#appendix"){}
+  D=await loadJSON("assets/neoplastic_experiments.json");
+  drawCards(); drawCompare(); drawWholeSlide(); drawRegion(); drawArtifact();
+  $("appxlink").onclick=(e)=>{e.preventDefault();if(!$("appxwrap").classList.contains("show"))toggleAppx();$("appendix").scrollIntoView();};
+})();
+</script></body></html>

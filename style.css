@@ -65,6 +65,10 @@ select,button{ font:inherit; padding:3px 8px; border:1px solid #ccc; border-radi
 .cell{ width:88px; cursor:pointer; text-align:center; }
 .cell .thumb{ border:3px solid #ccc; border-radius:4px; }
 .cell .cap{ font-size:11px; color:var(--muted); margin-top:2px; }
+body.embed{ overflow:hidden; }
+body.embed .controls{ padding:7px 12px!important; }
+body.embed .layout2{ grid-template-columns:44% 56%; height:calc(100vh - 46px); padding:6px; }
+body.embed .wrap{ height:calc(100vh - 46px); }
 .home{ max-width:820px; margin:30px auto; padding:0 20px; line-height:1.6; }
 .home .cards{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px; }
 .card{ border:1px solid var(--line); border-radius:10px; padding:16px;

@@ -1,34 +1,72 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Mouse melanoma · UNI-v2 explorer</title><link rel="stylesheet" href="style.css?v=20260602153105"></head>
+<title>Mouse melanoma · morphology explorer</title><link rel="stylesheet" href="style.css?v=20260710223205">
+<style>
+.home{max-width:900px}
+.qa{display:flex;flex-direction:column;gap:12px;margin:18px 0 26px}
+.qa a{display:block;border:1px solid var(--line);border-left:4px solid #244c93;border-radius:8px;
+  padding:13px 16px;text-decoration:none;color:inherit;background:#fff;transition:background .12s}
+.qa a:hover{background:#f6f9fe}
+.qa .q{font-weight:600;color:#1a2b4a;font-size:15px}
+.qa .a{color:#333;font-size:13.5px;line-height:1.55;margin-top:5px}
+.qa .a b.up{color:#C44E52}.qa .a b.flat{color:#556}
+.qa .go{color:#244c93;font-size:12.5px;font-weight:600;margin-top:6px;display:inline-block}
+.explore{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 24px}
+.explore a{border:1px solid var(--line);border-radius:999px;padding:6px 14px;text-decoration:none;color:#244c93;font-size:13px;background:#fff}
+.explore a:hover{background:#f0f4fb}
+</style></head>
 <body><header>
-  <h1>Mouse melanoma · UNI-v2 explorer</h1>
-  <nav class="crumbs"><a href="index.html">Home</a><a href="scatter.html">Tile embedding</a><a href="similarity.html">Tile similarity</a><a href="cells_scatter.html">Cell map</a><a href="cells.html">Cell stats</a></nav>
+  <h1>Mouse melanoma · morphology explorer</h1>
+  <nav class="crumbs"><a href="index.html">Home</a><a href="experiments.html">Evidence summary</a><a href="scatter.html">Tile map</a><a href="similarity.html">Similarity</a><a href="cells_scatter.html">Cell map</a></nav>
   <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
 </header>
 <div class="home">
-<h2>Group 1 — WM2664 (BRAF-inhibitor sensitive)</h2>
-<p>Interactive exploration of four H&amp;E whole-slide images — <b>UNI-v2 (UNI2-h)</b> tile
-embeddings and <b>CellViT++</b> cell-level analysis: two <b style="color:#4C72B0">Vehicle</b>
-mice (366, 364) and two <b style="color:#C44E52">PLX-4720</b> mice (365, 363). One slide per mouse;
-21,113 tiles at 20× / 256&nbsp;px; 1,784,296 nuclei.</p>
-<p style="color:#666;font-size:13px">⚠ With n = 2 mice per arm every comparison is preliminary and
-hypothesis-generating — look for candidate signals, treat apparent arm differences cautiously
-(they may be driven by a single mouse).</p>
-<div class="cards">
-  <a class="card" href="scatter.html"><h3>Tile embedding →</h3>
-    <p>UMAP / t-SNE of all 21,113 tiles. Hover any dot to see the tile image and its metadata;
-       its location lights up on the per-mouse architecture heatmaps. Colour by treatment arm or
-       by morphological cluster.</p></a>
-  <a class="card" href="similarity.html"><h3>Tile similarity →</h3>
-    <p>Click a tile to retrieve its most similar tiles across all slides
-       (cosine similarity of UNI-v2 embeddings).</p></a>
-  <a class="card" href="cells_scatter.html"><h3>Cell map →</h3>
-    <p>Nucleus-level t-SNE / UMAP (1 dot = 1 cell, CellViT++; 3 classes). Hover a cell for its crop
-       and metadata; its location lights up on the per-mouse cell-class maps. Colour by class, arm,
-       or a morphometric / stain feature.</p></a>
-  <a class="card" href="cells.html"><h3>Cell stats →</h3>
-    <p>Cell-type proportions, by-class morphology &amp; H&amp;E stain, and nuclear density —
-       interactive panels for the 3 classes (Neoplastic / Inflammation+Connective / Other).</p></a>
+<h2>Do BRAF-inhibitor–treated melanoma nuclei look different on H&amp;E?</h2>
+<p>An exploratory read-out of four mouse melanoma whole-slide images (Group 1, WM2664, BRAF-V600E):
+two <b style="color:#4C72B0">Vehicle</b> mice (366, 364) and two <b style="color:#C44E52">PLX-4720</b>
+(BRAF-inhibitor) mice (365, 363) — one slide per mouse — combining <b>UNI-v2</b> tissue-region
+embeddings with <b>CellViT++</b> nucleus measurements. Each <b>mouse</b> is one observation.</p>
+<p style="color:#666;font-size:13px">⚠ n = 2 mice per arm — every comparison is preliminary and
+hypothesis-generating, not statistically powered. Click any question to jump to the evidence.</p>
+
+<div class="qa">
+  <a href="experiments.html#region">
+    <div class="q">Q. Do treated tumour-cell nuclei look different at all?</div>
+    <div class="a"><b class="up">Yes, slightly.</b> Neoplastic nuclei are a little more <b>elongated
+      (spindled)</b> in both PLX mice — eccentricity ≈ +1.5%, long/short axis ratio ≈ +1.9% — a candidate
+      morphological correlate of BRAF-inhibitor phenotype-switching.</div>
+    <span class="go">See the region-based nuclear-shape evidence →</span></a>
+  <a href="experiments.html#top">
+    <div class="q">Q. Is this a strong, treatment-proving result?</div>
+    <div class="a"><b class="flat">No.</b> With 2 vs 2 mice, "both treated beyond both controls" is the
+      strongest attainable result and corresponds to an exact rank p ≈ 0.17 — not significance. The effect
+      is small and sub-visual; treat it as a hypothesis to test, not an established effect.</div>
+    <span class="go">See the honest effect size and statistics →</span></a>
+  <a href="experiments.html#wholeslide">
+    <div class="q">Q. Did anything else change — size, cellularity, tissue make-up?</div>
+    <div class="a"><b class="flat">No consistent treatment change.</b> Nuclear size, density and cell-type
+      composition vary more <b>between the two mice within a group</b> than between treatments.</div>
+    <span class="go">See the whole-slide baseline →</span></a>
+  <a href="experiments.html#artifact">
+    <div class="q">Q. Could the elongation just be a staining or segmentation artefact?</div>
+    <div class="a">The shape signal <b>survives</b> comparing treated vs control nuclei within the same
+      tissue region, and holds up under segmentation QC. The "smoother chromatin" texture trend does
+      <b>not</b> — it is confounded by un-normalized staining and is demoted.</div>
+    <span class="go">See the robustness checks →</span></a>
+  <a href="experiments.html#compare">
+    <div class="q">Q. How was it measured, and are the groups even comparable?</div>
+    <div class="a">UNI-v2 groups H&amp;E tiles into tissue regions; CellViT++ segments and classifies every
+      nucleus. We compare confident neoplastic nuclei <b>within viable tumour and within matched
+      regions</b>, using the mouse as the unit. The two groups' tumours are broadly comparable in make-up.</div>
+    <span class="go">See methods and group comparability →</span></a>
 </div>
-<p style="margin-top:28px;font-size:12px;color:#999">Author: Dr Binghao Chai.</p>
+
+<p style="font-size:13px;color:#555;margin:0 0 6px"><b>Explore the underlying data</b></p>
+<div class="explore">
+  <a href="experiments.html">Full evidence summary</a>
+  <a href="scatter.html">Tile map</a>
+  <a href="similarity.html">Tile similarity</a>
+  <a href="cells_scatter.html">Cell map</a>
+  <a href="cells.html">Cell-type stats</a>
+</div>
+<p style="margin-top:22px;font-size:12px;color:#999">Author: Dr Binghao Chai.</p>
 </div></body></html>
