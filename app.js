@@ -1,14 +1,24 @@
-const ASSET_V="20260710223205";
+const ASSET_V="20260716151626";
 
 // shared helpers for the melanoma UNI-v2 explorer
 const ARM_ORDER = ["Vehicle", "PLX4720"];
 const ARM_COLORS = {Vehicle: "#4C72B0", PLX4720: "#C44E52"};
 const TAB10 = ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd",
                "#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf"];
+const ROLE_COLORS = {viable_tumour:"#4C72B0",spindled_or_dense:"#8a6fb1",
+  necrosis_like:"#c49a36",edge_like:"#8b949e",unreviewed:"#7f8c8d",unknown:"#7f8c8d"};
 function av(u){ return u + (u.indexOf('?')<0?'?':'&') + 'v=' + (typeof ASSET_V!=='undefined'?ASSET_V:'0'); }
-async function loadJSON(u){ const r = await fetch(av(u)); return await r.json(); }
-function clusterColor(c){ return TAB10[c % TAB10.length]; }
+async function loadJSON(u){ const r = await fetch(av(u)); if(!r.ok) throw new Error(`${u}: HTTP ${r.status}`); return await r.json(); }
+async function loadOptionalJSON(u){ try{return await loadJSON(u)}catch(e){console.warn("Optional asset unavailable",u,e);return null} }
+function clusterColor(c){ const n=Number(c); return Number.isFinite(n)&&n>=0?TAB10[((n%TAB10.length)+TAB10.length)%TAB10.length]:"#a8adb3"; }
 function armColor(a){ return ARM_COLORS[a] || "#888"; }
+function roleKey(r){ return r==null||r===""?"unreviewed":String(r); }
+function roleLabel(r){ const k=roleKey(r); return k==="unreviewed"?"unreviewed":k.replaceAll("_"," "); }
+function roleColor(r){ const k=roleKey(r); if(ROLE_COLORS[k]) return ROLE_COLORS[k]; let h=0;for(const ch of k)h=(h*31+ch.charCodeAt(0))>>>0;return TAB10[h%TAB10.length]; }
+function esc(x){ return String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function unavailable(el,msg){ if(typeof el==="string")el=document.getElementById(el);if(el)el.innerHTML=`<div class="unavailable"><b>Unavailable.</b> ${esc(msg)}</div>`; }
+function clusterDef(M,c){return (M.cluster_definitions||[]).find(d=>+d.cluster_id===+c)||{};}
+function runId(M){return M&&M.cluster_run?M.cluster_run.run_id:"legacy / unknown run";}
 function aspectRanges(xs, ys, el, pad){
   pad = pad == null ? 0.08 : pad;
   let xmin=Infinity,xmax=-Infinity,ymin=Infinity,ymax=-Infinity;

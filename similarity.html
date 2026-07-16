@@ -1,9 +1,9 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Similarity · UNI-v2 explorer</title><link rel="stylesheet" href="style.css?v=20260710223205">
+<title>Similarity · UNI-v2 explorer</title><link rel="stylesheet" href="style.css?v=20260716151626">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script></head>
 <body><header>
   <h1>Mouse melanoma · morphology explorer</h1>
-  <nav class="crumbs"><a href="index.html">Home</a><a href="experiments.html">Evidence summary</a><a href="scatter.html">Tile map</a><a href="similarity.html">Similarity</a><a href="cells_scatter.html">Cell map</a></nav>
+  <nav class="crumbs"><a href="index.html">Overview</a><a href="phenotypes.html">Tissue environments</a><a href="experiments.html">Treatment evidence</a><a href="scatter.html">Explore slides</a><a href="cells.html">Nuclear morphology</a><a href="cluster_selection.html">Methods &amp; QC</a></nav>
   <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
 </header>
 <div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
@@ -21,19 +21,20 @@
     <div id="grid" class="grid"></div>
   </div>
 </div>
-<script src="app.js?v=20260710223205"></script>
+<script src="app.js?v=20260716151626"></script>
 <script>
 let M, KNN, GD = document.getElementById("plot");
 function nbrs(gi){ const k=KNN.k, s=gi*k;
   return {idx: KNN.idx.slice(s,s+k), sim: KNN.sim.slice(s,s+k)}; }
 function showQuery(gi){
   atlasStyle(document.getElementById("qtile"), gi, M, 150);
-  const c=M.cluster[gi];
+  const c=M.cluster[gi],role=M.cluster_role?M.cluster_role[gi]:null,d=clusterDef(M,c);
   document.getElementById("qinfo").innerHTML =
     `<div class="kv"><b>tile</b> ${M.tile_id[gi]}</div>`+
     `<div class="kv"><b>mouse</b> ${M.mouse[gi]}</div>`+
     `<div class="kv"><b>arm</b> <span class="swatch" style="background:${armColor(M.arms[gi])}"></span> ${M.arms[gi]}</div>`+
-    `<div class="kv"><b>cluster</b> <span class="swatch" style="background:${clusterColor(c)}"></span> C${c}</div>`;
+    `<div class="kv"><b>cluster</b> <span class="swatch" style="background:${clusterColor(c)}"></span> C${c} <span class="runbadge">${esc(runId(M))}</span></div>`+
+    `<div class="kv"><b>role</b> <span class="swatch" style="background:${roleColor(role)}"></span> ${esc(roleLabel(role))} · ${esc(d.semantic_support||"unreviewed")}</div>`;
   const g=document.getElementById("grid"); g.innerHTML="";
   const {idx,sim}=nbrs(gi);
   idx.forEach((ni,j)=>{
@@ -41,7 +42,7 @@ function showQuery(gi){
     const th=document.createElement("div"); th.className="thumb";
     atlasStyle(th, ni, M, 82); th.style.borderColor=armColor(M.arms[ni]);
     const cap=document.createElement("div"); cap.className="cap";
-    cap.innerHTML=`${sim[j].toFixed(2)} · M${M.mouse[ni]}<br>C${M.cluster[ni]}`;
+    cap.innerHTML=`${sim[j].toFixed(2)} · M${M.mouse[ni]}<br>C${M.cluster[ni]} · ${esc(roleLabel(M.cluster_role?M.cluster_role[ni]:null))}`;
     cell.appendChild(th); cell.appendChild(cap);
     cell.onclick=()=>showQuery(ni);
     g.appendChild(cell);
@@ -52,7 +53,7 @@ function draw(){
   for(let c=0;c<k;c++){
     const xs=[],ys=[],cd=[];
     for(let i=0;i<M.n;i++) if(M.cluster[i]===c){ xs.push(M.umap_x[i]); ys.push(M.umap_y[i]); cd.push(i); }
-    tr.push({x:xs,y:ys,customdata:cd,mode:"markers",type:"scatter",name:"C"+c,
+    tr.push({x:xs,y:ys,customdata:cd,mode:"markers",type:"scattergl",name:"C"+c,
       marker:{size:3,opacity:0.5,color:clusterColor(c)}});
   }
   Plotly.react(GD, tr, {hovermode:"closest",margin:{l:8,r:8,t:8,b:8},
@@ -61,8 +62,7 @@ function draw(){
     {responsive:true,scrollZoom:true,displaylogo:false});
 }
 (async()=>{
-  M = await loadJSON("assets/meta.json");
-  KNN = await loadJSON("assets/knn.json");
+  try{M=await loadJSON("assets/meta.json");KNN=await loadJSON("assets/knn.json");}catch(e){document.querySelector(".wrap").innerHTML=`<div class="unavailable"><b>Similarity explorer unavailable.</b> ${esc(e.message)}</div>`;return;}
   draw();
   GD.on("plotly_click", d=> showQuery(d.points[0].customdata));
   document.getElementById("rand").onclick=()=> showQuery(Math.floor(Math.random()*M.n));

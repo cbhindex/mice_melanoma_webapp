@@ -1,77 +1,91 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Cell stats · explorer</title><link rel="stylesheet" href="style.css?v=20260710223205">
+<title>Nuclear morphology · whole-tumour baseline</title><link rel="stylesheet" href="style.css?v=20260716151626">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
-.cellsgrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;
-  height:calc(100vh - 96px);padding:10px;box-sizing:border-box}
-.cellsgrid>div{min-width:0;min-height:0;border:1px solid var(--line);border-radius:6px;overflow:hidden}
-.cellnote{padding:18px;color:#555;font-size:13px;line-height:1.7}
-.cellnote h3{margin:0 0 8px;color:var(--accent);font-size:15px}
-.cellnote .sw{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.cellstory{max-width:1120px;margin:0 auto;padding:24px 20px 64px}.cellhero{border:1px solid #c9d9f0;border-radius:12px;padding:20px;background:#f7faff;margin-bottom:18px}
+.cellhero .eyebrow,.logic-label,.result-label{display:block;text-transform:uppercase;letter-spacing:.07em;font-size:10.5px;font-weight:700;color:#607089;margin-bottom:4px}
+.cellhero h2{font-size:27px;line-height:1.25;color:#16233f;margin:5px 0 10px}.cellhero p{font-size:14px;line-height:1.6;color:#40516b;margin:6px 0}
+.nextlinks{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.nextlinks a{border:1px solid #9eb9df;border-radius:999px;padding:6px 12px;background:#fff;color:#244c93;text-decoration:none;font-size:12.5px}
+.evidence-chapter{border:1px solid var(--line);border-radius:11px;padding:18px;margin-top:16px;background:#fff}.evidence-chapter h3{font-size:19px;line-height:1.35;color:#16233f;margin:0 0 13px}
+.logic{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:0 0 15px}.logic>div{background:#f8fafc;border-radius:8px;padding:11px 12px;font-size:12.5px;line-height:1.52;color:#3f4d5f}
+.plotbox{height:390px;min-height:320px;border:1px solid #edf0f3;border-radius:8px;margin-top:6px}.plotbox.tall{height:420px}.interpretation{border-left:4px solid #7a92b8;background:#f7f9fc;border-radius:0 7px 7px 0;padding:11px 13px;margin-top:12px;font-size:13px;line-height:1.55;color:#34445b}
+.metricbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:5px 0 6px;font-size:13px}.metricbar select{min-width:210px}.metric-note{font-size:12px;color:#64748b;line-height:1.45}
+.unit-note{font-size:11.5px;color:#64748b;margin:5px 0}.sw{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:middle;margin-right:4px}
+@media(max-width:760px){.logic{grid-template-columns:1fr}.cellhero h2{font-size:23px}.plotbox,.plotbox.tall{height:480px}}
 </style></head>
 <body><header>
   <h1>Mouse melanoma · morphology explorer</h1>
-  <nav class="crumbs"><a href="index.html">Home</a><a href="experiments.html">Evidence summary</a><a href="scatter.html">Tile map</a><a href="similarity.html">Similarity</a><a href="cells_scatter.html">Cell map</a></nav>
+  <nav class="crumbs"><a href="index.html">Overview</a><a href="phenotypes.html">Tissue environments</a><a href="experiments.html">Treatment evidence</a><a href="scatter.html">Explore slides</a><a href="cells.html">Nuclear morphology</a><a href="cluster_selection.html">Methods &amp; QC</a></nav>
   <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
 </header>
-<div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
-  <span><label>Box feature</label><select id="feat">
-    <option value="area">nuclear area</option><option value="ediam">diameter</option><option value="compactness">compactness</option>
-    <option value="ecc">eccentricity</option><option value="solidity">solidity</option>
-    <option value="hema">haematoxylin OD</option><option value="eosin">eosin OD</option></select></span>
-  <span class="hint">CellViT cell-level summaries across the four mice (3 classes). n = 2 mice/arm — preliminary, hypothesis-generating.</span>
-</div>
-<div class="cellsgrid">
-  <div id="p_prop"></div>
-  <div id="p_dens"></div>
-  <div id="p_box"></div>
-  <div class="cellnote">
-    <h3>CellViT cell-level summary</h3>
-    <p><b>1,784,296 nuclei</b> across 4 mice (2 Vehicle, 2 PLX-4720), in 3 classes:
-      <span class="sw" style="background:#d62728"></span>Neoplastic,
-      <span class="sw" style="background:#1f77b4"></span>Inflammation+Connective,
-      <span class="sw" style="background:#7f7f7f"></span>Other.</p>
-    <p><b>Top-left:</b> cell-type composition per mouse. &nbsp;<b>Top-right:</b> nuclear density by
-      class &amp; arm (dots = the two mice). &nbsp;<b>Bottom-left:</b> by-class distribution of the
-      selected feature (subsample of 31,865 nuclei) — change it with the “Box feature” menu.</p>
-    <p style="color:#999"><b>n = 2 mice/arm</b> — all comparisons are preliminary / hypothesis-generating.</p>
-  </div>
-</div>
-<script src="app.js?v=20260710223205"></script>
-<script>
-let S, CM; const $=id=>document.getElementById(id);
-const sc=()=>"3";   // cell stats presents 3 classes only
-const tmap=()=> sc()==="3"?S.type_map3:S.type_map5;
-const classList=()=> Object.values(tmap());
-const classCols=()=> sc()==="3"?S.colors3:S.colors5;
-function counts(m){ // {className: count} for current scheme
-  const c5=S[m].counts5, out={};
-  for(const id in c5){ const nm = sc()==="3"?S.type_map3[S.remap[id]]:S.type_map5[id];
-    out[nm]=(out[nm]||0)+c5[id]; } return out; }
-function frac(m){ const c=counts(m), tot=Object.values(c).reduce((a,b)=>a+b,0), o={};
-  for(const k in c) o[k]=c[k]/tot; return o; }
-function dens(m){ const c=counts(m), o={}; for(const k in c) o[k]=c[k]/S[m].tissue_mm2; return o; }
-const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
-function drawProp(){ const cls=classList(), cols=classCols(), mice=S.mice;
-  const tr=cls.map(c=>({x:mice.map(m=>"M"+m+" "+S.arm[m][0]), y:mice.map(m=>frac(m)[c]||0),
-    name:c,type:"bar",marker:{color:cols[c]}}));
-  Plotly.react("p_prop",tr,{barmode:"stack",title:"Cell-type composition per mouse ("+sc()+"-class)",
-    yaxis:{title:"fraction of nuclei",range:[0,1]},legend:{font:{size:11}},margin:{t:40,b:60}},{responsive:true,displaylogo:false}); }
-function drawDens(){ const cls=classList(), tr=[];
-  for(const arm of ARM_ORDER){ const mice=S.mice.filter(m=>S.arm[m]===arm);
-    tr.push({x:cls,y:cls.map(c=>mean(mice.map(m=>dens(m)[c]||0))),name:arm,type:"bar",
-      marker:{color:ARM_COLORS[arm],opacity:.45}});
-    for(const m of mice) tr.push({x:cls,y:cls.map(c=>dens(m)[c]||0),mode:"markers",type:"scatter",
-      marker:{color:ARM_COLORS[arm],size:8,line:{color:"#fff",width:1}},showlegend:false}); }
-  Plotly.react("p_dens",tr,{barmode:"group",title:"Nuclear density by class & arm (nuclei/mm²; dots = mice)",
-    legend:{font:{size:11}},margin:{t:40,b:60}},{responsive:true,displaylogo:false}); }
-function drawBox(){ const f=$("feat").value, cls=classList(), cols=classCols(),
-    arr= sc()==="3"?CM.class3:CM.class5, tr=[];
-  for(const c of cls){ const y=[]; for(let i=0;i<CM.n;i++) if(arr[i]===c) y.push(CM[f][i]);
-    tr.push({y,name:c,type:"box",marker:{color:cols[c]},boxpoints:false}); }
-  Plotly.react("p_box",tr,{title:"By-class "+f+" (subsample of "+CM.n+" nuclei)",
-    showlegend:false,margin:{t:40,b:60}},{responsive:true,displaylogo:false}); }
-function drawAll(){ drawProp(); drawDens(); drawBox(); }
-(async()=>{ S=await loadJSON("assets/cells_stats.json"); CM=await loadJSON("assets/cells_meta.json");
-  drawAll(); $("feat").onchange=drawBox; window.addEventListener("resize",drawAll); })();
+<main class="cellstory"><section class="cellhero">
+  <span class="eyebrow">Whole-tumour baseline</span>
+  <h2>What do the nuclei look like before tissue context is considered?</h2>
+  <p>This page is the intuitive starting point: it describes all CellViT-detected nuclei in each whole slide. It cannot by itself tell whether PLX changes neoplastic cells, because a whole-tumour difference may instead reflect a different mixture of tissue environments.</p>
+  <p id="baseline_status"><b>Loading the four-mouse baseline…</b></p>
+  <div class="nextlinks"><a href="phenotypes.html">See how nuclei differ across tissue environments →</a><a href="experiments.html#q5">Compare Vehicle and PLX within matched environments →</a></div>
+</section>
+
+<section class="evidence-chapter" id="composition"><h3>1. Does the whole-tumour cell mixture differ between mice?</h3>
+  <div class="logic"><div><span class="logic-label">Motivation</span>A tumour can look different because the proportions of neoplastic and non-neoplastic cells differ.</div>
+    <div><span class="logic-label">Question</span>What fraction of all detected nuclei belongs to each broad CellViT class in each mouse?</div>
+    <div><span class="logic-label">Method</span>Count all detected nuclei within each WSI, collapse CellViT labels into three broad classes, and divide by that mouse's total. Each bar is one mouse.</div></div>
+  <span class="result-label">Interactive result</span><div id="p_prop" class="plotbox" aria-label="Cell composition for each individual mouse"></div>
+  <div class="interpretation"><span class="logic-label">Interpretation</span>Differences among these four mouse bars describe whole-slide cellular composition. They do not establish a treatment effect, and they do not identify which tissue environment contains those cells.</div>
+</section>
+
+<section class="evidence-chapter" id="density"><h3>2. Does whole-tumour nuclear density differ between Vehicle and PLX?</h3>
+  <div class="logic"><div><span class="logic-label">Motivation</span>A change in cell abundance can accompany altered tumour architecture even when individual nuclear shapes do not change.</div>
+    <div><span class="logic-label">Question</span>Within each broad cell class, are nuclei more or less dense in the two PLX slides than in the two Vehicle slides?</div>
+    <div><span class="logic-label">Method</span>Divide each mouse's class count by its estimated tissue area. The panels show all four mouse-level values; nuclei are not treated as independent treatment replicates.</div></div>
+  <span class="result-label">Interactive result · one dot = one mouse</span><div id="p_dens" class="plotbox" aria-label="Mouse-level nuclear-density dot plots by cell class"></div>
+  <div class="interpretation"><span class="logic-label">Interpretation</span>Read the separation and overlap of the four dots, not an arm-average bar. With two mice per arm and one slide per mouse, apparent arm separation may still be animal, section, stain or segmentation variation.</div>
+</section>
+
+<section class="evidence-chapter" id="morphology"><h3>3. Do whole-slide nuclear measurements differ between Vehicle and PLX?</h3>
+  <div class="logic"><div><span class="logic-label">Motivation</span>The main biological question concerns neoplastic-cell morphology, but an unstratified view is useful as a baseline before matching tissue context.</div>
+    <div><span class="logic-label">Question</span>For the selected nuclear measurement, where do the four mouse-level medians lie within each CellViT class?</div>
+    <div><span class="logic-label">Method</span>Within each mouse and cell class, take the median from the displayed nucleus subsample. The treatment comparison therefore contains four dots, not thousands of pseudo-replicate nuclei.</div></div>
+  <div class="metricbar"><label for="feat"><b>Nuclear measurement</b></label><select id="feat">
+    <option value="ecc" selected>Nuclear elongation</option><option value="area">Nuclear area</option><option value="ediam">Equivalent nuclear diameter</option>
+    <option value="compactness">Outline compactness</option><option value="solidity">Outline solidity</option>
+    <option value="hema">Haematoxylin optical density (technical)</option><option value="eosin">Eosin optical density (technical)</option></select>
+    <span id="metric_note" class="metric-note"></span></div>
+  <span class="result-label">Interactive result · one dot = one mouse</span><div id="p_morph" class="plotbox tall" aria-label="Mouse-level nuclear-morphology dot plots by cell class"></div>
+  <div class="interpretation"><span class="logic-label">Interpretation</span>This is deliberately a whole-slide baseline. A credible PLX-associated neoplastic phenotype must also be examined within like-for-like tissue environments. Use the linked context-aware pages before drawing a biological conclusion.</div>
+</section>
+
+<section class="cellhero" style="margin-top:18px"><span class="eyebrow">The next biological step</span><h2 style="font-size:20px">Separate tissue mixture from a possible within-cell change</h2>
+  <p><a href="phenotypes.html">Tissue environments</a> asks whether the image phenotypes contain distinguishable nuclei. <a href="experiments.html#q5">Treatment evidence</a> then compares Vehicle and PLX mice within matched environments.</p>
+  <p class="unit-note"><b>Study limit:</b> n = 2 mice per arm. The mouse is the experimental unit; all results are descriptive and hypothesis-generating.</p></section>
+</main>
+<script src="app.js?v=20260716151626"></script><script>
+let S,CM;const $=id=>document.getElementById(id),PCFG={responsive:true,displaylogo:false,displayModeBar:false};
+const METRICS={
+  ecc:{label:"Nuclear elongation",unit:"eccentricity",note:"Higher values indicate a more elongated nuclear outline."},
+  area:{label:"Nuclear area",unit:"µm²",note:"Higher values indicate a larger segmented nuclear profile."},
+  ediam:{label:"Equivalent nuclear diameter",unit:"µm",note:"Derived from area; it is not independent evidence of a size change."},
+  compactness:{label:"Outline compactness",unit:"compactness",note:"Higher values indicate a more compact, circle-like outline."},
+  solidity:{label:"Outline solidity",unit:"solidity",note:"Lower values indicate a more indented or irregular outline."},
+  hema:{label:"Haematoxylin optical density",unit:"optical density",note:"A stain-sensitive technical measurement, not a pure morphology feature."},
+  eosin:{label:"Eosin optical density",unit:"optical density",note:"A stain-sensitive technical measurement, not a pure morphology feature."}
+};
+const classList=()=>Object.values(S.type_map3),classCols=()=>S.colors3;
+function counts(m){const out={};for(const id in S[m].counts5){const nm=S.type_map3[S.remap[id]];out[nm]=(out[nm]||0)+S[m].counts5[id];}return out;}
+function fractions(m){const c=counts(m),tot=Object.values(c).reduce((a,b)=>a+b,0),out={};for(const k of classList())out[k]=tot?((c[k]||0)/tot):null;return out;}
+function densitySummary(m,c){const n=counts(m)[c];return{value:n==null||!S[m].tissue_mm2?null:n/S[m].tissue_mm2,n:n==null?0:n};}
+function median(values){if(!values.length)return null;const x=values.slice().sort((a,b)=>a-b),mid=Math.floor(x.length/2);return x.length%2?x[mid]:(x[mid-1]+x[mid])/2;}
+function morphologySummary(m,c,f){const values=[];for(let i=0;i<CM.n;i++)if(String(CM.mouse[i])===String(m)&&CM.class3[i]===c&&Number.isFinite(+CM[f][i]))values.push(+CM[f][i]);return{value:median(values),n:values.length};}
+function armX(m){const arm=S.arm[m],base=arm==="Vehicle"?0:1,peers=S.mice.filter(x=>S.arm[x]===arm),i=peers.indexOf(m);return base+(i-(peers.length-1)/2)*.14;}
+function axisRef(kind,i){return i===0?kind:kind+(i+1);}
+function dotLayout(classes,title,yLabel,zero){const layout={title:{text:title,font:{size:15}},grid:{rows:1,columns:classes.length,pattern:"independent"},margin:{t:65,b:58,l:62,r:20},showlegend:false,hovermode:"closest",annotations:[]};
+  classes.forEach((c,i)=>{const suffix=i===0?"":String(i+1),xr=axisRef("x",i);layout["xaxis"+suffix]={tickvals:[0,1],ticktext:["Vehicle","PLX4720"],range:[-.32,1.32],fixedrange:true,automargin:true};layout["yaxis"+suffix]={rangemode:zero?"tozero":"normal",zeroline:false,automargin:true,title:i===0?{text:yLabel,font:{size:11}}:undefined};layout.annotations.push({text:c,x:.5,xref:xr+" domain",y:1.08,yref:"paper",showarrow:false,font:{size:12,color:"#34445b"}});});return layout;}
+function drawMouseDots(target,getter,title,yLabel,zero){const classes=classList(),traces=classes.map((c,i)=>{const rows=S.mice.map(m=>({m,arm:S.arm[m],summary:getter(m,c)})).filter(r=>r.summary.value!=null&&Number.isFinite(+r.summary.value));return{x:rows.map(r=>armX(r.m)),y:rows.map(r=>r.summary.value),customdata:rows.map(r=>[r.m,r.arm,c,r.summary.n]),mode:"markers",type:"scatter",xaxis:axisRef("x",i),yaxis:axisRef("y",i),showlegend:false,marker:{size:11,color:rows.map(r=>ARM_COLORS[r.arm]),line:{color:"#fff",width:1.5}},hovertemplate:"M%{customdata[0]} · %{customdata[1]}<br>%{customdata[2]}<br>value %{y:.4g}<br>coverage %{customdata[3]:,} nuclei<extra></extra>"};});Plotly.react(target,traces,dotLayout(classes,title,yLabel,zero),PCFG);}
+function drawComposition(){const classes=classList(),cols=classCols(),mice=S.mice,traces=classes.map(c=>({x:mice.map(m=>"M"+m+"<br>"+S.arm[m]),y:mice.map(m=>fractions(m)[c]),customdata:mice.map(m=>[m,S.arm[m],counts(m)[c]||0]),name:c,type:"bar",marker:{color:cols[c]},hovertemplate:"M%{customdata[0]} · %{customdata[1]}<br>"+c+" %{y:.1%}<br>%{customdata[2]:,} nuclei<extra></extra>"}));Plotly.react("p_prop",traces,{barmode:"stack",title:{text:"Cell-type composition in each whole slide",font:{size:15}},yaxis:{title:"fraction of detected nuclei",range:[0,1],tickformat:".0%"},legend:{orientation:"h",y:-.2,font:{size:11}},margin:{t:48,b:85,l:64,r:15}},PCFG);}
+function drawDensity(){drawMouseDots("p_dens",densitySummary,"Whole-slide nuclear density","nuclei / mm²",true);}
+function drawMorphology(){const f=$("feat").value,m=METRICS[f];$("metric_note").textContent=m.note+" Mouse-level values use the displayed "+CM.n.toLocaleString()+"-nucleus subsample.";drawMouseDots("p_morph",(mouse,c)=>morphologySummary(mouse,c,f),m.label+" · mouse-level medians",m.unit,false);}
+(async()=>{try{S=await loadJSON("assets/cells_stats.json");CM=await loadJSON("assets/cells_meta.json");}catch(e){document.querySelector(".cellstory").innerHTML=`<div class="unavailable"><b>Whole-tumour nuclear baseline unavailable.</b> ${esc(e.message)}</div>`;return;}
+  const total=S.mice.reduce((sum,m)=>sum+Object.values(counts(m)).reduce((a,b)=>a+b,0),0);$("baseline_status").innerHTML=`<b>${total.toLocaleString()} nuclei across four mice</b> (two Vehicle, two PLX4720). Every treatment-facing dot below represents one mouse.`;
+  drawComposition();drawDensity();drawMorphology();$("feat").onchange=drawMorphology;
+})();
 </script></body></html>

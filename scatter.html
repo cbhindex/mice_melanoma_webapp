@@ -1,18 +1,24 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Embedding · UNI-v2 explorer</title><link rel="stylesheet" href="style.css?v=20260710223205">
+<title>Embedding · UNI-v2 explorer</title><link rel="stylesheet" href="style.css?v=20260716151626">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script></head>
 <body><header>
   <h1>Mouse melanoma · morphology explorer</h1>
-  <nav class="crumbs"><a href="index.html">Home</a><a href="experiments.html">Evidence summary</a><a href="scatter.html">Tile map</a><a href="similarity.html">Similarity</a><a href="cells_scatter.html">Cell map</a></nav>
+  <nav class="crumbs"><a href="index.html">Overview</a><a href="phenotypes.html">Tissue environments</a><a href="experiments.html">Treatment evidence</a><a href="scatter.html">Explore slides</a><a href="cells.html">Nuclear morphology</a><a href="cluster_selection.html">Methods &amp; QC</a></nav>
   <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
 </header>
 <div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
   <span><label>Embedding</label>
     <select id="emb"><option value="umap">UMAP</option><option value="tsne" selected>t-SNE</option></select></span>
   <span><label>Colour by</label>
-    <select id="mode"><option value="arm">Treatment arm</option><option value="cluster" selected>Cluster</option></select></span>
-  <span class="hint">Hover over any dot to preview that tile in the top-left and light up its location on the corresponding mouse's heatmap on the right. <b>Tip:</b> scroll to zoom and drag to pan the scatter on the left.</span>
+    <select id="mode"><option value="arm">Treatment arm</option><option value="mouse">Mouse / slide</option><option value="fine" selected>Fine cluster (run-local C#)</option><option value="macro">Macro / semantic role</option><option value="support">Review support</option></select></span>
+  <span><label>Mouse</label><select id="fmouse"><option value="all">All mice</option></select></span>
+  <span><label>Arm</label><select id="farm"><option value="all">All arms</option></select></span>
+  <span><label>Fine cluster</label><select id="fcluster"><option value="all">All clusters</option></select></span>
+  <span><label>Macro / semantic role</label><select id="frole"><option value="all">All macro roles</option></select></span>
+  <span><label>Review support</label><select id="fsupport"><option value="all">All support states</option></select></span>
+  <span class="hint">Hover a dot to link its tile, run-local fine cluster, macro role and support state to the WSI maps. Clustering was fitted in <b>PCA50 feature space</b>; UMAP/t-SNE are visualization only. IDs are run-local.</span>
 </div>
+<div id="scatter_status" style="padding:0 10px"></div>
 <div class="layout2">
   <div class="plotwrap">
     <div id="plot"></div>
@@ -23,30 +29,42 @@
   </div>
   <div class="heatside">
     <div class="overlaybar">
-      <span class="olabel">Cluster overlay</span>
+      <span class="olabel" id="overlayLabel">Filtered fine-cluster overlay</span>
       <input id="heatAlpha" type="range" min="0" max="1" step="0.05" value="0.65">
       <span class="oval" id="alphaVal">65%</span>
     </div>
     <div id="heatgrid" class="heatgrid2"></div>
   </div>
 </div>
-<script src="app.js?v=20260710223205"></script>
+<script src="app.js?v=20260716151626"></script>
 <script>
 let M, HM, GD=document.getElementById("plot"), lastGi=null, panels={};
 const elPrev=document.getElementById("preview"), elInfo=document.getElementById("info"),
       elGrid=document.getElementById("heatgrid"), elAlpha=document.getElementById("heatAlpha");
+const $=id=>document.getElementById(id), mouseColors={};
+function roleAt(i){return M.cluster_role?roleKey(M.cluster_role[i]):"unreviewed";}
+function macroAt(i){return M.cluster_macro?roleKey(M.cluster_macro[i]):roleAt(i);}
+function supportAt(i){return M.cluster_role_support?String(M.cluster_role_support[i]||"unreviewed"):"unreviewed";}
+function passFilter(i){return ($("fmouse").value==="all"||M.mouse[i]===$("fmouse").value)&&
+  ($("farm").value==="all"||M.arms[i]===$("farm").value)&&
+  ($("fcluster").value==="all"||+M.cluster[i]===+$("fcluster").value)&&
+  ($("frole").value==="all"||macroAt(i)===$("frole").value)&&
+  ($("fsupport").value==="all"||supportAt(i)===$("fsupport").value);}
+function groupAt(i,mode){if(mode==="arm")return M.arms[i];if(mode==="mouse")return M.mouse[i];
+  if(mode==="macro")return macroAt(i);if(mode==="support")return supportAt(i);return M.cluster[i];}
+function groupLabel(g,mode){return mode==="fine"?"C"+g:mode==="macro"?roleLabel(g):mode==="support"?g:mode==="mouse"?"M"+g:g;}
+function groupColor(g,mode){return mode==="arm"?armColor(g):mode==="mouse"?mouseColors[g]:mode==="macro"?roleColor(g):mode==="support"?roleColor("support_"+g):clusterColor(+g);}
 function buildTraces(mode, emb){
   const [X,Y]=embXY(M,emb), tr=[];
-  const groups = mode==="arm" ? ARM_ORDER : [...Array(kOf(M)).keys()];
+  let groups=[...new Set([...Array(M.n).keys()].filter(passFilter).map(i=>groupAt(i,mode)))];
+  if(mode==="arm")groups=ARM_ORDER.filter(x=>groups.includes(x));else groups.sort((a,b)=>String(a).localeCompare(String(b),undefined,{numeric:true}));
   for(const g of groups){
     const xs=[],ys=[],cd=[];
     for(let i=0;i<M.n;i++){
-      const match = mode==="arm" ? M.arms[i]===g : M.cluster[i]===g;
-      if(match){ xs.push(X[i]); ys.push(Y[i]); cd.push(i); }
+      if(passFilter(i)&&groupAt(i,mode)===g){ xs.push(X[i]); ys.push(Y[i]); cd.push(i); }
     }
-    tr.push({x:xs,y:ys,customdata:cd,mode:"markers",type:"scatter",
-      name: mode==="arm"? g : "C"+g,
-      marker:{size:3.2,opacity:0.62, color: mode==="arm"? armColor(g): clusterColor(g)}});
+    tr.push({x:xs,y:ys,customdata:cd,mode:"markers",type:"scattergl",name:groupLabel(g,mode),
+      marker:{size:4,opacity:0.62,color:groupColor(g,mode)},hovertemplate:"tile index %{customdata}<extra>%{fullData.name}</extra>"});
   }
   return tr;
 }
@@ -57,12 +75,21 @@ function scatterLayout(emb){
     legend:{itemsizing:"constant",font:{size:11}},dragmode:"pan"};
 }
 function draw(){
-  const emb=document.getElementById("emb").value;
-  Plotly.react(GD, buildTraces(document.getElementById("mode").value,
+  const emb=$("emb").value;
+  Plotly.react(GD, buildTraces($("mode").value,
     emb), scatterLayout(emb),
     {responsive:true,scrollZoom:true,displaylogo:false});
+  const visible=[...Array(M.n).keys()].filter(passFilter).length;
+  $("overlayLabel").textContent=`Filtered ${$("mode").selectedOptions[0].textContent} overlay · ${visible.toLocaleString()}/${M.n.toLocaleString()} tiles`;
+  drawHeatOverlays();
 }
-// build all four heatmap panels once (no jumping)
+function fillFilters(){
+  [...new Set(M.mouse)].sort().forEach(v=>$("fmouse").insertAdjacentHTML("beforeend",`<option value="${esc(v)}">M${esc(v)}</option>`));
+  ARM_ORDER.filter(v=>M.arms.includes(v)).forEach(v=>$("farm").insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(v)}</option>`));
+  [...new Set(M.cluster)].sort((a,b)=>a-b).forEach(v=>$("fcluster").insertAdjacentHTML("beforeend",`<option value="${v}">C${v}</option>`));
+  [...new Set([...Array(M.n).keys()].map(macroAt))].sort().forEach(v=>$("frole").insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(roleLabel(v))}</option>`));
+  [...new Set([...Array(M.n).keys()].map(supportAt))].sort().forEach(v=>$("fsupport").insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(v)}</option>`));
+}
 function buildHeatmaps(){
   const order = Object.keys(HM).sort((a,b)=>
     HM[a].arm===HM[b].arm ? a.localeCompare(b) : (HM[a].arm==="Vehicle"?-1:1));
@@ -74,12 +101,17 @@ function buildHeatmaps(){
     lab.innerHTML=`<span class="swatch" style="background:${armColor(g.arm)}"></span> M${m} · ${g.arm}`;
     const box=document.createElement("div"); box.className="hbox";
     const base=document.createElement("img"); base.className="hbase"; base.src=av("assets/"+g.base);
-    const over=document.createElement("img"); over.className="hover"; over.src=av("assets/"+g.overlay);
-    over.style.opacity=elAlpha.value;
+    const over=document.createElement("canvas"); over.className="hcanvas";over.width=g.w;over.height=g.h;over.style.opacity=elAlpha.value;
     const mark=document.createElement("div"); mark.className="hmark";
     box.append(base,over,mark); panel.append(lab,box); elGrid.append(panel);
     panels[m]={panel,box,base,over,mark,g};
   }
+  drawHeatOverlays();
+}
+function drawHeatOverlays(){if(!M||!HM)return;const mode=$("mode").value;
+  for(const m in panels){const p=panels[m],ctx=p.over.getContext("2d"),g=p.g;ctx.clearRect(0,0,p.over.width,p.over.height);
+    for(let i=0;i<M.n;i++){if(M.mouse[i]!==m||!passFilter(i))continue;const key=groupAt(i,mode);
+      ctx.fillStyle=groupColor(key,mode);const x=M.x[i]*g.scale-g.x0,y=M.y[i]*g.scale-g.y0;ctx.fillRect(x,y,g.tp,g.tp);}}
 }
 function placeMarker(gi){
   const mouse=M.mouse[gi];
@@ -103,30 +135,31 @@ function showInfo(gi){
   lastGi=gi;
   atlasStyle(elPrev, gi, M, 118);
   const c=M.cluster[gi], mouse=M.mouse[gi];
+  const d=clusterDef(M,c),role=macroAt(gi),support=supportAt(gi),conf=M.cluster_role_confidence?M.cluster_role_confidence[gi]:d.semantic_confidence;
   elInfo.innerHTML =
     `<div class="kv"><b>tile</b> ${M.tile_id[gi]}</div>`+
     `<div class="kv"><b>mouse</b> ${mouse}</div>`+
     `<div class="kv"><b>arm</b> <span class="swatch" style="background:${armColor(M.arms[gi])}"></span> ${M.arms[gi]}</div>`+
-    `<div class="kv"><b>cluster</b> <span class="swatch" style="background:${clusterColor(c)}"></span> C${c}</div>`+
+    `<div class="kv"><b>cluster</b> <span class="swatch" style="background:${clusterColor(c)}"></span> C${c} <span class="runbadge">${esc(runId(M))}</span></div>`+
+    `<div class="kv"><b>macro</b> <span class="swatch" style="background:${roleColor(role)}"></span> ${esc(roleLabel(role))}</div>`+
+    `<div class="kv"><b>support</b> ${esc(support||d.semantic_support||"unreviewed")} · confidence ${conf==null?"—":Number(conf).toFixed(2)}</div>`+
+    `<div class="kv"><b>support</b> ${d.n_tiles==null?"—":Number(d.n_tiles).toLocaleString()+" tiles · "+d.n_mice_present+" mice"}</div>`+
     `<div class="kv"><b>pos</b> (${M.x[gi]}, ${M.y[gi]})</div>`;
   placeMarker(gi);
 }
 (async()=>{
-  M  = await loadJSON("assets/meta.json");
-  HM = await loadJSON("assets/heatmaps.json");
-  draw();
-  buildHeatmaps();
+  try{M=await loadJSON("assets/meta.json");HM=await loadJSON("assets/heatmaps.json");}catch(e){unavailable("scatter_status",`Tile explorer assets could not be loaded: ${e.message}. Serve webapp/ over HTTP and rebuild meta/heatmap assets.`);return;}
+  [...new Set(M.mouse)].sort().forEach((m,i)=>mouseColors[m]=TAB10[i%TAB10.length]);fillFilters();buildHeatmaps();draw();
+  const run=M.cluster_run||{};$("scatter_status").innerHTML=`<span class="runbadge">${esc(run.run_id||"legacy run")}</span> <span class="reviewbadge ${run.status&&run.status.startsWith("unfinalized")?"warn":""}">${esc(run.status||"status unknown")}</span> ${esc(run.id_note||"Cluster IDs are run-local.")} ${esc(run.display_note||"")}`;
   GD.on("plotly_hover", d=> showInfo(d.points[0].customdata));
-  document.getElementById("mode").onchange = draw;
-  document.getElementById("emb").onchange  = draw;
-  const elAlphaVal=document.getElementById("alphaVal");
+  ["mode","emb","fmouse","farm","fcluster","frole","fsupport"].forEach(id=>$(id).onchange=draw);
+  const elAlphaVal=$("alphaVal");
   elAlpha.oninput = ()=>{ for(const m in panels) panels[m].over.style.opacity=elAlpha.value;
     elAlphaVal.textContent=Math.round(elAlpha.value*100)+"%"; };
   window.addEventListener("resize", ()=>{ draw(); if(lastGi!=null) placeMarker(lastGi); });
   // images may finish loading after first paint; reposition the marker once they do
   for(const m in panels) panels[m].base.onload = ()=>{ if(lastGi!=null) placeMarker(lastGi); };
-  // default: a central tile of mouse 365 (largest tumour) so the preview shows tissue
-  let idx365=[]; for(let i=0;i<M.n;i++) if(M.mouse[i]==="365") idx365.push(i);
-  showInfo(idx365.length ? idx365[Math.floor(idx365.length/2)] : 0);
-})();
+  const counts={};M.mouse.forEach(m=>counts[m]=(counts[m]||0)+1);const dm=Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];
+  const idx=[];for(let i=0;i<M.n;i++)if(M.mouse[i]===dm)idx.push(i);showInfo(idx.length?idx[Math.floor(idx.length/2)]:0);
+})().catch(e=>unavailable("scatter_status",e.message));
 </script></body></html>

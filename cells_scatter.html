@@ -1,20 +1,28 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Cell map · explorer</title><link rel="stylesheet" href="style.css?v=20260710223205">
+<title>Cell map · explorer</title><link rel="stylesheet" href="style.css?v=20260716151626">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script></head>
 <body><header>
   <h1>Mouse melanoma · morphology explorer</h1>
-  <nav class="crumbs"><a href="index.html">Home</a><a href="experiments.html">Evidence summary</a><a href="scatter.html">Tile map</a><a href="similarity.html">Similarity</a><a href="cells_scatter.html">Cell map</a></nav>
+  <nav class="crumbs"><a href="index.html">Overview</a><a href="phenotypes.html">Tissue environments</a><a href="experiments.html">Treatment evidence</a><a href="scatter.html">Explore slides</a><a href="cells.html">Nuclear morphology</a><a href="cluster_selection.html">Methods &amp; QC</a></nav>
   <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
 </header>
 <div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
   <span><label>Embedding</label><select id="emb"><option value="u">UMAP</option><option value="t" selected>t-SNE</option></select></span>
-  <span><label>Colour by</label><select id="mode"><option value="class">Cell class</option><option value="arm">Arm</option><option value="feat">Feature</option></select></span>
+  <span><label>Colour by</label><select id="mode"><option value="class">Cell class</option><option value="arm">Arm</option><option value="mouse">Mouse / slide</option><option value="fine">Fine tile cluster (run-local C#)</option><option value="macro">Macro / semantic tile role</option><option value="support">Review support</option><option value="feat">Feature</option></select></span>
   <span id="featwrap" style="display:none"><label>Feature</label><select id="feat">
     <option value="area">area</option><option value="ediam">diameter</option><option value="compactness">compactness</option>
     <option value="ecc">eccentricity</option><option value="solidity">solidity</option>
     <option value="hema">haematoxylin OD</option><option value="eosin">eosin OD</option></select></span>
-  <span class="hint">Hover a cell to preview its crop + metadata (top-left); its location lights up on that mouse's cell-class map (right). <b>Tip:</b> scroll to zoom the scatter.</span>
+  <span><label>Mouse</label><select id="fmouse"><option value="all">All mice</option></select></span>
+  <span><label>Arm</label><select id="farm"><option value="all">All arms</option></select></span>
+  <span><label>Cell class</label><select id="fclass"><option value="all">All classes</option></select></span>
+  <span><label>Fine cluster</label><select id="fcluster"><option value="all">All clusters</option></select></span>
+  <span><label>Macro / semantic role</label><select id="frole"><option value="all">All macro roles</option></select></span>
+  <span><label>Review support</label><select id="fsupport"><option value="all">All support states</option></select></span>
+  <span><label>Boundary policy</label><select id="fboundary"><option value="all">All centroid-assigned</option><option value="exclude10">Exclude ambiguous 10 px</option><option value="exclude20">Exclude ambiguous 20 px</option></select></span>
+  <span class="hint">Hover a cell to preview its crop, current tile membership and review status. Cell points are a crop subsample; inferential statistics remain mouse/tile-stratified.</span>
 </div>
+<div id="cell_status" style="padding:0 10px"></div>
 <div class="layout2">
   <div class="plotwrap"><div id="plot"></div>
     <div id="tilecard">
@@ -23,12 +31,12 @@
     </div>
   </div>
   <div class="heatside">
-    <div class="overlaybar"><span class="olabel">Cell-class overlay</span>
+    <div class="overlaybar"><span class="olabel">Cell-class overlay (all nuclei; scatter filters do not alter this density map)</span>
       <input id="ov" type="range" min="0" max="1" step="0.05" value="0.75"><span class="oval" id="ovv">75%</span></div>
     <div id="grid" class="heatgrid2"></div>
   </div>
 </div>
-<script src="app.js?v=20260710223205"></script>
+<script src="app.js?v=20260716151626"></script>
 <script>
 let CM, SP, GD=document.getElementById("plot"), panels={}, lastGi=null;
 const FEATLAB={area:"nuclear area (µm²)",ediam:"equiv. diameter (µm)",compactness:"compactness",
@@ -40,22 +48,45 @@ const classCols=()=> sc()==="3"?CM.colors3:CM.colors5;
 const classList=()=> sc()==="3"?["Neoplastic","Inflammation+Connective","Other"]
   :["Neoplastic","Inflammatory","Connective","Dead","Epithelial"];
 const cellXY=()=> $("emb").value==="t"?[CM.tx,CM.ty]:[CM.ux,CM.uy];
+const roleAt=i=>CM.cluster_role?roleKey(CM.cluster_role[i]):"unreviewed";
+const macroAt=i=>CM.cluster_macro?roleKey(CM.cluster_macro[i]):roleAt(i);
+const supportAt=i=>CM.cluster_role_support?String(CM.cluster_role_support[i]||"unreviewed"):"unreviewed";
+const clusterAt=i=>CM.tile_cluster?CM.tile_cluster[i]:-1;
+const mouseCols={};
+function passFilter(i){return ($("fmouse").value==="all"||CM.mouse[i]===$("fmouse").value)&&
+  ($("farm").value==="all"||CM.arm[i]===$("farm").value)&&
+  ($("fclass").value==="all"||classArr()[i]===$("fclass").value)&&
+  ($("fcluster").value==="all"||+clusterAt(i)===+$("fcluster").value)&&
+  ($("frole").value==="all"||macroAt(i)===$("frole").value)&&
+  ($("fsupport").value==="all"||supportAt(i)===$("fsupport").value)&&
+  ($("fboundary").value==="all"||!((CM[$("fboundary").value==="exclude10"?"near_ambiguous_boundary_10px":"near_ambiguous_boundary_20px"]||[])[i]));}
 const LAYOUT={hovermode:"closest",margin:{l:8,r:8,t:8,b:8},xaxis:{visible:false},yaxis:{visible:false},
   legend:{itemsizing:"constant",font:{size:10}},dragmode:"pan"};
 function buildTraces(){
   const mode=$("mode").value,[X,Y]=cellXY();
+  if(mode==="fine"&&!CM.tile_cluster)return [];
   if(mode==="feat"){ const f=$("feat").value;
-    return [{x:X,y:Y,customdata:[...Array(CM.n).keys()],mode:"markers",type:"scattergl",showlegend:false,
-      marker:{size:3,opacity:.6,color:CM[f],colorscale:"Viridis",colorbar:{title:f,thickness:10,len:.6}}}]; }
-  const groups=mode==="arm"?ARM_ORDER:classList(), arr=mode==="arm"?CM.arm:classArr(),
-        colf=mode==="arm"?(g=>ARM_COLORS[g]):(g=>classCols()[g]), tr=[];
+    const idx=[...Array(CM.n).keys()].filter(passFilter);
+    return [{x:idx.map(i=>X[i]),y:idx.map(i=>Y[i]),customdata:idx,mode:"markers",type:"scattergl",showlegend:false,
+      marker:{size:3,opacity:.6,color:idx.map(i=>CM[f][i]),colorscale:"Viridis",colorbar:{title:f,thickness:10,len:.6}}}]; }
+  const arr=mode==="arm"?CM.arm:mode==="mouse"?CM.mouse:mode==="fine"?CM.tile_cluster:mode==="macro"?[...Array(CM.n).keys()].map(macroAt):mode==="support"?[...Array(CM.n).keys()].map(supportAt):classArr();
+  let groups=mode==="arm"?ARM_ORDER:[...new Set(arr)].sort((a,b)=>String(a).localeCompare(String(b),undefined,{numeric:true}));const tr=[];
+  const colf=g=>mode==="arm"?ARM_COLORS[g]:mode==="mouse"?mouseCols[g]:mode==="fine"?clusterColor(+g):mode==="macro"?roleColor(g):mode==="support"?roleColor("support_"+g):classCols()[g];
   for(const g of groups){const xs=[],ys=[],cd=[];
-    for(let i=0;i<CM.n;i++) if(arr[i]===g){xs.push(X[i]);ys.push(Y[i]);cd.push(i);}
-    tr.push({x:xs,y:ys,customdata:cd,mode:"markers",type:"scattergl",name:g,marker:{size:3,opacity:.6,color:colf(g)}});}
+    for(let i=0;i<CM.n;i++) if(passFilter(i)&&arr[i]===g){xs.push(X[i]);ys.push(Y[i]);cd.push(i);}
+    if(xs.length)tr.push({x:xs,y:ys,customdata:cd,mode:"markers",type:"scattergl",name:mode==="fine"?"C"+g:mode==="macro"?roleLabel(g):mode==="mouse"?"M"+g:g,marker:{size:3,opacity:.6,color:colf(g)}});}
   return tr;
 }
 function draw(){ $("featwrap").style.display=$("mode").value==="feat"?"":"none";
   Plotly.react(GD,buildTraces(),LAYOUT,{responsive:true,scrollZoom:true,displaylogo:false}); }
+function fillFilters(){
+  [...new Set(CM.mouse)].sort().forEach(v=>$("fmouse").insertAdjacentHTML("beforeend",`<option value="${esc(v)}">M${esc(v)}</option>`));
+  ARM_ORDER.filter(v=>CM.arm.includes(v)).forEach(v=>$("farm").insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(v)}</option>`));
+  [...new Set(classArr())].sort().forEach(v=>$("fclass").insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(v)}</option>`));
+  if(CM.tile_cluster)[...new Set(CM.tile_cluster.filter(c=>c>=0))].sort((a,b)=>a-b).forEach(v=>$("fcluster").insertAdjacentHTML("beforeend",`<option value="${v}">C${v}</option>`));
+  [...new Set([...Array(CM.n).keys()].map(macroAt))].sort().forEach(v=>$("frole").insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(roleLabel(v))}</option>`));
+  [...new Set([...Array(CM.n).keys()].map(supportAt))].sort().forEach(v=>$("fsupport").insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(v)}</option>`));
+}
 function buildPanels(){
   const order=Object.keys(SP).sort((a,b)=>SP[a].arm===SP[b].arm?a.localeCompare(b):(SP[a].arm==="Vehicle"?-1:1));
   for(const m of order){const g=SP[m];
@@ -82,23 +113,32 @@ function placeMarker(gi){
   p.mark.style.display="block";p.panel.classList.add("active");
 }
 function showCell(gi){ lastGi=gi; atlasStyle($("prev"),gi,CM,96,"cells_atlas");
+  const cl=clusterAt(gi),role=macroAt(gi),support=supportAt(gi),mapped=CM.membership_status?CM.membership_status[gi]:"legacy metadata",source=CM.membership_source?CM.membership_source[gi]:"legacy";
   $("info").innerHTML=
     '<div class="kv"><b>mouse</b> '+CM.mouse[gi]+'</div>'+
     '<div class="kv"><b>arm</b> <span class="swatch" style="background:'+armColor(CM.arm[gi])+'"></span> '+CM.arm[gi]+'</div>'+
     '<div class="kv"><b>class</b> <span class="swatch" style="background:'+classCols()[classArr()[gi]]+'"></span> '+classArr()[gi]+'</div>'+
     '<div class="kv"><b>area</b> '+CM.area[gi]+' µm² · <b>ecc</b> '+CM.ecc[gi]+'</div>'+
-    '<div class="kv"><b>H/E OD</b> '+CM.hema[gi]+' / '+CM.eosin[gi]+'</div>';
+    '<div class="kv"><b>H/E OD</b> '+CM.hema[gi]+' / '+CM.eosin[gi]+'</div>'+
+    '<div class="kv"><b>tile</b> '+esc(CM.tile_id?CM.tile_id[gi]:"unavailable")+'</div>'+
+    '<div class="kv"><b>cluster</b> '+(cl>=0?'<span class="swatch" style="background:'+clusterColor(cl)+'"></span> C'+cl:"unmapped")+' <span class="runbadge">'+esc(CM.cluster_run?CM.cluster_run.run_id:"legacy / unknown")+'</span></div>'+
+    '<div class="kv"><b>macro</b> <span class="swatch" style="background:'+roleColor(role)+'"></span> '+esc(roleLabel(role))+'</div>'+
+    '<div class="kv"><b>support</b> '+esc(support)+' · confidence '+(CM.cluster_role_confidence&&CM.cluster_role_confidence[gi]!=null?Number(CM.cluster_role_confidence[gi]).toFixed(2):'—')+'</div>'+
+    '<div class="kv"><b>membership</b> '+esc(mapped)+' · '+esc(source)+'</div>'+
+    '<div class="kv"><b>boundary</b> '+(CM.cluster_boundary_distance_px&&CM.cluster_boundary_distance_px[gi]!=null?CM.cluster_boundary_distance_px[gi]+' px to a different/missing cluster':'—')+' · ambiguous 10/20 px '+((CM.near_ambiguous_boundary_10px||[])[gi]?'yes':'no')+'/'+((CM.near_ambiguous_boundary_20px||[])[gi]?'yes':'no')+'</div>';
   placeMarker(gi);
 }
 (async()=>{
-  CM=await loadJSON("assets/cells_meta.json"); SP=await loadJSON("assets/cell_spatial.json");
-  draw(); buildPanels();
+  try{CM=await loadJSON("assets/cells_meta.json");SP=await loadJSON("assets/cell_spatial.json");}catch(e){unavailable("cell_status",`Cell explorer assets could not be loaded: ${e.message}. Serve webapp/ over HTTP and rebuild cell assets.`);return;}
+  [...new Set(CM.mouse)].sort().forEach((m,i)=>mouseCols[m]=TAB10[i%TAB10.length]);fillFilters();draw();buildPanels();
+  if(!CM.tile_cluster){unavailable("cell_status","cells_meta.json predates tile-membership metadata. Run src/14_build_cell_webapp_assets.py --meta_only after finalizing the clustering; cluster filters are disabled.");
+    $("fcluster").disabled=true;$("frole").disabled=true;$("fsupport").disabled=true;$("fboundary").disabled=true;[...$("mode").options].filter(o=>["fine","macro","support"].includes(o.value)).forEach(o=>o.disabled=true);}
+  else $("cell_status").innerHTML=`<span class="runbadge">${esc(CM.cluster_run?CM.cluster_run.run_id:"unknown run")}</span> <span class="reviewbadge">${esc(CM.cluster_run&&CM.cluster_run.status||"status unknown")}</span> ${esc(CM.membership_note||"Cluster IDs are run-local.")}`;
   GD.on("plotly_hover",d=>showCell(d.points[0].customdata));
-  $("emb").onchange=draw; $("feat").onchange=draw;
-  $("mode").onchange=draw;
+  ["emb","feat","mode","fmouse","farm","fclass","fcluster","frole","fsupport","fboundary"].forEach(id=>$(id).onchange=draw);
   $("ov").oninput=setOverlays;
   window.addEventListener("resize",()=>{ if(lastGi!=null) placeMarker(lastGi); });
   for(const m in panels) panels[m].base.onload=()=>{ if(lastGi!=null) placeMarker(lastGi); };
-  let d=CM.mouse.indexOf("365"); showCell(d<0?0:d);
+  if(CM.n)showCell(0);
 })();
 </script></body></html>

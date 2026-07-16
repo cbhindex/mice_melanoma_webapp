@@ -1,0 +1,119 @@
+{
+  "clusters": {
+    "0": [
+      {
+        "tileId": "365_000315",
+        "mouse": "365",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C0_0_365_000315.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      },
+      {
+        "tileId": "366_004659",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C0_1_366_004659.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      },
+      {
+        "tileId": "365_000253",
+        "mouse": "365",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C0_2_365_000253.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      }
+    ],
+    "1": [
+      {
+        "tileId": "366_002744",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C1_0_366_002744.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      },
+      {
+        "tileId": "364_004905",
+        "mouse": "364",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C1_1_364_004905.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      },
+      {
+        "tileId": "366_002329",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C1_2_366_002329.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      }
+    ],
+    "2": [
+      {
+        "tileId": "366_000779",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C2_0_366_000779.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      },
+      {
+        "tileId": "366_001932",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C2_1_366_001932.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      },
+      {
+        "tileId": "366_001933",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C2_2_366_001933.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      }
+    ],
+    "3": [
+      {
+        "tileId": "365_004125",
+        "mouse": "365",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C3_0_365_004125.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      },
+      {
+        "tileId": "366_004866",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C3_1_366_004866.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      },
+      {
+        "tileId": "364_001367",
+        "mouse": "364",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C3_2_364_001367.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      }
+    ],
+    "4": [
+      {
+        "tileId": "363_001191",
+        "mouse": "363",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C4_0_363_001191.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      },
+      {
+        "tileId": "363_001241",
+        "mouse": "363",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C4_1_363_001241.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      },
+      {
+        "tileId": "363_000190",
+        "mouse": "363",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C4_2_363_000190.jpg",
+        "renderSource": "crop from frozen full-resolution exemplar gallery"
+      }
+    ]
+  }
+}

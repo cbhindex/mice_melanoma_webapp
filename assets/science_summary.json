@@ -1,0 +1,327 @@
+{
+  "meta": {
+    "generated": "2026-07-16 03:10:43",
+    "run_id": "kselect_20260716_v1",
+    "k": 5,
+    "evidence_asset": "cluster_stratified_stats.json"
+  },
+  "headline": "Cluster-stratified results are exploratory; mouse remains the experimental unit.",
+  "status": "hypothesis_generating",
+  "primaryFindings": [
+    {
+      "title": "Cluster-matched neoplastic nuclear eccentricity",
+      "question": "Does the Vehicle-versus-PLX contrast persist within commonly supported tile phenotypes?",
+      "status": "mixed_exploratory",
+      "evidence_key": "withinClusterEffects:fine:morphology_eccentricity_median:primary",
+      "summary": "Fully supported fine-stratum deltas: C0 +0.020062 (two-sided p=0.667, LOMO mixed); C2 -0.001028 (two-sided p=1.000, LOMO mixed); C4 +0.005532 (two-sided p=0.333, LOMO same-sign). No robust shared direction is established.",
+      "interpretation": "The cluster-specific directions are heterogeneous, so these data do not support a cluster-invariant treatment effect; report the strata rather than a single positive story.",
+      "raw_mouse_values": [
+        {
+          "cluster": "0",
+          "mouse": "364",
+          "arm": "Vehicle",
+          "value": 0.7625686506785098,
+          "n_tiles": 366,
+          "n_nuclei": 14354,
+          "n_high_conf_neoplastic": 1871
+        },
+        {
+          "cluster": "0",
+          "mouse": "366",
+          "arm": "Vehicle",
+          "value": 0.7039478278428412,
+          "n_tiles": 1609,
+          "n_nuclei": 138791,
+          "n_high_conf_neoplastic": 10927
+        },
+        {
+          "cluster": "0",
+          "mouse": "363",
+          "arm": "PLX4720",
+          "value": 0.7435073225415326,
+          "n_tiles": 480,
+          "n_nuclei": 21033,
+          "n_high_conf_neoplastic": 1476
+        },
+        {
+          "cluster": "0",
+          "mouse": "365",
+          "arm": "PLX4720",
+          "value": 0.7631326438321008,
+          "n_tiles": 322,
+          "n_nuclei": 11897,
+          "n_high_conf_neoplastic": 2286
+        },
+        {
+          "cluster": "2",
+          "mouse": "364",
+          "arm": "Vehicle",
+          "value": 0.7807959502551,
+          "n_tiles": 1412,
+          "n_nuclei": 122448,
+          "n_high_conf_neoplastic": 101487
+        },
+        {
+          "cluster": "2",
+          "mouse": "366",
+          "arm": "Vehicle",
+          "value": 0.7692304712744535,
+          "n_tiles": 1302,
+          "n_nuclei": 123781,
+          "n_high_conf_neoplastic": 94686
+        },
+        {
+          "cluster": "2",
+          "mouse": "363",
+          "arm": "PLX4720",
+          "value": 0.7634665163872886,
+          "n_tiles": 434,
+          "n_nuclei": 34484,
+          "n_high_conf_neoplastic": 17753
+        },
+        {
+          "cluster": "2",
+          "mouse": "365",
+          "arm": "PLX4720",
+          "value": 0.784504285153231,
+          "n_tiles": 1366,
+          "n_nuclei": 116701,
+          "n_high_conf_neoplastic": 87318
+        },
+        {
+          "cluster": "4",
+          "mouse": "364",
+          "arm": "Vehicle",
+          "value": 0.7823191135048008,
+          "n_tiles": 1249,
+          "n_nuclei": 111613,
+          "n_high_conf_neoplastic": 108013
+        },
+        {
+          "cluster": "4",
+          "mouse": "366",
+          "arm": "Vehicle",
+          "value": 0.7781520091284485,
+          "n_tiles": 1219,
+          "n_nuclei": 117426,
+          "n_high_conf_neoplastic": 112793
+        },
+        {
+          "cluster": "4",
+          "mouse": "363",
+          "arm": "PLX4720",
+          "value": 0.7885662813288499,
+          "n_tiles": 1147,
+          "n_nuclei": 95968,
+          "n_high_conf_neoplastic": 90261
+        },
+        {
+          "cluster": "4",
+          "mouse": "365",
+          "arm": "PLX4720",
+          "value": 0.7829678969272204,
+          "n_tiles": 2319,
+          "n_nuclei": 219988,
+          "n_high_conf_neoplastic": 210595
+        }
+      ],
+      "coverage": {
+        "n_full_2x2_clusters": 3,
+        "threshold": "primary_20tiles_500nuclei"
+      }
+    },
+    {
+      "title": "Composition-standardised eccentricity",
+      "question": "What is the contrast after giving every mouse the same eligible-cluster mixture?",
+      "status": "mixed_exploratory",
+      "evidence_key": "standardizedEffects:equal:morphology_eccentricity_median",
+      "summary": "Composition-standardised deltas: equal +0.008188 (two-sided p=0.667, LOMO mixed); pooled_reference +0.006338 (two-sided p=0.667, LOMO mixed). Positive averages are not mouse-robust.",
+      "interpretation": "The standardised estimates and/or cluster-specific estimates do not share one direction, so no composition-invariant treatment story is supported.",
+      "raw_mouse_values": [
+        {
+          "weighting": "equal",
+          "mouse": "364",
+          "arm": "Vehicle",
+          "value": 0.7752279048128035
+        },
+        {
+          "weighting": "equal",
+          "mouse": "366",
+          "arm": "Vehicle",
+          "value": 0.7504434360819143
+        },
+        {
+          "weighting": "equal",
+          "mouse": "363",
+          "arm": "PLX4720",
+          "value": 0.7651800400858904
+        },
+        {
+          "weighting": "equal",
+          "mouse": "365",
+          "arm": "PLX4720",
+          "value": 0.776868275304184
+        },
+        {
+          "weighting": "pooled_reference",
+          "mouse": "364",
+          "arm": "Vehicle",
+          "value": 0.7777440503364439
+        },
+        {
+          "weighting": "pooled_reference",
+          "mouse": "366",
+          "arm": "Vehicle",
+          "value": 0.7598969142597561
+        },
+        {
+          "weighting": "pooled_reference",
+          "mouse": "363",
+          "arm": "PLX4720",
+          "value": 0.7709211086253249
+        },
+        {
+          "weighting": "pooled_reference",
+          "mouse": "365",
+          "arm": "PLX4720",
+          "value": 0.7793951233128722
+        }
+      ],
+      "coverage": {
+        "common_clusters": [
+          "0",
+          "2",
+          "4"
+        ],
+        "threshold": "primary_20tiles_500nuclei",
+        "direction_consistent_with_fine_clusters": false
+      }
+    },
+    {
+      "title": "Frozen outcome-blind cluster resolution",
+      "question": "Is clustering stable and interpretable?",
+      "section": "q1",
+      "status": "frozen_numeric_provisional_semantics",
+      "evidence_key": "clusterSelection:selectedK",
+      "summary": "K=5 is the frozen run-local resolution. Stability, one-SE, under-segmentation review and K lineage are audited on the cluster-selection page; treatment labels and nucleus outcomes were not used to select K.",
+      "interpretation": "K is a practical exploratory resolution, not a uniquely proven biological taxonomy."
+    },
+    {
+      "title": "Recurrence, semantic review and nuisance",
+      "question": "Are clusters recurring tissue phenotypes or slide/stain signatures?",
+      "section": "q2",
+      "status": "recurring_but_confounding_unresolved",
+      "evidence_key": "coverage:recurrence:stain",
+      "summary": "All 5 fine clusters occur in all four slides, but their fractions are uneven and the neutral technical roles remain provisional. Thumbnail colour/focus diagnostics do not replace stain-normalised or independent-slide validation.",
+      "interpretation": "Recurring membership does not rule out stain, scanner, section or mouse identity effects."
+    },
+    {
+      "title": "Tissue-cluster composition",
+      "question": "Does treatment associate with tissue-cluster composition?",
+      "section": "q3",
+      "status": "no_robust_macro_separation",
+      "evidence_key": "architectureCompositionEffects:tissueComposition",
+      "summary": "No macroregion contrast has same-sign leave-one-mouse-out support (0/3). Largest same-sign fine candidate is C4 at +18.35 percentage points; it remains compositional and exploratory.",
+      "interpretation": "Cluster fractions sum to one and are not independent treatment effects."
+    },
+    {
+      "title": "Within-tumour cluster profiles",
+      "question": "How do nuclei differ between clusters within each tumour?",
+      "section": "q4",
+      "status": "descriptive_context_only",
+      "evidence_key": "withinWsiContrasts:rawProfiles",
+      "summary": "Raw mouse-by-cluster profiles show marked differences in cell composition, density and nuclear morphology. Optional deviations use only endpoint-eligible non-background strata.",
+      "interpretation": "These contrasts help describe cluster content but are partly circular because the clusters were learned from H&E morphology; they are not treatment tests."
+    },
+    {
+      "title": "Sensitivity synthesis",
+      "question": "Are signals robust to K, weighting, boundary exclusion and segmentation QC?",
+      "section": "q7",
+      "status": "heterogeneous_across_strata",
+      "evidence_key": "sensitivities:K:boundary:weighting",
+      "summary": "K\u00b11, unweighted clustering, 10/20-pixel boundary exclusions and cell-weighted variants remain visible. They do not restore a shared eccentricity direction across fine strata; composition-standardised leave-one-mouse-out directions remain mixed.",
+      "interpretation": "Secondary density and solidity patterns require independent segmentation and tissue-area validation."
+    },
+    {
+      "title": "Current conclusion",
+      "question": "What can and cannot be concluded?",
+      "section": "q8",
+      "status": "hypothesis_generating",
+      "evidence_key": "conclusion:limitations",
+      "summary": "The analysis supports heterogeneous tissue contexts and candidate cluster-specific patterns, not a statistically established, cluster-invariant or drug-induced nuclear phenotype.",
+      "interpretation": "Mouse is the experimental unit; n=2 per arm and one WSI per mouse preclude causal separation from slide identity."
+    }
+  ],
+  "robustness": [
+    {
+      "status": "available",
+      "label": "Boundary sensitivity",
+      "note": "10px and 20px ambiguous-boundary exclusions are separate sensitivity estimates."
+    },
+    {
+      "status": "available",
+      "label": "Aggregation sensitivity",
+      "note": "Tile-balanced primary and nucleus-count-weighted tile-summary sensitivity are both reported."
+    },
+    {
+      "status": "available",
+      "label": "Selected-K weighting sensitivity",
+      "note": "Compares inverse-mouse-weighted labels with selected-K unweighted labels when available."
+    }
+  ],
+  "limitations": [
+    "Only two mice per arm; one WSI per mouse, so mouse and slide are confounded.",
+    "Clusters are learned from the same four slides and may encode stain/scanner or individual-slide identity.",
+    "Tile density uses full 256px tile area and is approximate for partially tissue-covered edge tiles.",
+    "The optional tissue-fraction correction uses a compressed 48px JPEG atlas proxy, not raw-slide tissue segmentation; background/edge density must not support a strong biological conclusion.",
+    "Axis ratio is derived deterministically from eccentricity and is a sensitivity reparameterisation, not independent corroboration.",
+    "Multiple cluster/metric views are exploratory; they are not independent replications.",
+    "Thousands of metric, threshold, K, boundary and aggregation views were explored without multiplicity correction.",
+    "CellViT segmentation and cell-type calls have not been independently validated for slide/stain sensitivity in these four WSIs.",
+    "Inflammation+Connective is a composite class and cannot be interpreted as immune infiltration alone.",
+    "Cluster fractions are compositional parts constrained to sum to one.",
+    "Tile-balanced morphology averages per-tile quantiles; cell-weighted sensitivity averages those tile quantiles by contributing nucleus count and is not a pooled single-cell median."
+  ],
+  "unavailable": [
+    {
+      "available": false,
+      "proxy_file_available": true,
+      "source": "/Users/cbhindex/Library/CloudStorage/Dropbox/workspace/mice_melanoma_wsi/derived/cluster_selection/kselect_20260716_v1/tile_nuisance_atlas_proxy.csv",
+      "n_proxy_tiles": 21113,
+      "proxy_mean": 0.9898594188283154,
+      "reason": "blinded QC showed pure-white/background exemplars can have tissue_fraction_proxy near 0.94; the compressed 48px JPEG threshold is not a reliable tissue-area estimate",
+      "reliable_tissue_area_correction": "unavailable",
+      "full_tile_density_interpretation": "approximate counts per full tile area only; edge/background tiles are not tissue-area densities"
+    }
+  ],
+  "reviewFlags": [
+    {
+      "status": "required",
+      "label": "Pathology review",
+      "note": "Do not give anatomical or drug-effect names to unreviewed clusters."
+    },
+    {
+      "status": "required",
+      "label": "Semantic roles",
+      "note": "5 fine clusters remain unreviewed."
+    },
+    {
+      "status": "unresolved",
+      "label": "Stain/slide sensitivity",
+      "note": "Thumbnail colour/focus and mouse-share diagnostics were run, but stain normalisation or independent-slide validation was not; confounding remains plausible."
+    }
+  ],
+  "recommendedLanguage": [
+    "cluster-specific directions are heterogeneous",
+    "no cluster-invariant treatment effect is supported",
+    "hypothesis-generating at n=2 mice per arm"
+  ],
+  "prohibitedClaims": [
+    "statistically significant treatment effect",
+    "drug-induced region",
+    "genuine biological effect proven",
+    "millions of nuclei as independent replicates",
+    "background/edge full-tile density as true tissue density",
+    "axis ratio as independent confirmation of eccentricity"
+  ]
+}
