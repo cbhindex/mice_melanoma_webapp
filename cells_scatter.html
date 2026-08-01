@@ -1,10 +1,19 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Cell map · explorer</title><link rel="stylesheet" href="style.css?v=20260716151626">
+<title>Cell map · explorer</title><link rel="stylesheet" href="style.css?v=20260801023108">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script></head>
 <body><header>
   <h1>Mouse melanoma · morphology explorer</h1>
   <nav class="crumbs"><a href="index.html">Overview</a><a href="phenotypes.html">Tissue environments</a><a href="experiments.html">Treatment evidence</a><a href="scatter.html">Explore slides</a><a href="cells.html">Nuclear morphology</a><a href="cluster_selection.html">Methods &amp; QC</a></nav>
-  <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
+  <div class="cohort-switcher" data-cohort-switcher>
+    <label for="cohort_selector">Dataset</label>
+    <select id="cohort_selector" aria-label="Select dataset">
+      <option value="group_1">Group 1</option>
+      <option value="group_2">Group 2</option>
+      <option value="combined">Combined</option>
+    </select>
+    <span class="cohort-context" data-cohort-context></span>
+  </div>
+  <span class="banner" id="study_banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
 </header>
 <div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
   <span><label>Embedding</label><select id="emb"><option value="u">UMAP</option><option value="t" selected>t-SNE</option></select></span>
@@ -36,7 +45,7 @@
     <div id="grid" class="heatgrid2"></div>
   </div>
 </div>
-<script src="app.js?v=20260716151626"></script>
+<script src="app.js?v=20260801023108"></script>
 <script>
 let CM, SP, GD=document.getElementById("plot"), panels={}, lastGi=null;
 const FEATLAB={area:"nuclear area (µm²)",ediam:"equiv. diameter (µm)",compactness:"compactness",
@@ -53,6 +62,16 @@ const macroAt=i=>CM.cluster_macro?roleKey(CM.cluster_macro[i]):roleAt(i);
 const supportAt=i=>CM.cluster_role_support?String(CM.cluster_role_support[i]||"unreviewed"):"unreviewed";
 const clusterAt=i=>CM.tile_cluster?CM.tile_cluster[i]:-1;
 const mouseCols={};
+function cellProvenance(payload){return payload&&typeof payload==="object"?(payload.provenance||payload.atlas_provenance||{}):{};}
+function assertCellAssetAlignment(primary,other,label){
+  if(ACTIVE_COHORT_ID==="group_1")return true; // legacy Group 1 payloads predate explicit provenance
+  const a=cellProvenance(primary),b=cellProvenance(other);
+  for(const key of ["cell_order_sha256","feature_rows_sha256","tile_order_sha256"]){
+    if(!a[key]||!b[key])throw new Error(`${label}: selected ${activeCohort().label} assets lack ${key}`);
+    if(String(a[key])!==String(b[key]))throw new Error(`${label}: ${key} does not match cells_meta.json`);
+  }
+  return true;
+}
 function passFilter(i){return ($("fmouse").value==="all"||CM.mouse[i]===$("fmouse").value)&&
   ($("farm").value==="all"||CM.arm[i]===$("farm").value)&&
   ($("fclass").value==="all"||classArr()[i]===$("fclass").value)&&
@@ -88,8 +107,9 @@ function fillFilters(){
   [...new Set([...Array(CM.n).keys()].map(supportAt))].sort().forEach(v=>$("fsupport").insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(v)}</option>`));
 }
 function buildPanels(){
-  const order=Object.keys(SP).sort((a,b)=>SP[a].arm===SP[b].arm?a.localeCompare(b):(SP[a].arm==="Vehicle"?-1:1));
-  for(const m of order){const g=SP[m];
+  const slides=SP.slides||SP;
+  const order=Object.keys(slides).filter(m=>slides[m]&&slides[m].arm).sort((a,b)=>slides[a].arm===slides[b].arm?a.localeCompare(b):(slides[a].arm==="Vehicle"?-1:1));
+  for(const m of order){const g=slides[m];
     const p=document.createElement("div");p.className="hpanel";p.style.setProperty("--hl",armColor(g.arm));
     const lab=document.createElement("div");lab.className="hlabel";
     lab.innerHTML='<span class="swatch" style="background:'+armColor(g.arm)+'"></span> M'+m+" · "+g.arm;
@@ -129,7 +149,11 @@ function showCell(gi){ lastGi=gi; atlasStyle($("prev"),gi,CM,96,"cells_atlas");
   placeMarker(gi);
 }
 (async()=>{
-  try{CM=await loadJSON("assets/cells_meta.json");SP=await loadJSON("assets/cell_spatial.json");}catch(e){unavailable("cell_status",`Cell explorer assets could not be loaded: ${e.message}. Serve webapp/ over HTTP and rebuild cell assets.`);return;}
+  try{const requireProvenance=ACTIVE_COHORT_ID!=="group_1";
+    CM=await loadCohortJSON("assets/cells_meta.json",{requireProvenance});
+    SP=await loadCohortJSON("assets/cell_spatial.json",{requireProvenance});
+    assertCellAssetAlignment(CM,SP,"cell_spatial.json");
+  }catch(e){unavailable("cell_status",`Cell explorer assets could not be loaded: ${e.message}. Serve webapp/ over HTTP and rebuild cell assets.`);return;}
   [...new Set(CM.mouse)].sort().forEach((m,i)=>mouseCols[m]=TAB10[i%TAB10.length]);fillFilters();draw();buildPanels();
   if(!CM.tile_cluster){unavailable("cell_status","cells_meta.json predates tile-membership metadata. Run src/14_build_cell_webapp_assets.py --meta_only after finalizing the clustering; cluster filters are disabled.");
     $("fcluster").disabled=true;$("frole").disabled=true;$("fsupport").disabled=true;$("fboundary").disabled=true;[...$("mode").options].filter(o=>["fine","macro","support"].includes(o.value)).forEach(o=>o.disabled=true);}

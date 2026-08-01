@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-07-16 03:10:43",
+    "generated": "2026-08-01 16:12:55",
     "run_id": "kselect_20260716_v1",
     "k": 5,
     "evidence_asset": "cluster_stratified_stats.json"
@@ -286,7 +286,7 @@
     {
       "available": false,
       "proxy_file_available": true,
-      "source": "/Users/cbhindex/Library/CloudStorage/Dropbox/workspace/mice_melanoma_wsi/derived/cluster_selection/kselect_20260716_v1/tile_nuisance_atlas_proxy.csv",
+      "source": "derived/cluster_selection/kselect_20260716_v1/tile_nuisance_atlas_proxy.csv",
       "n_proxy_tiles": 21113,
       "proxy_mean": 0.9898594188283154,
       "reason": "blinded QC showed pure-white/background exemplars can have tissue_fraction_proxy near 0.94; the compressed 48px JPEG threshold is not a reliable tissue-area estimate",

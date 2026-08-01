@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Nuclear morphology · whole-tumour baseline</title><link rel="stylesheet" href="style.css?v=20260716151626">
+<title>Nuclear morphology · whole-tumour baseline</title><link rel="stylesheet" href="style.css?v=20260801023108">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
 .cellstory{max-width:1120px;margin:0 auto;padding:24px 20px 64px}.cellhero{border:1px solid #c9d9f0;border-radius:12px;padding:20px;background:#f7faff;margin-bottom:18px}
@@ -16,7 +16,16 @@
 <body><header>
   <h1>Mouse melanoma · morphology explorer</h1>
   <nav class="crumbs"><a href="index.html">Overview</a><a href="phenotypes.html">Tissue environments</a><a href="experiments.html">Treatment evidence</a><a href="scatter.html">Explore slides</a><a href="cells.html">Nuclear morphology</a><a href="cluster_selection.html">Methods &amp; QC</a></nav>
-  <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
+  <div class="cohort-switcher" data-cohort-switcher>
+    <label for="cohort_selector">Dataset</label>
+    <select id="cohort_selector" aria-label="Select dataset">
+      <option value="group_1">Group 1</option>
+      <option value="group_2">Group 2</option>
+      <option value="combined">Combined</option>
+    </select>
+    <span class="cohort-context" data-cohort-context></span>
+  </div>
+  <span class="banner" id="study_banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
 </header>
 <main class="cellstory"><section class="cellhero">
   <span class="eyebrow">Whole-tumour baseline</span>
@@ -31,21 +40,21 @@
     <div><span class="logic-label">Question</span>What fraction of all detected nuclei belongs to each broad CellViT class in each mouse?</div>
     <div><span class="logic-label">Method</span>Count all detected nuclei within each WSI, collapse CellViT labels into three broad classes, and divide by that mouse's total. Each bar is one mouse.</div></div>
   <span class="result-label">Interactive result</span><div id="p_prop" class="plotbox" aria-label="Cell composition for each individual mouse"></div>
-  <div class="interpretation"><span class="logic-label">Interpretation</span>Differences among these four mouse bars describe whole-slide cellular composition. They do not establish a treatment effect, and they do not identify which tissue environment contains those cells.</div>
+  <div class="interpretation" id="composition_interpretation"><span class="logic-label">Interpretation</span>Differences among these four mouse bars describe whole-slide cellular composition. They do not establish a treatment effect, and they do not identify which tissue environment contains those cells.</div>
 </section>
 
 <section class="evidence-chapter" id="density"><h3>2. Does whole-tumour nuclear density differ between Vehicle and PLX?</h3>
   <div class="logic"><div><span class="logic-label">Motivation</span>A change in cell abundance can accompany altered tumour architecture even when individual nuclear shapes do not change.</div>
-    <div><span class="logic-label">Question</span>Within each broad cell class, are nuclei more or less dense in the two PLX slides than in the two Vehicle slides?</div>
-    <div><span class="logic-label">Method</span>Divide each mouse's class count by its estimated tissue area. The panels show all four mouse-level values; nuclei are not treated as independent treatment replicates.</div></div>
+    <div id="density_question"><span class="logic-label">Question</span>Within each broad cell class, are nuclei more or less dense in the two PLX slides than in the two Vehicle slides?</div>
+    <div id="density_method"><span class="logic-label">Method</span>Divide each mouse's class count by its estimated tissue area. The panels show all four mouse-level values; nuclei are not treated as independent treatment replicates.</div></div>
   <span class="result-label">Interactive result · one dot = one mouse</span><div id="p_dens" class="plotbox" aria-label="Mouse-level nuclear-density dot plots by cell class"></div>
-  <div class="interpretation"><span class="logic-label">Interpretation</span>Read the separation and overlap of the four dots, not an arm-average bar. With two mice per arm and one slide per mouse, apparent arm separation may still be animal, section, stain or segmentation variation.</div>
+  <div class="interpretation" id="density_interpretation"><span class="logic-label">Interpretation</span>Read the separation and overlap of the four dots, not an arm-average bar. With two mice per arm and one slide per mouse, apparent arm separation may still be animal, section, stain or segmentation variation.</div>
 </section>
 
 <section class="evidence-chapter" id="morphology"><h3>3. Do whole-slide nuclear measurements differ between Vehicle and PLX?</h3>
   <div class="logic"><div><span class="logic-label">Motivation</span>The main biological question concerns neoplastic-cell morphology, but an unstratified view is useful as a baseline before matching tissue context.</div>
-    <div><span class="logic-label">Question</span>For the selected nuclear measurement, where do the four mouse-level medians lie within each CellViT class?</div>
-    <div><span class="logic-label">Method</span>Within each mouse and cell class, take the median from the displayed nucleus subsample. The treatment comparison therefore contains four dots, not thousands of pseudo-replicate nuclei.</div></div>
+    <div id="morphology_question"><span class="logic-label">Question</span>For the selected nuclear measurement, where do the four mouse-level medians lie within each CellViT class?</div>
+    <div id="morphology_method"><span class="logic-label">Method</span>Within each mouse and cell class, take the median from the displayed nucleus subsample. The treatment comparison therefore contains four dots, not thousands of pseudo-replicate nuclei.</div></div>
   <div class="metricbar"><label for="feat"><b>Nuclear measurement</b></label><select id="feat">
     <option value="ecc" selected>Nuclear elongation</option><option value="area">Nuclear area</option><option value="ediam">Equivalent nuclear diameter</option>
     <option value="compactness">Outline compactness</option><option value="solidity">Outline solidity</option>
@@ -57,10 +66,11 @@
 
 <section class="cellhero" style="margin-top:18px"><span class="eyebrow">The next biological step</span><h2 style="font-size:20px">Separate tissue mixture from a possible within-cell change</h2>
   <p><a href="phenotypes.html">Tissue environments</a> asks whether the image phenotypes contain distinguishable nuclei. <a href="experiments.html#q5">Treatment evidence</a> then compares Vehicle and PLX mice within matched environments.</p>
-  <p class="unit-note"><b>Study limit:</b> n = 2 mice per arm. The mouse is the experimental unit; all results are descriptive and hypothesis-generating.</p></section>
+  <p class="unit-note" id="cell_study_limit"><b>Study limit:</b> n = 2 mice per arm. The mouse is the experimental unit; all results are descriptive and hypothesis-generating.</p></section>
 </main>
-<script src="app.js?v=20260716151626"></script><script>
+<script src="app.js?v=20260801023108"></script><script>
 let S,CM;const $=id=>document.getElementById(id),PCFG={responsive:true,displaylogo:false,displayModeBar:false};
+function cellProvenance(payload){return payload&&typeof payload==="object"?(payload.provenance||payload.atlas_provenance||{}):{};}
 const METRICS={
   ecc:{label:"Nuclear elongation",unit:"eccentricity",note:"Higher values indicate a more elongated nuclear outline."},
   area:{label:"Nuclear area",unit:"µm²",note:"Higher values indicate a larger segmented nuclear profile."},
@@ -84,8 +94,38 @@ function drawMouseDots(target,getter,title,yLabel,zero){const classes=classList(
 function drawComposition(){const classes=classList(),cols=classCols(),mice=S.mice,traces=classes.map(c=>({x:mice.map(m=>"M"+m+"<br>"+S.arm[m]),y:mice.map(m=>fractions(m)[c]),customdata:mice.map(m=>[m,S.arm[m],counts(m)[c]||0]),name:c,type:"bar",marker:{color:cols[c]},hovertemplate:"M%{customdata[0]} · %{customdata[1]}<br>"+c+" %{y:.1%}<br>%{customdata[2]:,} nuclei<extra></extra>"}));Plotly.react("p_prop",traces,{barmode:"stack",title:{text:"Cell-type composition in each whole slide",font:{size:15}},yaxis:{title:"fraction of detected nuclei",range:[0,1],tickformat:".0%"},legend:{orientation:"h",y:-.2,font:{size:11}},margin:{t:48,b:85,l:64,r:15}},PCFG);}
 function drawDensity(){drawMouseDots("p_dens",densitySummary,"Whole-slide nuclear density","nuclei / mm²",true);}
 function drawMorphology(){const f=$("feat").value,m=METRICS[f];$("metric_note").textContent=m.note+" Mouse-level values use the displayed "+CM.n.toLocaleString()+"-nucleus subsample.";drawMouseDots("p_morph",(mouse,c)=>morphologySummary(mouse,c,f),m.label+" · mouse-level medians",m.unit,false);}
-(async()=>{try{S=await loadJSON("assets/cells_stats.json");CM=await loadJSON("assets/cells_meta.json");}catch(e){document.querySelector(".cellstory").innerHTML=`<div class="unavailable"><b>Whole-tumour nuclear baseline unavailable.</b> ${esc(e.message)}</div>`;return;}
-  const total=S.mice.reduce((sum,m)=>sum+Object.values(counts(m)).reduce((a,b)=>a+b,0),0);$("baseline_status").innerHTML=`<b>${total.toLocaleString()} nuclei across four mice</b> (two Vehicle, two PLX4720). Every treatment-facing dot below represents one mouse.`;
+function assertCellStatsAlignment(meta,stats){
+  const metaMice=[...new Set(meta.mouse.map(String))].sort(),statsMice=(stats.mice||[]).map(String).sort();
+  if(metaMice.length!==statsMice.length||metaMice.some((m,i)=>m!==statsMice[i]))throw new Error("cells_stats.json mice do not match cells_meta.json");
+  if(ACTIVE_COHORT_ID!=="group_1"){
+    const a=cellProvenance(meta),b=cellProvenance(stats);
+    for(const key of ["cell_order_sha256","feature_rows_sha256","tile_order_sha256"]){
+      if(!a[key]||!b[key]||String(a[key])!==String(b[key]))throw new Error(`cells_stats.json ${key} does not match cells_meta.json`);
+    }
+  }
+}
+function setLogicCopy(id,label,text){$(id).innerHTML=`<span class="logic-label">${label}</span>${text}`;}
+function applyCombinedStudyCopy(){
+  if(ACTIVE_COHORT_ID!=="combined")return; // Group 1 and parallel Group 2 retain the original four-mouse presentation
+  setLogicCopy("composition_interpretation","Interpretation","Differences among these eight mouse bars describe whole-slide cellular composition. They do not establish a treatment effect, and they do not identify which tissue environment contains those cells.");
+  setLogicCopy("density_question","Question","Within each broad cell class, are nuclei more or less dense in the four PLX slides than in the four Vehicle slides?");
+  setLogicCopy("density_method","Method","Divide each mouse's class count by its estimated tissue area. The panels show all eight mouse-level values; nuclei are not treated as independent treatment replicates.");
+  setLogicCopy("density_interpretation","Interpretation","Read the separation and overlap of the eight dots, not a pooled arm-average bar. The four mice per arm arise from two cohorts with two mice per arm each; treatment-facing inference must be cohort-blocked, not a naive pooled 4-vs-4 test.");
+  setLogicCopy("morphology_question","Question","For the selected nuclear measurement, where do the eight mouse-level medians lie within each CellViT class?");
+  setLogicCopy("morphology_method","Method","Within each mouse and cell class, take the median from the displayed nucleus subsample. The descriptive comparison therefore contains eight dots, not thousands of pseudo-replicate nuclei; any treatment inference remains cohort-blocked.");
+  $("cell_study_limit").innerHTML="<b>Study limit:</b> 4 mice per arm across two cohorts (2 per arm within each cohort). The mouse is the experimental unit; treatment inference must be cohort-blocked rather than naively pooled, and all results remain exploratory.";
+}
+(async()=>{try{const requireProvenance=ACTIVE_COHORT_ID!=="group_1";
+    S=await loadCohortJSON("assets/cells_stats.json",{requireProvenance});
+    CM=await loadCohortJSON("assets/cells_meta.json",{requireProvenance});
+    assertCellStatsAlignment(CM,S);
+  }catch(e){document.querySelector(".cellstory").innerHTML=`<div class="unavailable"><b>Whole-tumour nuclear baseline unavailable.</b> ${esc(e.message)}</div>`;return;}
+  applyCombinedStudyCopy();
+  const total=S.mice.reduce((sum,m)=>sum+Object.values(counts(m)).reduce((a,b)=>a+b,0),0),n=S.mice.length;
+  const nv=S.mice.filter(m=>S.arm[m]==="Vehicle").length,np=S.mice.filter(m=>S.arm[m]==="PLX4720").length;
+  $("baseline_status").innerHTML=ACTIVE_COHORT_ID==="combined"
+    ?`<b>${total.toLocaleString()} nuclei across ${n} mice</b> (${nv} Vehicle, ${np} PLX4720; two per arm within each cohort). Dots remain mouse-level; treatment-facing inference is cohort-blocked, not naively pooled.`
+    :`<b>${total.toLocaleString()} nuclei across four mice</b> (two Vehicle, two PLX4720). Every treatment-facing dot below represents one mouse.`;
   drawComposition();drawDensity();drawMorphology();$("feat").onchange=drawMorphology;
 })();
 </script></body></html>

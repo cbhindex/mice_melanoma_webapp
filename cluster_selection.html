@@ -1,6 +1,6 @@
 <!doctype html><html><head><meta charset="utf-8">
 <title>Methods &amp; QC · image-phenotype selection</title>
-<link rel="stylesheet" href="style.css?v=20260716151626"><script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<link rel="stylesheet" href="style.css?v=20260801023108"><script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
 .ksbody{max-width:1240px;margin:0 auto;padding:18px 20px 60px}.kshero{border:1px solid var(--line);border-radius:10px;padding:15px 18px;background:#f8fbff}
 .kshero h2{margin:0 0 7px;color:#16233f;font-size:19px}.ksgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
@@ -15,7 +15,16 @@ details{margin-top:10px}details>summary{cursor:pointer;color:#244c93;font-size:1
 </style></head><body><header>
   <h1>Mouse melanoma · morphology explorer</h1>
   <nav class="crumbs"><a href="index.html">Overview</a><a href="phenotypes.html">Tissue environments</a><a href="experiments.html">Treatment evidence</a><a href="scatter.html">Explore slides</a><a href="cells.html">Nuclear morphology</a><a href="cluster_selection.html">Methods &amp; QC</a></nav>
-  <span class="banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
+  <div class="cohort-switcher" data-cohort-switcher>
+    <label for="cohort_selector">Dataset</label>
+    <select id="cohort_selector" aria-label="Select dataset">
+      <option value="group_1">Group 1</option>
+      <option value="group_2">Group 2</option>
+      <option value="combined">Combined</option>
+    </select>
+    <span class="cohort-context" data-cohort-context></span>
+  </div>
+  <span class="banner" id="study_banner">Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered</span>
 </header>
 <main class="ksbody"><section class="kshero"><span class="filter-note">Methods &amp; QC</span><h2>Technical appendix: how the image phenotypes were chosen</h2>
  <p id="selection_plain" class="decision">Loading the finalized image-phenotype resolution…</p>
@@ -35,7 +44,7 @@ details{margin-top:10px}details>summary{cursor:pointer;color:#244c93;font-size:1
  <section class="kspanel"><h3>Fragmentation by slide and cluster</h3><div id="fragmentation_plot" class="chart"></div></section></div>
 <section class="kspanel" style="margin-top:14px"><h3>Candidate and selected-cluster galleries</h3><p class="filter-note">Visual labels are tentative until reviewed. A colour-different region is not called drug-affected from clustering alone.</p><div id="gallery" class="gallery"></div></section>
 <section class="kspanel" style="margin-top:14px"><h3>K-boundary / lineage sensitivity</h3><div id="lineage_plot" class="chart"></div><div class="scroll"><table id="lineage_table" class="smalltable"></table></div></section>
-</div></details></main><script src="app.js?v=20260716151626"></script><script>
+</div></details></main><script src="app.js?v=20260801023108"></script><script>
 const $=id=>document.getElementById(id),PCFG={responsive:true,displaylogo:false,displayModeBar:false};let D;
 const arr=x=>Array.isArray(x)?x:[];const v=(o,ks,d=null)=>{for(const k of ks)if(o&&o[k]!=null)return o[k];return d};
 const f=x=>x==null||!Number.isFinite(+x)?"—":(+x).toFixed(3);const fmt=x=>x==null?"—":typeof x==="object"?JSON.stringify(x):Number.isFinite(+x)&&String(x).trim()!==""?Number(x).toPrecision(5):String(x);function table(id,cols,rows){$(id).innerHTML="<thead><tr>"+cols.map(c=>`<th>${esc(c.h)}</th>`).join("")+"</tr></thead><tbody>"+rows.map(r=>"<tr>"+cols.map(c=>`<td>${esc(c.f(r))}</td>`).join("")+"</tr>").join("")+"</tbody>";}

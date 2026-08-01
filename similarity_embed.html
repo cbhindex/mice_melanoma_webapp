@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Similarity · UNI-v2 explorer</title><link rel="stylesheet" href="style.css?v=20260716151626">
+<title>Similarity · UNI-v2 explorer</title><link rel="stylesheet" href="style.css?v=20260801023108">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script></head>
 <body class="embed">
 <div class="controls" style="padding:8px 18px;border-bottom:1px solid #eee">
@@ -17,7 +17,7 @@
     <div id="grid" class="grid"></div>
   </div>
 </div>
-<script src="app.js?v=20260716151626"></script>
+<script src="app.js?v=20260801023108"></script>
 <script>
 let M, KNN, GD = document.getElementById("plot");
 function nbrs(gi){ const k=KNN.k, s=gi*k;
@@ -59,6 +59,7 @@ function draw(){
 }
 (async()=>{
   try{M=await loadJSON("assets/meta.json");KNN=await loadJSON("assets/knn.json");}catch(e){document.querySelector(".wrap").innerHTML=`<div class="unavailable"><b>Similarity explorer unavailable.</b> ${esc(e.message)}</div>`;return;}
+  try{assertTileAssetAlignment(M,KNN);}catch(e){document.querySelector(".wrap").innerHTML=`<div class="unavailable"><b>Similarity explorer unavailable.</b> ${esc(e.message)}</div>`;return;}
   draw();
   GD.on("plotly_click", d=> showQuery(d.points[0].customdata));
   document.getElementById("rand").onclick=()=> showQuery(Math.floor(Math.random()*M.n));
