@@ -1,0 +1,3165 @@
+{
+  "schemaVersion": "2.0",
+  "generated": "2026-08-01T15:14:29.090849+00:00",
+  "cohort": "combined",
+  "analysisMode": "combined_blocked_by_cohort",
+  "analysisRunId": "cellular_tissue_restricted_kselect_combined_20260801_v1",
+  "clusterRunId": "kselect_combined_20260801_v1",
+  "selectedK": 6,
+  "tilesHash": "84137ccde0b5aecea603edccbeb8fc91113f74322c5afa2bb683d089f0ba6d70",
+  "centralQuestion": "Do neoplastic cells in Vehicle and PLX-treated tumours have different nuclear morphologies?",
+  "centralAnswer": "In this eight-mouse pilot, neoplastic-cell morphology differs across tissue environments, but the data do not establish one consistent PLX-associated morphology change across matched environments.",
+  "audience": "Biologists, pathologists and clinically oriented collaborators; no computational-science background assumed.",
+  "experimentalUnit": "mouse",
+  "studyDesignNote": "Eight mice contribute one whole-slide image each (four Vehicle and four PLX4720 overall; two per arm within each cohort). Results are exploratory; tiles and nuclei are subsamples, not independent treatment replicates. Combined inference is cohort-blocked with equal cohort weight; naive pooled 4-vs-4 inference is not performed.",
+  "conceptualModel": {
+    "label": "Why the main question must be separated",
+    "equation": "Observed whole-tumour morphology difference = tissue-environment mixture difference + within-matched-environment cell difference + mouse/slide/stain/segmentation variation",
+    "terms": [
+      {
+        "id": "mixture",
+        "plain_label": "Different tissue mixtures",
+        "explanation": "A tumour can look different because it contains different proportions of pale, mixed, cohesive or elongated-looking H&E environments."
+      },
+      {
+        "id": "within_context",
+        "plain_label": "Cells differ within the same environment",
+        "explanation": "A treatment-associated cell-shape change is most credible if it appears when like tissue environments are compared with like."
+      },
+      {
+        "id": "other_variation",
+        "plain_label": "Mouse and technical variation",
+        "explanation": "With one slide per mouse, animal biology cannot be separated fully from section, stain, scan and segmentation variation."
+      }
+    ]
+  },
+  "metricDictionary": {
+    "eccentricity": {
+      "plain_label": "Nuclear elongation",
+      "direction": "Higher values indicate a more elongated outline.",
+      "independence_group": "elongation",
+      "primary": true
+    },
+    "axis_ratio": {
+      "plain_label": "Long-to-short axis ratio",
+      "direction": "Higher values indicate a more elongated outline.",
+      "independence_group": "elongation",
+      "primary": false,
+      "caveat": "A deterministic re-expression of eccentricity, not independent confirmation."
+    },
+    "area": {
+      "plain_label": "Nuclear area",
+      "direction": "Higher values indicate a larger segmented nuclear profile.",
+      "independence_group": "size",
+      "primary": true
+    },
+    "equivalent_diameter": {
+      "plain_label": "Equivalent nuclear diameter",
+      "direction": "Higher values indicate a larger segmented nuclear profile.",
+      "independence_group": "size",
+      "primary": false,
+      "caveat": "Derived directly from area, not independent confirmation."
+    },
+    "perimeter": {
+      "plain_label": "Nuclear perimeter",
+      "direction": "Higher values indicate a longer segmented nuclear boundary.",
+      "independence_group": "boundary_size",
+      "primary": true
+    },
+    "compactness": {
+      "plain_label": "Nuclear compactness",
+      "direction": "Higher values indicate a more compact, circle-like outline.",
+      "independence_group": "boundary_shape",
+      "primary": true
+    },
+    "solidity": {
+      "plain_label": "Nuclear solidity",
+      "direction": "Lower values indicate a more indented or irregular outline.",
+      "independence_group": "boundary_shape",
+      "primary": true
+    }
+  },
+  "evidenceJourney": [
+    {
+      "id": "whole_tumour",
+      "step": 1,
+      "title": "First, do the tumours look different when tissue context is ignored?",
+      "motivation": "A whole-tumour comparison is the intuitive starting point, but it mixes every tissue environment in a slide.",
+      "question": "Across the eight mice, are overall neoplastic nuclear measurements shifted between Vehicle and PLX4720?",
+      "method": "For each mouse, apply the post-hoc C0–C2 whole-tumour response population. Within every morphology-evaluable tile containing at least one eligible high-confidence, non-edge neoplastic nucleus, calculate the within-tile median and then average those tile medians equally. Compare the eight mouse-level values with treatment labels permuted within each cohort (36 legal 2+2×2+2 allocations) and weight the two cohort effects equally; do not perform a naive pooled 4-vs-4 test.",
+      "result_prompt": "Show one dot per mouse in small metric panels, with Vehicle and PLX4720 separated. Display the PLX-minus-Vehicle difference and exact eight-mouse permutation result as context, not as a discovery threshold.",
+      "interpretation": "Any restricted cellular-tissue difference is a candidate signal only: it may reflect altered C0–C2 mixture, a within-context cell change, or mouse/slide variation.",
+      "data_asset": "assets/cellular_tissue_restricted_analysis.json",
+      "chart_family": "mouse_dot_small_multiples",
+      "data_unit": "mouse",
+      "primary_metrics": [
+        "eccentricity",
+        "area",
+        "compactness",
+        "solidity",
+        "perimeter"
+      ],
+      "result": {
+        "status": "exploratory_observed_mixture",
+        "summary": "Within the post-hoc exploratory C0/C1/C2 composition-sensitive whole-tumour response population, tile-balanced nuclear elongation differed by 0.0020 (PLX4720 minus Vehicle); the exact cohort-blocked permutation p-value was 0.667 across 36 legal within-cohort allocations.",
+        "interpretation": "This observed-mixture contrast combines context mixture and within-context morphology. It weights only C0/C1/C2 tiles with an evaluable high-confidence neoplastic morphology value, so it is exploratory rather than a treatment-effect estimate.",
+        "sourceAsset": "assets/cellular_tissue_restricted_analysis.json",
+        "evidenceKey": "observedMixtureEffects:eccentricity:primary",
+        "includedClusters": [
+          0,
+          1,
+          2
+        ],
+        "fullySupportedClusters": [
+          0,
+          1,
+          2
+        ],
+        "sharedContextClusters": [
+          0,
+          1,
+          2
+        ],
+        "emergentClusters": [],
+        "restrictionStatus": "post_hoc_exploratory",
+        "postHoc": true,
+        "weightingBasis": "morphology_evaluable_tiles_for_metric",
+        "deltaPlxMinusVehicle": 0.001966469963232742,
+        "permPTwoSided": 0.6666666666666666,
+        "rawMouseValues": [
+          {
+            "mouse": "363",
+            "arm": "PLX4720",
+            "value": 0.783836650904506,
+            "eligible": true,
+            "cohort": "1",
+            "clusterWeights": {
+              "0": 0.7673167451244116,
+              "1": 0.22326832548755884,
+              "2": 0.00941492938802959
+            },
+            "nTilesWithMetric": 1487,
+            "nAllIncludedTiles": 1495,
+            "nHighConfidenceNeoplastic": 107055
+          },
+          {
+            "mouse": "365",
+            "arm": "PLX4720",
+            "value": 0.7857514577269412,
+            "eligible": true,
+            "cohort": "1",
+            "clusterWeights": {
+              "0": 0.738992463308211,
+              "1": 0.26021420071400236,
+              "2": 0.0007933359777865926
+            },
+            "nTilesWithMetric": 7563,
+            "nAllIncludedTiles": 7563,
+            "nHighConfidenceNeoplastic": 647012
+          },
+          {
+            "mouse": "364",
+            "arm": "Vehicle",
+            "value": 0.7781422545935389,
+            "eligible": true,
+            "cohort": "1",
+            "clusterWeights": {
+              "0": 0.3931254268153881,
+              "1": 0.6027771454586842,
+              "2": 0.004097427725927612
+            },
+            "nTilesWithMetric": 4393,
+            "nAllIncludedTiles": 4393,
+            "nHighConfidenceNeoplastic": 362458
+          },
+          {
+            "mouse": "366",
+            "arm": "Vehicle",
+            "value": 0.7703256942995134,
+            "eligible": true,
+            "cohort": "1",
+            "clusterWeights": {
+              "0": 0.4652903225806452,
+              "1": 0.5323870967741936,
+              "2": 0.00232258064516129
+            },
+            "nTilesWithMetric": 3875,
+            "nAllIncludedTiles": 3875,
+            "nHighConfidenceNeoplastic": 338646
+          },
+          {
+            "mouse": "369",
+            "arm": "PLX4720",
+            "value": 0.6963843703269958,
+            "eligible": true,
+            "cohort": "2",
+            "clusterWeights": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 1.0
+            },
+            "nTilesWithMetric": 1021,
+            "nAllIncludedTiles": 1021,
+            "nHighConfidenceNeoplastic": 64559
+          },
+          {
+            "mouse": "370",
+            "arm": "PLX4720",
+            "value": 0.6866479516029358,
+            "eligible": true,
+            "cohort": "2",
+            "clusterWeights": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 1.0
+            },
+            "nTilesWithMetric": 488,
+            "nAllIncludedTiles": 488,
+            "nHighConfidenceNeoplastic": 30114
+          },
+          {
+            "mouse": "367",
+            "arm": "Vehicle",
+            "value": 0.6993793199397855,
+            "eligible": true,
+            "cohort": "2",
+            "clusterWeights": {
+              "0": 0.0012453300124533001,
+              "1": 0.0,
+              "2": 0.9987546699875467
+            },
+            "nTilesWithMetric": 803,
+            "nAllIncludedTiles": 803,
+            "nHighConfidenceNeoplastic": 54825
+          },
+          {
+            "mouse": "368",
+            "arm": "Vehicle",
+            "value": 0.6969072818756104,
+            "eligible": true,
+            "cohort": "2",
+            "clusterWeights": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 1.0
+            },
+            "nTilesWithMetric": 517,
+            "nAllIncludedTiles": 517,
+            "nHighConfidenceNeoplastic": 36792
+          }
+        ],
+        "analysisMode": "combined_blocked_by_cohort",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.001966469963232742,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.010560079869197603
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": -0.006627139942732119
+          }
+        },
+        "pooledInference": {
+          "status": "not_performed",
+          "reason": "No naive 4-vs-4 pooled inference is performed. Treatment labels are permuted within each 2-vs-2 cohort and cohort-specific effects receive equal weight."
+        }
+      }
+    },
+    {
+      "id": "tissue_environments",
+      "step": 2,
+      "title": "What tissue environments are present in these sections?",
+      "motivation": "Neoplastic nuclear shape depends on the surrounding architecture, so biologically meaningful comparison requires a map of recurring H&E environments.",
+      "question": "What does each image-derived cluster appear to represent, where does it occur, and how confidently can it be named?",
+      "method": "Group UNI-v2 tile embeddings without using treatment labels or nuclear outcomes, then inspect representative tiles, slide locations, cell composition and morphology. Keep pathology names provisional until expert review.",
+      "result_prompt": "Show phenotype cards with full-resolution examples, slide locations, tile and nucleus coverage, morphology fingerprints and a three-level identity statement: technical description, candidate biological interpretation, pathologist confirmation status.",
+      "interpretation": "The clusters are recurring H&E image phenotypes, not proven anatomical compartments. Blank/background is not a biological morphology group, and all biological labels remain provisional.",
+      "data_asset": "assets/cluster_biology.json",
+      "chart_family": "phenotype_cards_and_spatial_maps",
+      "data_unit": "tile",
+      "advanced_detail": "Technical appendix: how the six image phenotypes were selected",
+      "result": {
+        "status": "provisional_identity",
+        "summary": "The frozen map contains 6 tissue-image phenotypes (C0/C1/C2/C3/C4/C5). The whole-tumour response population contains C0/C1/C2; matched shared-context inference uses C0/C1/C2.",
+        "interpretation": "Every cluster has a pathology-informed candidate interpretation, but none is pathologist-confirmed. Numeric C# labels remain run-local.",
+        "sourceAsset": "assets/cluster_biology.json",
+        "includedClusters": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "treatmentIncludedClusters": [
+          0,
+          1,
+          2
+        ],
+        "wholeTumourResponseClusters": [
+          0,
+          1,
+          2
+        ],
+        "morphologyDescriptiveClusters": [
+          0,
+          1,
+          2
+        ],
+        "emergentClusters": [],
+        "excludedFromPrimaryTreatmentEstimands": [
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "id": "context_composition",
+      "step": 3,
+      "title": "Do Vehicle and PLX4720 tumours contain different mixtures of tissue environments?",
+      "motivation": "A change in tumour architecture can shift whole-slide nuclear summaries even when cells do not change within matched environments.",
+      "question": "Does the proportion of tiles assigned to each tissue environment differ between treatment arms?",
+      "method": "Within each mouse, count all reviewed biological C0, C1 and C2 tiles and renormalise their fractions so C0+C1+C2 equals 100%. Compare arms with the cohort-blocked equal-cohort 2×2×2 design; if either cohort is incomplete the inferential result is N/A. tiles are not treatment replicates.",
+      "result_prompt": "Use 100% stacked bars for the four individual mice and a separate dot plot of C0–C2 PLX-minus-Vehicle percentage-point differences. Label the denominator as the share of C0–C2 tiles; do not mix C3/C4/C5 into treatment-facing plots.",
+      "interpretation": "Report candidate architecture shifts by cluster, but do not describe them as independent treatment effects or as proof of drug response.",
+      "data_asset": "assets/cellular_tissue_restricted_analysis.json",
+      "chart_family": "stacked_composition_plus_delta_dots",
+      "data_unit": "mouse",
+      "exclude_from_biological_denominator": [
+        0,
+        1
+      ],
+      "result": {
+        "status": "candidate_compositional_shift",
+        "summary": "Within all reviewed biological C0+C1+C2 tiles, the largest arm difference was C1: -16.19 percentage points (PLX4720 minus Vehicle).",
+        "interpretation": "These are all-tile architecture proportions, not the morphology-evaluable weights used in Question 1. They sum to 100% within mouse and are exploratory under the cohort-blocked equal-cohort design.",
+        "sourceAsset": "assets/cellular_tissue_restricted_analysis.json",
+        "evidenceKey": "wholeTumourResponse.composition.armContrasts",
+        "denominator": "C0+C1+C2=100% within every mouse",
+        "armContrasts": [
+          {
+            "cluster": 0,
+            "estimand": "restricted_tile_fraction",
+            "denominator": "C0+C1+C2=100% within each mouse",
+            "status": "full_blocked_2x2_per_cohort",
+            "limitedReason": null,
+            "nVehicleMice": 4,
+            "nPlxMice": 4,
+            "vehicleMean": 0.21491526985212164,
+            "plxMean": 0.37555079141233705,
+            "deltaPlxMinusVehicle": 0.1606355215602154,
+            "deltaRelativeToVehicle": 0.7474365207774445,
+            "allFourMouseDescriptiveDelta": 0.1606355215602154,
+            "allMouseDescriptiveDelta": 0.1606355215602154,
+            "permPTwoSided": 0.3333333333333333,
+            "nLabelPermutations": 36,
+            "lomoSignConsistent": true,
+            "lomoMin": 0.14259429761890113,
+            "lomoMax": 0.17867674550152968,
+            "rawMouseValues": [
+              {
+                "mouse": "363",
+                "arm": "PLX4720",
+                "value": 0.7632107023411371,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "365",
+                "arm": "PLX4720",
+                "value": 0.738992463308211,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "364",
+                "arm": "Vehicle",
+                "value": 0.3931254268153881,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "366",
+                "arm": "Vehicle",
+                "value": 0.4652903225806452,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "369",
+                "arm": "PLX4720",
+                "value": 0.0,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "370",
+                "arm": "PLX4720",
+                "value": 0.0,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "367",
+                "arm": "Vehicle",
+                "value": 0.0012453300124533001,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "368",
+                "arm": "Vehicle",
+                "value": 0.0,
+                "eligible": true,
+                "cohort": "2"
+              }
+            ],
+            "experimentalUnit": "mouse",
+            "permutationDesign": "within_cohort_blocked_equal_cohort_effect",
+            "blockingFactor": "cohort",
+            "blockWeighting": "equal_cohort_weight",
+            "blockEffects": {
+              "1": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": 0.32189370812665746
+              },
+              "2": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": -0.0006226650062266501
+              }
+            },
+            "cohortEffects": {
+              "1": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": 0.32189370812665746
+              },
+              "2": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": -0.0006226650062266501
+              }
+            },
+            "exactBlockedPermutations": 36,
+            "equalCohortEffect": 0.1606355215602154
+          },
+          {
+            "cluster": 1,
+            "estimand": "restricted_tile_fraction",
+            "denominator": "C0+C1+C2=100% within each mouse",
+            "status": "full_blocked_2x2_per_cohort",
+            "limitedReason": null,
+            "nVehicleMice": 4,
+            "nPlxMice": 4,
+            "vehicleMean": 0.28379106055821945,
+            "plxMean": 0.12190973746947048,
+            "deltaPlxMinusVehicle": -0.16188132308874897,
+            "deltaRelativeToVehicle": -0.5704243212253657,
+            "allFourMouseDescriptiveDelta": -0.16188132308874897,
+            "allMouseDescriptiveDelta": -0.16188132308874897,
+            "permPTwoSided": 0.3333333333333333,
+            "nLabelPermutations": 36,
+            "lomoSignConsistent": true,
+            "lomoMin": -0.17947883525987163,
+            "lomoMax": -0.14428381091762632,
+            "rawMouseValues": [
+              {
+                "mouse": "363",
+                "arm": "PLX4720",
+                "value": 0.22742474916387959,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "365",
+                "arm": "PLX4720",
+                "value": 0.26021420071400236,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "364",
+                "arm": "Vehicle",
+                "value": 0.6027771454586842,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "366",
+                "arm": "Vehicle",
+                "value": 0.5323870967741936,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "369",
+                "arm": "PLX4720",
+                "value": 0.0,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "370",
+                "arm": "PLX4720",
+                "value": 0.0,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "367",
+                "arm": "Vehicle",
+                "value": 0.0,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "368",
+                "arm": "Vehicle",
+                "value": 0.0,
+                "eligible": true,
+                "cohort": "2"
+              }
+            ],
+            "experimentalUnit": "mouse",
+            "permutationDesign": "within_cohort_blocked_equal_cohort_effect",
+            "blockingFactor": "cohort",
+            "blockWeighting": "equal_cohort_weight",
+            "blockEffects": {
+              "1": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": -0.32376264617749795
+              },
+              "2": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": 0.0
+              }
+            },
+            "cohortEffects": {
+              "1": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": -0.32376264617749795
+              },
+              "2": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": 0.0
+              }
+            },
+            "exactBlockedPermutations": 36,
+            "equalCohortEffect": -0.16188132308874897
+          },
+          {
+            "cluster": 2,
+            "estimand": "restricted_tile_fraction",
+            "denominator": "C0+C1+C2=100% within each mouse",
+            "status": "full_blocked_2x2_per_cohort",
+            "limitedReason": null,
+            "nVehicleMice": 4,
+            "nPlxMice": 4,
+            "vehicleMean": 0.5012936695896589,
+            "plxMean": 0.5025394711181924,
+            "deltaPlxMinusVehicle": 0.001245801528533568,
+            "deltaRelativeToVehicle": 0.0024851730714120857,
+            "allFourMouseDescriptiveDelta": 0.0012458015285334856,
+            "allMouseDescriptiveDelta": 0.0012458015285334856,
+            "permPTwoSided": 0.8333333333333334,
+            "nLabelPermutations": 36,
+            "lomoSignConsistent": false,
+            "lomoMin": -0.000897001600765603,
+            "lomoMax": 0.003388604657832739,
+            "rawMouseValues": [
+              {
+                "mouse": "363",
+                "arm": "PLX4720",
+                "value": 0.009364548494983277,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "365",
+                "arm": "PLX4720",
+                "value": 0.0007933359777865926,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "364",
+                "arm": "Vehicle",
+                "value": 0.004097427725927612,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "366",
+                "arm": "Vehicle",
+                "value": 0.00232258064516129,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "369",
+                "arm": "PLX4720",
+                "value": 1.0,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "370",
+                "arm": "PLX4720",
+                "value": 1.0,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "367",
+                "arm": "Vehicle",
+                "value": 0.9987546699875467,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "368",
+                "arm": "Vehicle",
+                "value": 1.0,
+                "eligible": true,
+                "cohort": "2"
+              }
+            ],
+            "experimentalUnit": "mouse",
+            "permutationDesign": "within_cohort_blocked_equal_cohort_effect",
+            "blockingFactor": "cohort",
+            "blockWeighting": "equal_cohort_weight",
+            "blockEffects": {
+              "1": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": 0.0018689380508404834
+              },
+              "2": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": 0.0006226650062266526
+              }
+            },
+            "cohortEffects": {
+              "1": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": 0.0018689380508404834
+              },
+              "2": {
+                "n_vehicle_mice": 2,
+                "n_plx_mice": 2,
+                "delta_plx_minus_vehicle": 0.0006226650062266526
+              }
+            },
+            "exactBlockedPermutations": 36,
+            "equalCohortEffect": 0.001245801528533568
+          }
+        ],
+        "mouseRows": [
+          {
+            "mouse": "363",
+            "arm": "PLX4720",
+            "cluster": 0,
+            "cohort": "1",
+            "nTiles": 1141,
+            "restrictedFraction": 0.7632107023411371,
+            "observedZero": false
+          },
+          {
+            "mouse": "363",
+            "arm": "PLX4720",
+            "cluster": 1,
+            "cohort": "1",
+            "nTiles": 340,
+            "restrictedFraction": 0.22742474916387959,
+            "observedZero": false
+          },
+          {
+            "mouse": "363",
+            "arm": "PLX4720",
+            "cluster": 2,
+            "cohort": "1",
+            "nTiles": 14,
+            "restrictedFraction": 0.009364548494983277,
+            "observedZero": false
+          },
+          {
+            "mouse": "364",
+            "arm": "Vehicle",
+            "cluster": 0,
+            "cohort": "1",
+            "nTiles": 1727,
+            "restrictedFraction": 0.3931254268153881,
+            "observedZero": false
+          },
+          {
+            "mouse": "364",
+            "arm": "Vehicle",
+            "cluster": 1,
+            "cohort": "1",
+            "nTiles": 2648,
+            "restrictedFraction": 0.6027771454586842,
+            "observedZero": false
+          },
+          {
+            "mouse": "364",
+            "arm": "Vehicle",
+            "cluster": 2,
+            "cohort": "1",
+            "nTiles": 18,
+            "restrictedFraction": 0.004097427725927612,
+            "observedZero": false
+          },
+          {
+            "mouse": "365",
+            "arm": "PLX4720",
+            "cluster": 0,
+            "cohort": "1",
+            "nTiles": 5589,
+            "restrictedFraction": 0.738992463308211,
+            "observedZero": false
+          },
+          {
+            "mouse": "365",
+            "arm": "PLX4720",
+            "cluster": 1,
+            "cohort": "1",
+            "nTiles": 1968,
+            "restrictedFraction": 0.26021420071400236,
+            "observedZero": false
+          },
+          {
+            "mouse": "365",
+            "arm": "PLX4720",
+            "cluster": 2,
+            "cohort": "1",
+            "nTiles": 6,
+            "restrictedFraction": 0.0007933359777865926,
+            "observedZero": false
+          },
+          {
+            "mouse": "366",
+            "arm": "Vehicle",
+            "cluster": 0,
+            "cohort": "1",
+            "nTiles": 1803,
+            "restrictedFraction": 0.4652903225806452,
+            "observedZero": false
+          },
+          {
+            "mouse": "366",
+            "arm": "Vehicle",
+            "cluster": 1,
+            "cohort": "1",
+            "nTiles": 2063,
+            "restrictedFraction": 0.5323870967741936,
+            "observedZero": false
+          },
+          {
+            "mouse": "366",
+            "arm": "Vehicle",
+            "cluster": 2,
+            "cohort": "1",
+            "nTiles": 9,
+            "restrictedFraction": 0.00232258064516129,
+            "observedZero": false
+          },
+          {
+            "mouse": "367",
+            "arm": "Vehicle",
+            "cluster": 0,
+            "cohort": "2",
+            "nTiles": 1,
+            "restrictedFraction": 0.0012453300124533001,
+            "observedZero": false
+          },
+          {
+            "mouse": "367",
+            "arm": "Vehicle",
+            "cluster": 1,
+            "cohort": "2",
+            "nTiles": 0,
+            "restrictedFraction": 0.0,
+            "observedZero": true
+          },
+          {
+            "mouse": "367",
+            "arm": "Vehicle",
+            "cluster": 2,
+            "cohort": "2",
+            "nTiles": 802,
+            "restrictedFraction": 0.9987546699875467,
+            "observedZero": false
+          },
+          {
+            "mouse": "368",
+            "arm": "Vehicle",
+            "cluster": 0,
+            "cohort": "2",
+            "nTiles": 0,
+            "restrictedFraction": 0.0,
+            "observedZero": true
+          },
+          {
+            "mouse": "368",
+            "arm": "Vehicle",
+            "cluster": 1,
+            "cohort": "2",
+            "nTiles": 0,
+            "restrictedFraction": 0.0,
+            "observedZero": true
+          },
+          {
+            "mouse": "368",
+            "arm": "Vehicle",
+            "cluster": 2,
+            "cohort": "2",
+            "nTiles": 517,
+            "restrictedFraction": 1.0,
+            "observedZero": false
+          },
+          {
+            "mouse": "369",
+            "arm": "PLX4720",
+            "cluster": 0,
+            "cohort": "2",
+            "nTiles": 0,
+            "restrictedFraction": 0.0,
+            "observedZero": true
+          },
+          {
+            "mouse": "369",
+            "arm": "PLX4720",
+            "cluster": 1,
+            "cohort": "2",
+            "nTiles": 0,
+            "restrictedFraction": 0.0,
+            "observedZero": true
+          },
+          {
+            "mouse": "369",
+            "arm": "PLX4720",
+            "cluster": 2,
+            "cohort": "2",
+            "nTiles": 1021,
+            "restrictedFraction": 1.0,
+            "observedZero": false
+          },
+          {
+            "mouse": "370",
+            "arm": "PLX4720",
+            "cluster": 0,
+            "cohort": "2",
+            "nTiles": 0,
+            "restrictedFraction": 0.0,
+            "observedZero": true
+          },
+          {
+            "mouse": "370",
+            "arm": "PLX4720",
+            "cluster": 1,
+            "cohort": "2",
+            "nTiles": 0,
+            "restrictedFraction": 0.0,
+            "observedZero": true
+          },
+          {
+            "mouse": "370",
+            "arm": "PLX4720",
+            "cluster": 2,
+            "cohort": "2",
+            "nTiles": 488,
+            "restrictedFraction": 1.0,
+            "observedZero": false
+          }
+        ],
+        "includedClusters": [
+          0,
+          1,
+          2
+        ],
+        "emergentResponses": [],
+        "analysisMode": "combined_blocked_by_cohort"
+      }
+    },
+    {
+      "id": "context_morphology",
+      "step": 4,
+      "title": "Do neoplastic nuclei naturally differ between tissue environments?",
+      "motivation": "Stratification is useful only if image environments correspond to interpretable differences in the nuclei they contain.",
+      "question": "Across all slides, which nuclear measurements distinguish the biological tile clusters, and do those differences recur across mice?",
+      "method": "For C0–C2, assign each eligible detected nucleus to its containing tile, summarise nuclei within tiles and tiles within mice, and compare mouse-balanced profiles. Keep injury-like residual nuclei descriptive and test the shared-context tile classifier by leaving one entire mouse/WSI out; C0, C1 and C2 is flagged as coverage-limited.",
+      "result_prompt": "Use a cluster-by-metric effect heatmap for the overview, mouse-balanced distributions for a selected metric, eight mouse dots for recurrence, and held-out-mouse confusion matrices for classification. Never connect unordered clusters with lines.",
+      "interpretation": "Morphology that distinguishes embedding clusters supports biological concordance, not independent validation: both tile embeddings and nuclear features come from the same H&E sections.",
+      "data_asset": "assets/cellular_tissue_restricted_analysis.json",
+      "chart_family": "cluster_metric_heatmap_plus_distributions",
+      "data_unit": "tile_nested_in_mouse",
+      "exclude_clusters": [
+        0,
+        1
+      ],
+      "limited_clusters": [
+        3
+      ],
+      "result": {
+        "status": "descriptive_profiles_classifier_not_evaluable",
+        "summary": "Across C0/C1/C2, the equal-mouse elongation profile was highest in C1 (0.7755) and lowest in C2 (0.7254). The held-out-mouse context classifier was N/A because the complete run-local class set was not represented in every fold.",
+        "interpretation": "C0/C1/C2 residual-nucleus morphology is descriptively associated with image context, and the classifier is not independent pathology validation because both measurements come from the same H&E sections.",
+        "sourceAsset": "assets/cellular_tissue_restricted_analysis.json",
+        "evidenceKey": "crossClusterMorphology,classifiers.cellular_C0_C1_C2",
+        "includedClusters": [
+          0,
+          1,
+          2
+        ],
+        "fullySupportedClusters": [
+          0,
+          1,
+          2
+        ],
+        "sharedContextClassifierClusters": [
+          0,
+          1,
+          2
+        ],
+        "clusterProfiles": [
+          {
+            "cluster": 0,
+            "metric": "eccentricity",
+            "primary_value": 0.7684752225875855,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 0.7152459025382996,
+            "mouse_max": 0.7886260151863098,
+            "n_mice": 5,
+            "all_nuclei_pooled_median_descriptive": 0.7828932404518127,
+            "n_hc_neoplastic": 909718,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 0,
+            "metric": "area_um2",
+            "primary_value": 58.453209686279294,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 55.910037994384766,
+            "mouse_max": 62.14407730102539,
+            "n_mice": 5,
+            "all_nuclei_pooled_median_descriptive": 58.353973388671875,
+            "n_hc_neoplastic": 909718,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 0,
+            "metric": "perim_um",
+            "primary_value": 32.803167724609374,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 31.960269927978516,
+            "mouse_max": 33.89012145996094,
+            "n_mice": 5,
+            "all_nuclei_pooled_median_descriptive": 32.85932540893555,
+            "n_hc_neoplastic": 909718,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 0,
+            "metric": "compactness",
+            "primary_value": 0.6929694652557373,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 0.6839185953140259,
+            "mouse_max": 0.7213757634162903,
+            "n_mice": 5,
+            "all_nuclei_pooled_median_descriptive": 0.6862591505050659,
+            "n_hc_neoplastic": 909718,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 0,
+            "metric": "solidity",
+            "primary_value": 0.9399502992630004,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 0.9374384880065918,
+            "mouse_max": 0.9464668035507202,
+            "n_mice": 5,
+            "all_nuclei_pooled_median_descriptive": 0.9385080933570862,
+            "n_hc_neoplastic": 909718,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 1,
+            "metric": "eccentricity",
+            "primary_value": 0.7755099385976791,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 0.7669750452041626,
+            "mouse_max": 0.7881984710693359,
+            "n_mice": 4,
+            "all_nuclei_pooled_median_descriptive": 0.7773596048355103,
+            "n_hc_neoplastic": 542468,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 1,
+            "metric": "area_um2",
+            "primary_value": 59.012359619140625,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 55.697628021240234,
+            "mouse_max": 61.65330123901367,
+            "n_mice": 4,
+            "all_nuclei_pooled_median_descriptive": 58.03683090209961,
+            "n_hc_neoplastic": 542468,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 1,
+            "metric": "perim_um",
+            "primary_value": 32.98361015319824,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 31.970703125,
+            "mouse_max": 33.858367919921875,
+            "n_mice": 4,
+            "all_nuclei_pooled_median_descriptive": 32.85628128051758,
+            "n_hc_neoplastic": 542468,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 1,
+            "metric": "compactness",
+            "primary_value": 0.6842957437038422,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 0.6767122745513916,
+            "mouse_max": 0.6931103467941284,
+            "n_mice": 4,
+            "all_nuclei_pooled_median_descriptive": 0.6827241778373718,
+            "n_hc_neoplastic": 542468,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 1,
+            "metric": "solidity",
+            "primary_value": 0.9369149655103683,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 0.9351442456245422,
+            "mouse_max": 0.9394290447235107,
+            "n_mice": 4,
+            "all_nuclei_pooled_median_descriptive": 0.9362139701843262,
+            "n_hc_neoplastic": 542468,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 2,
+            "metric": "eccentricity",
+            "primary_value": 0.7253902181982994,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 0.6866479516029358,
+            "mouse_max": 0.7755331993103027,
+            "n_mice": 8,
+            "all_nuclei_pooled_median_descriptive": 0.6976454854011536,
+            "n_hc_neoplastic": 189275,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 2,
+            "metric": "area_um2",
+            "primary_value": 56.32350015640259,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 50.75139236450195,
+            "mouse_max": 61.55613708496094,
+            "n_mice": 8,
+            "all_nuclei_pooled_median_descriptive": 58.67111587524414,
+            "n_hc_neoplastic": 189275,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 2,
+            "metric": "perim_um",
+            "primary_value": 31.628933429718018,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 30.775850296020508,
+            "mouse_max": 32.69076156616211,
+            "n_mice": 8,
+            "all_nuclei_pooled_median_descriptive": 32.01252746582031,
+            "n_hc_neoplastic": 189275,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 2,
+            "metric": "compactness",
+            "primary_value": 0.7130114212632179,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 0.6864706873893738,
+            "mouse_max": 0.7330609560012817,
+            "n_mice": 8,
+            "all_nuclei_pooled_median_descriptive": 0.7275761365890503,
+            "n_hc_neoplastic": 189275,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          },
+          {
+            "cluster": 2,
+            "metric": "solidity",
+            "primary_value": 0.9426979199051857,
+            "primary_aggregation": "equal_mouse_then_equal_tile_mean_of_tile_medians",
+            "mouse_min": 0.934880256652832,
+            "mouse_max": 0.9483711123466492,
+            "n_mice": 8,
+            "all_nuclei_pooled_median_descriptive": 0.9466666579246521,
+            "n_hc_neoplastic": 189275,
+            "morphology_status": "available",
+            "pooled_view_warning": "Descriptive only; large slides and nucleus-rich tiles contribute more cells."
+          }
+        ],
+        "classifierSummary": {
+          "morphologyOnly": {},
+          "morphologyPlusComposition": {},
+          "supportStatus": "limited_support",
+          "supportNote": "C0, C1, C2 do not pass the 20-tile and 500-nucleus gate in every mouse."
+        }
+      }
+    },
+    {
+      "id": "within_context_treatment",
+      "step": 5,
+      "title": "Within the same tissue environment, does PLX4720 alter neoplastic nuclear morphology?",
+      "motivation": "Matching tissue context separates a possible cell-level change from a change in the amount of each environment.",
+      "question": "For each supported cluster and morphology metric, is the PLX-minus-Vehicle direction consistent across mice?",
+      "method": "Within the shared contexts C0, C1 and C2, calculate one equal-tile morphology summary per mouse. Compare the eight mouse-level values with treatment labels permuted within each cohort (36 legal 2+2×2+2 allocations) and weight the two cohort effects equally; do not perform a naive pooled 4-vs-4 test. Fully supported contexts are C0/C1/C2. C0, C1 and C2 remains descriptive with treatment p-values shown as N/A.",
+      "result_prompt": "Use a cluster-by-metric treatment-effect heatmap. Selecting a cell must reveal the four raw mouse dots, sample coverage and robustness status; unsupported cells display N/A rather than zero.",
+      "interpretation": "A credible shared treatment phenotype would require comparable directions across supported contexts and mice. Heterogeneous directions argue against a cluster-invariant effect in this pilot.",
+      "data_asset": "assets/cellular_tissue_restricted_analysis.json",
+      "chart_family": "effect_heatmap_with_mouse_dot_drilldown",
+      "data_unit": "mouse",
+      "unsupported_display": "N/A",
+      "result": {
+        "status": "heterogeneous_directions",
+        "summary": "Shared-context elongation deltas were  (PLX4720 minus Vehicle). C0: 367: 1 tiles/85 nuclei; 368: 0 tiles/0 nuclei; 369: 0 tiles/0 nuclei; 370: 0 tiles/0 nuclei; C1: 367: 0 tiles/0 nuclei; 368: 0 tiles/0 nuclei; 369: 0 tiles/0 nuclei; 370: 0 tiles/0 nuclei; C2: 363: 14 tiles/927 nuclei; 364: 18 tiles/1136 nuclei; 365: 6 tiles/401 nuclei; 366: 9 tiles/606 nuclei; unsupported treatment p-values are N/A.",
+        "interpretation": "Fully supported contexts do not establish one cluster-invariant PLX4720 morphology shift.",
+        "sourceAsset": "assets/cellular_tissue_restricted_analysis.json",
+        "evidenceKey": "withinClusterEffects:eccentricity",
+        "includedClusters": [
+          0,
+          1,
+          2
+        ],
+        "sharedContextClusters": [
+          0,
+          1,
+          2
+        ],
+        "emergentClusters": [],
+        "fullySupportedClusters": [],
+        "effects": [
+          {
+            "cluster": 0,
+            "metric": "eccentricity",
+            "tileStatistic": "median",
+            "mouseAggregation": "equal tiles",
+            "status": "partial_cross_arm",
+            "limitedReason": "367: 1 tiles/85 nuclei; 368: 0 tiles/0 nuclei; 369: 0 tiles/0 nuclei; 370: 0 tiles/0 nuclei",
+            "nVehicleMice": 2,
+            "nPlxMice": 2,
+            "vehicleMean": null,
+            "plxMean": null,
+            "deltaPlxMinusVehicle": null,
+            "deltaRelativeToVehicle": null,
+            "allFourMouseDescriptiveDelta": null,
+            "allMouseDescriptiveDelta": null,
+            "permPTwoSided": null,
+            "nLabelPermutations": 0,
+            "lomoSignConsistent": null,
+            "lomoMin": null,
+            "lomoMax": null,
+            "rawMouseValues": [
+              {
+                "mouse": "363",
+                "arm": "PLX4720",
+                "value": 0.7886260151863098,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "365",
+                "arm": "PLX4720",
+                "value": 0.7849007844924927,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "364",
+                "arm": "Vehicle",
+                "value": 0.779304563999176,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "366",
+                "arm": "Vehicle",
+                "value": 0.7742988467216492,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "369",
+                "arm": "PLX4720",
+                "value": null,
+                "eligible": false,
+                "cohort": "2"
+              },
+              {
+                "mouse": "370",
+                "arm": "PLX4720",
+                "value": null,
+                "eligible": false,
+                "cohort": "2"
+              },
+              {
+                "mouse": "367",
+                "arm": "Vehicle",
+                "value": 0.7152459025382996,
+                "eligible": false,
+                "cohort": "2"
+              },
+              {
+                "mouse": "368",
+                "arm": "Vehicle",
+                "value": null,
+                "eligible": false,
+                "cohort": "2"
+              }
+            ],
+            "experimentalUnit": "mouse",
+            "permutationDesign": "within_cohort_blocked_equal_cohort_effect",
+            "blockingFactor": null,
+            "blockWeighting": null,
+            "blockEffects": null,
+            "cohortEffects": {},
+            "exactBlockedPermutations": 0,
+            "equalCohortEffect": null
+          },
+          {
+            "cluster": 1,
+            "metric": "eccentricity",
+            "tileStatistic": "median",
+            "mouseAggregation": "equal tiles",
+            "status": "partial_cross_arm",
+            "limitedReason": "367: 0 tiles/0 nuclei; 368: 0 tiles/0 nuclei; 369: 0 tiles/0 nuclei; 370: 0 tiles/0 nuclei",
+            "nVehicleMice": 2,
+            "nPlxMice": 2,
+            "vehicleMean": null,
+            "plxMean": null,
+            "deltaPlxMinusVehicle": null,
+            "deltaRelativeToVehicle": null,
+            "allFourMouseDescriptiveDelta": null,
+            "allMouseDescriptiveDelta": null,
+            "permPTwoSided": null,
+            "nLabelPermutations": 0,
+            "lomoSignConsistent": null,
+            "lomoMin": null,
+            "lomoMax": null,
+            "rawMouseValues": [
+              {
+                "mouse": "363",
+                "arm": "PLX4720",
+                "value": 0.7694319486618042,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "365",
+                "arm": "PLX4720",
+                "value": 0.7881984710693359,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "364",
+                "arm": "Vehicle",
+                "value": 0.7774342894554138,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "366",
+                "arm": "Vehicle",
+                "value": 0.7669750452041626,
+                "eligible": true,
+                "cohort": "1"
+              },
+              {
+                "mouse": "369",
+                "arm": "PLX4720",
+                "value": null,
+                "eligible": false,
+                "cohort": "2"
+              },
+              {
+                "mouse": "370",
+                "arm": "PLX4720",
+                "value": null,
+                "eligible": false,
+                "cohort": "2"
+              },
+              {
+                "mouse": "367",
+                "arm": "Vehicle",
+                "value": null,
+                "eligible": false,
+                "cohort": "2"
+              },
+              {
+                "mouse": "368",
+                "arm": "Vehicle",
+                "value": null,
+                "eligible": false,
+                "cohort": "2"
+              }
+            ],
+            "experimentalUnit": "mouse",
+            "permutationDesign": "within_cohort_blocked_equal_cohort_effect",
+            "blockingFactor": null,
+            "blockWeighting": null,
+            "blockEffects": null,
+            "cohortEffects": {},
+            "exactBlockedPermutations": 0,
+            "equalCohortEffect": null
+          },
+          {
+            "cluster": 2,
+            "metric": "eccentricity",
+            "tileStatistic": "median",
+            "mouseAggregation": "equal tiles",
+            "status": "partial_cross_arm",
+            "limitedReason": "363: 14 tiles/927 nuclei; 364: 18 tiles/1136 nuclei; 365: 6 tiles/401 nuclei; 366: 9 tiles/606 nuclei",
+            "nVehicleMice": 2,
+            "nPlxMice": 2,
+            "vehicleMean": null,
+            "plxMean": null,
+            "deltaPlxMinusVehicle": -0.003947332501411438,
+            "deltaRelativeToVehicle": null,
+            "allFourMouseDescriptiveDelta": -0.003947332501411438,
+            "allMouseDescriptiveDelta": -0.003947332501411438,
+            "permPTwoSided": null,
+            "nLabelPermutations": 0,
+            "lomoSignConsistent": null,
+            "lomoMin": null,
+            "lomoMax": null,
+            "rawMouseValues": [
+              {
+                "mouse": "363",
+                "arm": "PLX4720",
+                "value": 0.7351006865501404,
+                "eligible": false,
+                "cohort": "1"
+              },
+              {
+                "mouse": "365",
+                "arm": "PLX4720",
+                "value": 0.7755331993103027,
+                "eligible": false,
+                "cohort": "1"
+              },
+              {
+                "mouse": "364",
+                "arm": "Vehicle",
+                "value": 0.7707746624946594,
+                "eligible": false,
+                "cohort": "1"
+              },
+              {
+                "mouse": "366",
+                "arm": "Vehicle",
+                "value": 0.7424140572547913,
+                "eligible": false,
+                "cohort": "1"
+              },
+              {
+                "mouse": "369",
+                "arm": "PLX4720",
+                "value": 0.6963843703269958,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "370",
+                "arm": "PLX4720",
+                "value": 0.6866479516029358,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "367",
+                "arm": "Vehicle",
+                "value": 0.6993595361709595,
+                "eligible": true,
+                "cohort": "2"
+              },
+              {
+                "mouse": "368",
+                "arm": "Vehicle",
+                "value": 0.6969072818756104,
+                "eligible": true,
+                "cohort": "2"
+              }
+            ],
+            "experimentalUnit": "mouse",
+            "permutationDesign": "within_cohort_blocked_equal_cohort_effect",
+            "blockingFactor": null,
+            "blockWeighting": null,
+            "blockEffects": null,
+            "cohortEffects": {},
+            "exactBlockedPermutations": 0,
+            "equalCohortEffect": null
+          }
+        ],
+        "limitedReasons": {
+          "0": "367: 1 tiles/85 nuclei; 368: 0 tiles/0 nuclei; 369: 0 tiles/0 nuclei; 370: 0 tiles/0 nuclei",
+          "1": "367: 0 tiles/0 nuclei; 368: 0 tiles/0 nuclei; 369: 0 tiles/0 nuclei; 370: 0 tiles/0 nuclei",
+          "2": "363: 14 tiles/927 nuclei; 364: 18 tiles/1136 nuclei; 365: 6 tiles/401 nuclei; 366: 9 tiles/606 nuclei"
+        },
+        "analysisMode": "combined_blocked_by_cohort"
+      }
+    },
+    {
+      "id": "composition_standardisation",
+      "step": 6,
+      "title": "Does the treatment contrast remain after equalising tissue-environment mixture?",
+      "motivation": "Standardisation asks what the overall comparison would look like if every mouse contributed the same supported cluster mixture.",
+      "question": "How does the overall morphology contrast change under equal-cluster and pooled-reference weighting?",
+      "method": "Compare each mouse's observed composition-sensitive C0/C1/C2 mixture with the explicitly non-estimable equal-C0/C1/C2 view, then show equal C0/C1/C2 as the common-support sensitivity. Decompose the observed contrast descriptively without causal attribution. Use cohort-blocked equal-cohort effects for Combined.",
+      "result_prompt": "Use aligned observed-mixture, equal-C0/C1/C2 and equal-C0/C1/C2 mouse-dot panels on one scale, plus a clearly non-causal descriptive decomposition.",
+      "interpretation": "If standardised estimates remain mouse-sensitive or disagree across contexts, the data do not support a composition-independent treatment effect.",
+      "data_asset": "assets/cellular_tissue_restricted_analysis.json",
+      "chart_family": "standardisation_mouse_dot_panels",
+      "data_unit": "mouse",
+      "result": {
+        "status": "not_established",
+        "summary": "Observed composition-sensitive C0/C1/C2 elongation differed by 0.0020. Equal C0/C1/C2 weighting was N/A; the shared-context equal-C0/C1/C2 sensitivity was N/A.",
+        "interpretation": "The C0/C1/C2 standardisation is descriptive. Reweighting therefore does not establish a composition-independent PLX4720 morphology effect.",
+        "sourceAsset": "assets/cellular_tissue_restricted_analysis.json",
+        "evidenceKey": "observedMixtureEffects,standardizedEffects,decomposition",
+        "observed": {
+          "population": "observed_C0_C1_C2_mixture",
+          "includedClusters": [
+            0,
+            1,
+            2
+          ],
+          "metric": "eccentricity",
+          "weightingBasis": "morphology_evaluable_tiles_for_metric",
+          "isPrimary": true,
+          "weightingDenominator": "C0/C1/C2 tiles with at least one high-confidence neoplastic morphology value for this metric",
+          "estimand": "mouse-level weighted mean of cluster-specific tile morphology summaries",
+          "status": "full_blocked_2x2_per_cohort",
+          "limitedReason": null,
+          "nVehicleMice": 4,
+          "nPlxMice": 4,
+          "vehicleMean": 0.7361886376771121,
+          "plxMean": 0.7381551076403448,
+          "deltaPlxMinusVehicle": 0.001966469963232742,
+          "deltaRelativeToVehicle": 0.0026711495703567543,
+          "allFourMouseDescriptiveDelta": 0.0019664699632326865,
+          "allMouseDescriptiveDelta": 0.0019664699632326865,
+          "permPTwoSided": 0.6666666666666666,
+          "nLabelPermutations": 36,
+          "lomoSignConsistent": false,
+          "lomoMin": -0.0004676347177822726,
+          "lomoMax": 0.004400574644247757,
+          "rawMouseValues": [
+            {
+              "mouse": "363",
+              "arm": "PLX4720",
+              "value": 0.783836650904506,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.7673167451244116,
+                "1": 0.22326832548755884,
+                "2": 0.00941492938802959
+              },
+              "nTilesWithMetric": 1487,
+              "nAllIncludedTiles": 1495,
+              "nHighConfidenceNeoplastic": 107055
+            },
+            {
+              "mouse": "365",
+              "arm": "PLX4720",
+              "value": 0.7857514577269412,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.738992463308211,
+                "1": 0.26021420071400236,
+                "2": 0.0007933359777865926
+              },
+              "nTilesWithMetric": 7563,
+              "nAllIncludedTiles": 7563,
+              "nHighConfidenceNeoplastic": 647012
+            },
+            {
+              "mouse": "364",
+              "arm": "Vehicle",
+              "value": 0.7781422545935389,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.3931254268153881,
+                "1": 0.6027771454586842,
+                "2": 0.004097427725927612
+              },
+              "nTilesWithMetric": 4393,
+              "nAllIncludedTiles": 4393,
+              "nHighConfidenceNeoplastic": 362458
+            },
+            {
+              "mouse": "366",
+              "arm": "Vehicle",
+              "value": 0.7703256942995134,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.4652903225806452,
+                "1": 0.5323870967741936,
+                "2": 0.00232258064516129
+              },
+              "nTilesWithMetric": 3875,
+              "nAllIncludedTiles": 3875,
+              "nHighConfidenceNeoplastic": 338646
+            },
+            {
+              "mouse": "369",
+              "arm": "PLX4720",
+              "value": 0.6963843703269958,
+              "eligible": true,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.0,
+                "1": 0.0,
+                "2": 1.0
+              },
+              "nTilesWithMetric": 1021,
+              "nAllIncludedTiles": 1021,
+              "nHighConfidenceNeoplastic": 64559
+            },
+            {
+              "mouse": "370",
+              "arm": "PLX4720",
+              "value": 0.6866479516029358,
+              "eligible": true,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.0,
+                "1": 0.0,
+                "2": 1.0
+              },
+              "nTilesWithMetric": 488,
+              "nAllIncludedTiles": 488,
+              "nHighConfidenceNeoplastic": 30114
+            },
+            {
+              "mouse": "367",
+              "arm": "Vehicle",
+              "value": 0.6993793199397855,
+              "eligible": true,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.0012453300124533001,
+                "1": 0.0,
+                "2": 0.9987546699875467
+              },
+              "nTilesWithMetric": 803,
+              "nAllIncludedTiles": 803,
+              "nHighConfidenceNeoplastic": 54825
+            },
+            {
+              "mouse": "368",
+              "arm": "Vehicle",
+              "value": 0.6969072818756104,
+              "eligible": true,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.0,
+                "1": 0.0,
+                "2": 1.0
+              },
+              "nTilesWithMetric": 517,
+              "nAllIncludedTiles": 517,
+              "nHighConfidenceNeoplastic": 36792
+            }
+          ],
+          "experimentalUnit": "mouse",
+          "permutationDesign": "within_cohort_blocked_equal_cohort_effect",
+          "blockingFactor": "cohort",
+          "blockWeighting": "equal_cohort_weight",
+          "blockEffects": {
+            "1": {
+              "n_vehicle_mice": 2,
+              "n_plx_mice": 2,
+              "delta_plx_minus_vehicle": 0.010560079869197603
+            },
+            "2": {
+              "n_vehicle_mice": 2,
+              "n_plx_mice": 2,
+              "delta_plx_minus_vehicle": -0.006627139942732119
+            }
+          },
+          "cohortEffects": {
+            "1": {
+              "n_vehicle_mice": 2,
+              "n_plx_mice": 2,
+              "delta_plx_minus_vehicle": 0.010560079869197603
+            },
+            "2": {
+              "n_vehicle_mice": 2,
+              "n_plx_mice": 2,
+              "delta_plx_minus_vehicle": -0.006627139942732119
+            }
+          },
+          "exactBlockedPermutations": 36,
+          "equalCohortEffect": 0.001966469963232742
+        },
+        "equalIncluded": {
+          "population": "equal_C0_C1_C2",
+          "includedClusters": [
+            0,
+            1,
+            2
+          ],
+          "metric": "eccentricity",
+          "weighting": "equal across included clusters within every mouse",
+          "status": "limited",
+          "limitedReason": "C0 / mouse 367: 1 tiles (<20), 85 high-confidence neoplastic nuclei (<500); C0 / mouse 368: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C0 / mouse 369: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C0 / mouse 370: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C1 / mouse 367: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C1 / mouse 368: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C1 / mouse 369: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C1 / mouse 370: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C2 / mouse 363: 14 tiles (<20); C2 / mouse 364: 18 tiles (<20); C2 / mouse 365: 6 tiles (<20), 401 high-confidence neoplastic nuclei (<500); C2 / mouse 366: 9 tiles (<20)",
+          "nVehicleMice": 2,
+          "nPlxMice": 2,
+          "vehicleMean": null,
+          "plxMean": null,
+          "deltaPlxMinusVehicle": null,
+          "deltaRelativeToVehicle": null,
+          "allFourMouseDescriptiveDelta": null,
+          "allMouseDescriptiveDelta": null,
+          "permPTwoSided": null,
+          "nLabelPermutations": 0,
+          "lomoSignConsistent": null,
+          "lomoMin": null,
+          "lomoMax": null,
+          "rawMouseValues": [
+            {
+              "mouse": "363",
+              "arm": "PLX4720",
+              "value": 0.7643862167994181,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "365",
+              "arm": "PLX4720",
+              "value": 0.7828774849573771,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "364",
+              "arm": "Vehicle",
+              "value": 0.7758378386497498,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "366",
+              "arm": "Vehicle",
+              "value": 0.7612293163935343,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "369",
+              "arm": "PLX4720",
+              "value": null,
+              "eligible": false,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "370",
+              "arm": "PLX4720",
+              "value": null,
+              "eligible": false,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "367",
+              "arm": "Vehicle",
+              "value": null,
+              "eligible": false,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "368",
+              "arm": "Vehicle",
+              "value": null,
+              "eligible": false,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            }
+          ],
+          "experimentalUnit": "mouse",
+          "permutationDesign": "within_cohort_blocked_equal_cohort_effect",
+          "blockingFactor": null,
+          "blockWeighting": null,
+          "blockEffects": null,
+          "cohortEffects": {},
+          "exactBlockedPermutations": 0,
+          "equalCohortEffect": null
+        },
+        "equalFullySupported": {
+          "population": "equal_C0_C1_C2",
+          "includedClusters": [
+            0,
+            1,
+            2
+          ],
+          "metric": "eccentricity",
+          "weighting": "equal across included clusters within every mouse",
+          "status": "limited",
+          "limitedReason": "C0 / mouse 367: 1 tiles (<20), 85 high-confidence neoplastic nuclei (<500); C0 / mouse 368: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C0 / mouse 369: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C0 / mouse 370: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C1 / mouse 367: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C1 / mouse 368: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C1 / mouse 369: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C1 / mouse 370: 0 tiles (<20), 0 high-confidence neoplastic nuclei (<500); C2 / mouse 363: 14 tiles (<20); C2 / mouse 364: 18 tiles (<20); C2 / mouse 365: 6 tiles (<20), 401 high-confidence neoplastic nuclei (<500); C2 / mouse 366: 9 tiles (<20)",
+          "nVehicleMice": 2,
+          "nPlxMice": 2,
+          "vehicleMean": null,
+          "plxMean": null,
+          "deltaPlxMinusVehicle": null,
+          "deltaRelativeToVehicle": null,
+          "allFourMouseDescriptiveDelta": null,
+          "allMouseDescriptiveDelta": null,
+          "permPTwoSided": null,
+          "nLabelPermutations": 0,
+          "lomoSignConsistent": null,
+          "lomoMin": null,
+          "lomoMax": null,
+          "rawMouseValues": [
+            {
+              "mouse": "363",
+              "arm": "PLX4720",
+              "value": 0.7643862167994181,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "365",
+              "arm": "PLX4720",
+              "value": 0.7828774849573771,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "364",
+              "arm": "Vehicle",
+              "value": 0.7758378386497498,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "366",
+              "arm": "Vehicle",
+              "value": 0.7612293163935343,
+              "eligible": true,
+              "cohort": "1",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "369",
+              "arm": "PLX4720",
+              "value": null,
+              "eligible": false,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "370",
+              "arm": "PLX4720",
+              "value": null,
+              "eligible": false,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "367",
+              "arm": "Vehicle",
+              "value": null,
+              "eligible": false,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            },
+            {
+              "mouse": "368",
+              "arm": "Vehicle",
+              "value": null,
+              "eligible": false,
+              "cohort": "2",
+              "clusterWeights": {
+                "0": 0.3333333333333333,
+                "1": 0.3333333333333333,
+                "2": 0.3333333333333333
+              }
+            }
+          ],
+          "experimentalUnit": "mouse",
+          "permutationDesign": "within_cohort_blocked_equal_cohort_effect",
+          "blockingFactor": null,
+          "blockWeighting": null,
+          "blockEffects": null,
+          "cohortEffects": {},
+          "exactBlockedPermutations": 0,
+          "equalCohortEffect": null
+        },
+        "decomposition": {
+          "population": "C0_C1_C2",
+          "includedClusters": [
+            0,
+            1,
+            2
+          ],
+          "metric": "eccentricity",
+          "status": "not_evaluable_incomplete_mouse_profiles",
+          "weightingBasis": "morphology_evaluable_tiles_for_metric",
+          "isPrimary": true,
+          "weightingDenominator": "tiles with an evaluable high-confidence neoplastic morphology value for this metric",
+          "method": "not performed",
+          "causalInterpretation": false,
+          "totalObservedDelta": null,
+          "compositionContribution": null,
+          "withinClusterContribution": null,
+          "covarianceRemainder": null,
+          "reconstructedDelta": null,
+          "reconstructionError": null,
+          "componentByCluster": [],
+          "armMeans": {},
+          "notEvaluableReason": "decomposition requires two Vehicle mice, found 0",
+          "interpretation": "Not evaluable because complete mouse profiles were unavailable; no component estimate is substituted.",
+          "equalClusterStandardizedDelta": null,
+          "observedMinusEqualStandardized": null,
+          "observedMinusStandardizedWarning": "Descriptive contrast only; it is not a pure or causal composition effect."
+        },
+        "populationIds": {
+          "observed": "observed_C0_C1_C2_mixture",
+          "equal_included": "equal_C0_C1_C2",
+          "equal_supported": null,
+          "classifier_included": "cellular_C0_C1_C2",
+          "classifier_supported": null,
+          "decomposition_included": "C0_C1_C2",
+          "decomposition_supported": null
+        },
+        "wholeTumourResponseClusters": [
+          0,
+          1,
+          2
+        ],
+        "sharedContextClusters": [
+          0,
+          1,
+          2
+        ],
+        "analysisMode": "combined_blocked_by_cohort"
+      }
+    },
+    {
+      "id": "conclusion",
+      "step": 7,
+      "title": "What do these eight mice allow us to conclude?",
+      "motivation": "The final claim must reflect biological evidence, experimental replication and technical uncertainty together.",
+      "question": "Which observations are supported, which are hypotheses, and what evidence is still needed?",
+      "method": "Use the Stage 24 claim matrix to triangulate restricted composition, cross-context morphology, matched-context effects, standardisation and support limitations while preserving mouse as the experimental unit.",
+      "result_prompt": "Show a claim-evidence matrix with Supported observation, Candidate hypothesis, Not established and Next validation columns. Keep technical sensitivity tables collapsible.",
+      "interpretation": "Current evidence supports heterogeneous tissue contexts and context-associated nuclear morphology. It does not establish a causal, cluster-invariant PLX-induced nuclear phenotype.",
+      "data_asset": "assets/cellular_tissue_restricted_analysis.json",
+      "chart_family": "claim_evidence_matrix",
+      "data_unit": "claim",
+      "result": {
+        "status": "hypothesis_generating",
+        "summary": "Stage 24 supports internal cross-mouse concordance between cellular image contexts and nuclear morphology, identifies only exploratory context-mixture differences, and does not establish one shared within-context PLX4720 effect.",
+        "interpretation": "Replication with more mice and arm-blinded pathologist review of the phenotype identities are required before causal, mechanistic, or clinical claims.",
+        "sourceAsset": "assets/cellular_tissue_restricted_analysis.json",
+        "evidenceKey": "claimMatrix",
+        "claims": [
+          {
+            "id": "cellular_contexts_have_distinct_morphology",
+            "evidenceKey": "crossClusterMorphology,classifiers",
+            "status": "supported_as_internal_cross_mouse_concordance",
+            "plainLanguageFinding": "The held-out-mouse context classifier was not evaluable: One or more leave-one-mouse-out test folds lack the complete run-local class set.",
+            "caution": "Contexts overlap and this is not independent pathology validation."
+          },
+          {
+            "id": "plx_changes_whole_tumour_response_mix",
+            "evidenceKey": "wholeTumourResponse.composition.armContrasts",
+            "status": "exploratory_candidate",
+            "plainLanguageFinding": "C0/C1/C2 whole-tumour response proportions differ descriptively between the two arms, including explicit zeroes for a treatment-emergent context.",
+            "caution": "Only two mice per arm; fractions are compositional. A context present only after treatment is an associated observation, not proof of mechanism or efficacy."
+          },
+          {
+            "id": "plx_changes_morphology_within_same_context",
+            "evidenceKey": "withinClusterEffects",
+            "status": "not_established",
+            "plainLanguageFinding": "Within-context directions are heterogeneous; contexts failing the declared coverage gate remain descriptive only.",
+            "caution": "Combined inference uses 36 exact label allocations blocked within cohort."
+          },
+          {
+            "id": "shared_context_observed_mixture_elongation",
+            "evidenceKey": "observedMixtureEffects.eccentricity:shared_context",
+            "status": "exploratory",
+            "plainLanguageFinding": "Shared-context C0/C1/C2 observed-mixture elongation delta was +0.0020.",
+            "caution": "This combines context mixture and within-context morphology and weights only morphology-evaluable tiles; the all-frozen-tile-share sensitivity is separate."
+          },
+          {
+            "id": "elongation_after_equal_context_weighting",
+            "evidenceKey": "standardizedEffects,decomposition",
+            "status": "not_established",
+            "plainLanguageFinding": "Equal C0/C1/C2 descriptive delta was N/A; no multi-context fully supported sensitivity was evaluable.",
+            "caution": "Decomposition composition term N/A is descriptive, not causal."
+          },
+          {
+            "id": "whole_tumour_response_observed_mixture_elongation",
+            "evidenceKey": "wholeTumourResponse.observedMixtureEffects.eccentricity",
+            "status": "exploratory",
+            "plainLanguageFinding": "Composition-sensitive C0/C1/C2 whole-tumour response elongation delta was +0.0020.",
+            "caution": "This mixes context emergence/proportions with residual-nucleus morphology. Equal weighting across all response contexts is not estimable when the emergent context is absent from Vehicle."
+          }
+        ],
+        "analysisMode": "combined_blocked_by_cohort",
+        "cohortEffects": {
+          "status": "available",
+          "blockingFactor": "cohort",
+          "effectWeighting": "equal_cohort_weight",
+          "composition": [
+            {
+              "cluster": 0,
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 0.1606355215602154,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.32189370812665746
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": -0.0006226650062266501
+                }
+              }
+            },
+            {
+              "cluster": 1,
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": -0.16188132308874897,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": -0.32376264617749795
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.0
+                }
+              }
+            },
+            {
+              "cluster": 2,
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 0.001245801528533568,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.0018689380508404834
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.0006226650062266526
+                }
+              }
+            }
+          ],
+          "withinCluster": [],
+          "observedMixture": [
+            {
+              "population": "observed_C0_C1_C2_mixture",
+              "metric": "eccentricity",
+              "weightingBasis": "morphology_evaluable_tiles_for_metric",
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 0.001966469963232742,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.010560079869197603
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": -0.006627139942732119
+                }
+              }
+            },
+            {
+              "population": "observed_C0_C1_C2_mixture",
+              "metric": "eccentricity",
+              "weightingBasis": "all_frozen_tiles_in_included_clusters",
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 0.0019471994585602004,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.01052153885985252
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": -0.006627139942732119
+                }
+              }
+            },
+            {
+              "population": "observed_C0_C1_C2_mixture",
+              "metric": "area_um2",
+              "weightingBasis": "morphology_evaluable_tiles_for_metric",
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 2.5350037833704278,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 1.9511565855760153
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 3.11885098116484
+                }
+              }
+            },
+            {
+              "population": "observed_C0_C1_C2_mixture",
+              "metric": "area_um2",
+              "weightingBasis": "all_frozen_tiles_in_included_clusters",
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 2.5336735317575823,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 1.9484960823503243
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 3.11885098116484
+                }
+              }
+            },
+            {
+              "population": "observed_C0_C1_C2_mixture",
+              "metric": "perim_um",
+              "weightingBasis": "morphology_evaluable_tiles_for_metric",
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 0.6533765712795851,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.5599061549310633
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.746846987628107
+                }
+              }
+            },
+            {
+              "population": "observed_C0_C1_C2_mixture",
+              "metric": "perim_um",
+              "weightingBasis": "all_frozen_tiles_in_included_clusters",
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 0.6526584752932063,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.5584699629583056
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.746846987628107
+                }
+              }
+            },
+            {
+              "population": "observed_C0_C1_C2_mixture",
+              "metric": "compactness",
+              "weightingBasis": "morphology_evaluable_tiles_for_metric",
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 0.001420673033228348,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": -0.0004849698534479252
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.003326315919904621
+                }
+              }
+            },
+            {
+              "population": "observed_C0_C1_C2_mixture",
+              "metric": "compactness",
+              "weightingBasis": "all_frozen_tiles_in_included_clusters",
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 0.0014285475600974706,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": -0.0004692207997096798
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.003326315919904621
+                }
+              }
+            },
+            {
+              "population": "observed_C0_C1_C2_mixture",
+              "metric": "solidity",
+              "weightingBasis": "morphology_evaluable_tiles_for_metric",
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 0.0015161599367751744,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.0017840254764195373
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.0012482943971308114
+                }
+              }
+            },
+            {
+              "population": "observed_C0_C1_C2_mixture",
+              "metric": "solidity",
+              "weightingBasis": "all_frozen_tiles_in_included_clusters",
+              "exactBlockedPermutations": 36,
+              "equalCohortEffect": 0.0015165233392346322,
+              "cohortEffects": {
+                "1": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.001784752281338453
+                },
+                "2": {
+                  "n_vehicle_mice": 2,
+                  "n_plx_mice": 2,
+                  "delta_plx_minus_vehicle": 0.0012482943971308114
+                }
+              }
+            }
+          ],
+          "standardized": []
+        },
+        "pooledInference": {
+          "status": "not_performed",
+          "reason": "No naive 4-vs-4 pooled inference is performed. Treatment labels are permuted within each 2-vs-2 cohort and cohort-specific effects receive equal weight."
+        }
+      }
+    }
+  ],
+  "chartRules": {
+    "unordered_categories": [
+      "cluster",
+      "tissue_environment",
+      "mouse_id"
+    ],
+    "forbidden_for_unordered_categories": [
+      "line",
+      "slope",
+      "connected_scatter",
+      "smoothed_trend"
+    ],
+    "required_for_treatment_inference": "Show the four mouse-level observations wherever a treatment contrast is presented.",
+    "missing_data": "Render unsupported estimates as N/A with the reason; never coerce missing or insufficient evidence to zero.",
+    "colour": "Treatment colour and cluster colour encode different concepts and must not be reused interchangeably.",
+    "tooltips": "Every interactive mark must state metric, unit, aggregation level, denominator and sample coverage.",
+    "technical_detail": "K selection, clustering stability, sensitivity grids and implementation parameters belong in Methods & QC or collapsible advanced detail."
+  },
+  "navigation": [
+    {
+      "label": "Overview",
+      "href": "index.html"
+    },
+    {
+      "label": "Tissue environments",
+      "href": "phenotypes.html"
+    },
+    {
+      "label": "Treatment evidence",
+      "href": "experiments.html"
+    },
+    {
+      "label": "Explore slides",
+      "href": "scatter.html"
+    },
+    {
+      "label": "Nuclear morphology",
+      "href": "cells.html"
+    },
+    {
+      "label": "Methods & QC",
+      "href": "cluster_selection.html"
+    }
+  ],
+  "claimEvidence": [
+    {
+      "id": "cellular_contexts_have_distinct_morphology",
+      "status": "supported_as_internal_cross_mouse_concordance",
+      "claim": "cellular contexts have distinct morphology",
+      "evidence": "The held-out-mouse context classifier was not evaluable: One or more leave-one-mouse-out test folds lack the complete run-local class set.",
+      "confidence": "Contexts overlap and this is not independent pathology validation.",
+      "evidenceKey": "crossClusterMorphology,classifiers",
+      "sourceAsset": "assets/cellular_tissue_restricted_analysis.json"
+    },
+    {
+      "id": "plx_changes_whole_tumour_response_mix",
+      "status": "exploratory_candidate",
+      "claim": "plx changes whole tumour response mix",
+      "evidence": "C0/C1/C2 whole-tumour response proportions differ descriptively between the two arms, including explicit zeroes for a treatment-emergent context.",
+      "confidence": "Only two mice per arm; fractions are compositional. A context present only after treatment is an associated observation, not proof of mechanism or efficacy.",
+      "evidenceKey": "wholeTumourResponse.composition.armContrasts",
+      "sourceAsset": "assets/cellular_tissue_restricted_analysis.json"
+    },
+    {
+      "id": "plx_changes_morphology_within_same_context",
+      "status": "not_established",
+      "claim": "plx changes morphology within same context",
+      "evidence": "Within-context directions are heterogeneous; contexts failing the declared coverage gate remain descriptive only.",
+      "confidence": "Combined inference uses 36 exact label allocations blocked within cohort.",
+      "evidenceKey": "withinClusterEffects",
+      "sourceAsset": "assets/cellular_tissue_restricted_analysis.json"
+    },
+    {
+      "id": "shared_context_observed_mixture_elongation",
+      "status": "exploratory",
+      "claim": "shared context observed mixture elongation",
+      "evidence": "Shared-context C0/C1/C2 observed-mixture elongation delta was +0.0020.",
+      "confidence": "This combines context mixture and within-context morphology and weights only morphology-evaluable tiles; the all-frozen-tile-share sensitivity is separate.",
+      "evidenceKey": "observedMixtureEffects.eccentricity:shared_context",
+      "sourceAsset": "assets/cellular_tissue_restricted_analysis.json"
+    },
+    {
+      "id": "elongation_after_equal_context_weighting",
+      "status": "not_established",
+      "claim": "elongation after equal context weighting",
+      "evidence": "Equal C0/C1/C2 descriptive delta was N/A; no multi-context fully supported sensitivity was evaluable.",
+      "confidence": "Decomposition composition term N/A is descriptive, not causal.",
+      "evidenceKey": "standardizedEffects,decomposition",
+      "sourceAsset": "assets/cellular_tissue_restricted_analysis.json"
+    },
+    {
+      "id": "whole_tumour_response_observed_mixture_elongation",
+      "status": "exploratory",
+      "claim": "whole tumour response observed mixture elongation",
+      "evidence": "Composition-sensitive C0/C1/C2 whole-tumour response elongation delta was +0.0020.",
+      "confidence": "This mixes context emergence/proportions with residual-nucleus morphology. Equal weighting across all response contexts is not estimable when the emergent context is absent from Vehicle.",
+      "evidenceKey": "wholeTumourResponse.observedMixtureEffects.eccentricity",
+      "sourceAsset": "assets/cellular_tissue_restricted_analysis.json"
+    }
+  ],
+  "populationContract": {
+    "primaryTreatmentPopulation": "objective_specific_populations",
+    "includedClusters": [
+      0,
+      1,
+      2
+    ],
+    "sharedContextIncludedClusters": [
+      0,
+      1,
+      2
+    ],
+    "fullySupportedClusters": [],
+    "excludedFromPrimaryTreatmentEstimands": [
+      3,
+      4,
+      5
+    ],
+    "excludedFromMatchedContextMorphologyInference": [
+      3,
+      4,
+      5
+    ],
+    "cohort": "combined",
+    "roleGate": {
+      "gate": "strict_cellular",
+      "roles": [
+        "cellular_tissue"
+      ],
+      "role_map": {
+        "0": "cellular_tissue",
+        "1": "cellular_tissue",
+        "2": "cellular_tissue",
+        "3": "unknown_mixed",
+        "4": "pale_low_cellularity",
+        "5": "background_section_edge"
+      },
+      "sharedContext": {
+        "key": "shared_context",
+        "roles": [
+          "cellular_tissue"
+        ],
+        "clusters": [
+          0,
+          1,
+          2
+        ]
+      },
+      "morphologyEvaluable": {
+        "key": "morphology_evaluable",
+        "roles": [
+          "cellular_tissue"
+        ],
+        "clusters": [
+          0,
+          1,
+          2
+        ]
+      },
+      "wholeTumourResponse": {
+        "key": "whole_tumour_response",
+        "roles": [
+          "cellular_tissue"
+        ],
+        "clusters": [
+          0,
+          1,
+          2
+        ]
+      },
+      "emergentTissueResponse": {
+        "key": "emergent_tissue_response",
+        "roles": [],
+        "clusters": []
+      },
+      "backgroundClusters": [
+        5
+      ],
+      "uncertainClusters": [
+        3
+      ],
+      "resolutionEvidence": {
+        "source": "config/cluster_roles_combined.json",
+        "resolved": {
+          "0": {
+            "snapshot_cluster": "0",
+            "role": "cellular_tissue",
+            "anchor_agreement": 1.0,
+            "n_anchors": 12
+          },
+          "1": {
+            "snapshot_cluster": "1",
+            "role": "cellular_tissue",
+            "anchor_agreement": 1.0,
+            "n_anchors": 11
+          },
+          "2": {
+            "snapshot_cluster": "2",
+            "role": "cellular_tissue",
+            "anchor_agreement": 1.0,
+            "n_anchors": 16
+          },
+          "3": {
+            "snapshot_cluster": "3",
+            "role": "unknown_mixed",
+            "anchor_agreement": 1.0,
+            "n_anchors": 14
+          },
+          "4": {
+            "snapshot_cluster": "4",
+            "role": "pale_low_cellularity",
+            "anchor_agreement": 1.0,
+            "n_anchors": 15
+          },
+          "5": {
+            "snapshot_cluster": "5",
+            "role": "background_section_edge",
+            "anchor_agreement": 1.0,
+            "n_anchors": 14
+          }
+        },
+        "unreviewed": []
+      },
+      "semanticReviewProvenance": {
+        "status": "provisional_unreviewed_pathologist",
+        "reviewerType": "technical_blinded_non_pathologist",
+        "armBlinded": true,
+        "outcomesNotUsed": true,
+        "pathologistReviewRequired": true,
+        "initialBlindedReview": null,
+        "semanticAmendment": null
+      },
+      "config": "config/cluster_roles_combined.json"
+    },
+    "restrictionStatus": "post_hoc_exploratory",
+    "postHoc": true,
+    "restrictionTiming": "Chosen after phenotype and earlier-result review, then frozen before Stage24 recomputed the restricted contrasts.",
+    "studyLevelPrespecified": false,
+    "pathologyConfirmed": false,
+    "exclusionRationale": {
+      "3": "Excluded by the active cellular role gate (resolved role: unknown_mixed); retained as a secondary QC reference.",
+      "4": "Excluded by the active cellular role gate (resolved role: pale_low_cellularity); retained as a secondary QC reference.",
+      "5": "Excluded by the active cellular role gate (resolved role: background_section_edge); retained as a secondary QC reference."
+    },
+    "matchedContextExclusionRationale": {
+      "3": "Excluded by the active cellular role gate (resolved role: unknown_mixed); retained as a secondary QC reference.",
+      "4": "Excluded by the active cellular role gate (resolved role: pale_low_cellularity); retained as a secondary QC reference.",
+      "5": "Excluded by the active cellular role gate (resolved role: background_section_edge); retained as a secondary QC reference."
+    },
+    "populationScopeNote": "includedClusters is the legacy shared-context compatibility population; analysisPopulations is authoritative for each objective.",
+    "experimentalUnit": "mouse",
+    "nMicePerArm": 4,
+    "nMicePerArmPerCohort": 2,
+    "nCohorts": 2,
+    "pooledNucleiUsedForInference": false,
+    "nucleusGate": "matched centroid assignment; CellViT neoplastic; non-edge; type probability >=0.70; finite area/compactness/solidity/eccentricity; area 5–250 µm²; compactness >=0.15; solidity >=0.50; equivalent diameter <=20 µm",
+    "aggregationHierarchy": "nucleus -> within-tile median -> equal tiles within mouse -> mouse-level arm contrast -> equal-cohort mean",
+    "boundaryPolicy": "all_centroid_assigned; nuclei near cluster boundaries are retained in the Stage24 primary",
+    "supportThreshold": {
+      "minimumFrozenTilesPerMouseCluster": 20,
+      "minimumHighConfidenceNeoplasticNucleiPerMouseCluster": 500,
+      "application": "Required in every mouse for full within-cluster inference; included contexts outside the fully supported subset (C0/C1/C2) remain descriptive."
+    },
+    "currentRunCoverage": [
+      {
+        "mouse": "363",
+        "cohort": "1",
+        "nTilesWithMetric": 1487,
+        "nAllIncludedTiles": 1495
+      },
+      {
+        "mouse": "364",
+        "cohort": "1",
+        "nTilesWithMetric": 4393,
+        "nAllIncludedTiles": 4393
+      },
+      {
+        "mouse": "365",
+        "cohort": "1",
+        "nTilesWithMetric": 7563,
+        "nAllIncludedTiles": 7563
+      },
+      {
+        "mouse": "366",
+        "cohort": "1",
+        "nTilesWithMetric": 3875,
+        "nAllIncludedTiles": 3875
+      },
+      {
+        "mouse": "367",
+        "cohort": "2",
+        "nTilesWithMetric": 803,
+        "nAllIncludedTiles": 803
+      },
+      {
+        "mouse": "368",
+        "cohort": "2",
+        "nTilesWithMetric": 517,
+        "nAllIncludedTiles": 517
+      },
+      {
+        "mouse": "369",
+        "cohort": "2",
+        "nTilesWithMetric": 1021,
+        "nAllIncludedTiles": 1021
+      },
+      {
+        "mouse": "370",
+        "cohort": "2",
+        "nTilesWithMetric": 488,
+        "nAllIncludedTiles": 488
+      }
+    ],
+    "supportByCluster": [
+      {
+        "cluster": 0,
+        "status": "limited",
+        "minimumTiles": 20,
+        "minimumHighConfidenceNeoplastic": 500,
+        "perMouse": [
+          {
+            "mouse": "363",
+            "arm": "PLX4720",
+            "cohort": "1",
+            "nTiles": 1141,
+            "nTilesWithMetric": 1141,
+            "nHighConfidenceNeoplastic": 89820,
+            "eligible": true
+          },
+          {
+            "mouse": "364",
+            "arm": "Vehicle",
+            "cohort": "1",
+            "nTiles": 1727,
+            "nTilesWithMetric": 1727,
+            "nHighConfidenceNeoplastic": 150490,
+            "eligible": true
+          },
+          {
+            "mouse": "365",
+            "arm": "PLX4720",
+            "cohort": "1",
+            "nTiles": 5589,
+            "nTilesWithMetric": 5589,
+            "nHighConfidenceNeoplastic": 499603,
+            "eligible": true
+          },
+          {
+            "mouse": "366",
+            "arm": "Vehicle",
+            "cohort": "1",
+            "nTiles": 1803,
+            "nTilesWithMetric": 1803,
+            "nHighConfidenceNeoplastic": 169720,
+            "eligible": true
+          },
+          {
+            "mouse": "367",
+            "arm": "Vehicle",
+            "cohort": "2",
+            "nTiles": 1,
+            "nTilesWithMetric": 1,
+            "nHighConfidenceNeoplastic": 85,
+            "eligible": false
+          },
+          {
+            "mouse": "368",
+            "arm": "Vehicle",
+            "cohort": "2",
+            "nTiles": 0,
+            "nTilesWithMetric": 0,
+            "nHighConfidenceNeoplastic": 0,
+            "eligible": false
+          },
+          {
+            "mouse": "369",
+            "arm": "PLX4720",
+            "cohort": "2",
+            "nTiles": 0,
+            "nTilesWithMetric": 0,
+            "nHighConfidenceNeoplastic": 0,
+            "eligible": false
+          },
+          {
+            "mouse": "370",
+            "arm": "PLX4720",
+            "cohort": "2",
+            "nTiles": 0,
+            "nTilesWithMetric": 0,
+            "nHighConfidenceNeoplastic": 0,
+            "eligible": false
+          }
+        ],
+        "reason": "367: 1 tiles, 85 nuclei; 368: 0 tiles, 0 nuclei; 369: 0 tiles, 0 nuclei; 370: 0 tiles, 0 nuclei"
+      },
+      {
+        "cluster": 1,
+        "status": "limited",
+        "minimumTiles": 20,
+        "minimumHighConfidenceNeoplastic": 500,
+        "perMouse": [
+          {
+            "mouse": "363",
+            "arm": "PLX4720",
+            "cohort": "1",
+            "nTiles": 340,
+            "nTilesWithMetric": 332,
+            "nHighConfidenceNeoplastic": 16308,
+            "eligible": true
+          },
+          {
+            "mouse": "364",
+            "arm": "Vehicle",
+            "cohort": "1",
+            "nTiles": 2648,
+            "nTilesWithMetric": 2648,
+            "nHighConfidenceNeoplastic": 210832,
+            "eligible": true
+          },
+          {
+            "mouse": "365",
+            "arm": "PLX4720",
+            "cohort": "1",
+            "nTiles": 1968,
+            "nTilesWithMetric": 1968,
+            "nHighConfidenceNeoplastic": 147008,
+            "eligible": true
+          },
+          {
+            "mouse": "366",
+            "arm": "Vehicle",
+            "cohort": "1",
+            "nTiles": 2063,
+            "nTilesWithMetric": 2063,
+            "nHighConfidenceNeoplastic": 168320,
+            "eligible": true
+          },
+          {
+            "mouse": "367",
+            "arm": "Vehicle",
+            "cohort": "2",
+            "nTiles": 0,
+            "nTilesWithMetric": 0,
+            "nHighConfidenceNeoplastic": 0,
+            "eligible": false
+          },
+          {
+            "mouse": "368",
+            "arm": "Vehicle",
+            "cohort": "2",
+            "nTiles": 0,
+            "nTilesWithMetric": 0,
+            "nHighConfidenceNeoplastic": 0,
+            "eligible": false
+          },
+          {
+            "mouse": "369",
+            "arm": "PLX4720",
+            "cohort": "2",
+            "nTiles": 0,
+            "nTilesWithMetric": 0,
+            "nHighConfidenceNeoplastic": 0,
+            "eligible": false
+          },
+          {
+            "mouse": "370",
+            "arm": "PLX4720",
+            "cohort": "2",
+            "nTiles": 0,
+            "nTilesWithMetric": 0,
+            "nHighConfidenceNeoplastic": 0,
+            "eligible": false
+          }
+        ],
+        "reason": "367: 0 tiles, 0 nuclei; 368: 0 tiles, 0 nuclei; 369: 0 tiles, 0 nuclei; 370: 0 tiles, 0 nuclei"
+      },
+      {
+        "cluster": 2,
+        "status": "limited",
+        "minimumTiles": 20,
+        "minimumHighConfidenceNeoplastic": 500,
+        "perMouse": [
+          {
+            "mouse": "363",
+            "arm": "PLX4720",
+            "cohort": "1",
+            "nTiles": 14,
+            "nTilesWithMetric": 14,
+            "nHighConfidenceNeoplastic": 927,
+            "eligible": false
+          },
+          {
+            "mouse": "364",
+            "arm": "Vehicle",
+            "cohort": "1",
+            "nTiles": 18,
+            "nTilesWithMetric": 18,
+            "nHighConfidenceNeoplastic": 1136,
+            "eligible": false
+          },
+          {
+            "mouse": "365",
+            "arm": "PLX4720",
+            "cohort": "1",
+            "nTiles": 6,
+            "nTilesWithMetric": 6,
+            "nHighConfidenceNeoplastic": 401,
+            "eligible": false
+          },
+          {
+            "mouse": "366",
+            "arm": "Vehicle",
+            "cohort": "1",
+            "nTiles": 9,
+            "nTilesWithMetric": 9,
+            "nHighConfidenceNeoplastic": 606,
+            "eligible": false
+          },
+          {
+            "mouse": "367",
+            "arm": "Vehicle",
+            "cohort": "2",
+            "nTiles": 802,
+            "nTilesWithMetric": 802,
+            "nHighConfidenceNeoplastic": 54740,
+            "eligible": true
+          },
+          {
+            "mouse": "368",
+            "arm": "Vehicle",
+            "cohort": "2",
+            "nTiles": 517,
+            "nTilesWithMetric": 517,
+            "nHighConfidenceNeoplastic": 36792,
+            "eligible": true
+          },
+          {
+            "mouse": "369",
+            "arm": "PLX4720",
+            "cohort": "2",
+            "nTiles": 1021,
+            "nTilesWithMetric": 1021,
+            "nHighConfidenceNeoplastic": 64559,
+            "eligible": true
+          },
+          {
+            "mouse": "370",
+            "arm": "PLX4720",
+            "cohort": "2",
+            "nTiles": 488,
+            "nTilesWithMetric": 488,
+            "nHighConfidenceNeoplastic": 30114,
+            "eligible": true
+          }
+        ],
+        "reason": "363: 14 tiles, 927 nuclei; 364: 18 tiles, 1136 nuclei; 365: 6 tiles, 401 nuclei; 366: 9 tiles, 606 nuclei"
+      }
+    ],
+    "coverageLimitedClusters": [
+      0,
+      1,
+      2
+    ]
+  },
+  "includedClusters": [
+    0,
+    1,
+    2
+  ],
+  "fullySupportedClusters": [],
+  "excludedFromPrimaryTreatmentEstimands": [
+    3,
+    4,
+    5
+  ],
+  "populationIds": {
+    "observed": "observed_C0_C1_C2_mixture",
+    "equal_included": "equal_C0_C1_C2",
+    "equal_supported": null,
+    "classifier_included": "cellular_C0_C1_C2",
+    "classifier_supported": null,
+    "decomposition_included": "C0_C1_C2",
+    "decomposition_supported": null
+  },
+  "cohortEffects": {
+    "status": "available",
+    "blockingFactor": "cohort",
+    "effectWeighting": "equal_cohort_weight",
+    "composition": [
+      {
+        "cluster": 0,
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.1606355215602154,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.32189370812665746
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": -0.0006226650062266501
+          }
+        }
+      },
+      {
+        "cluster": 1,
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": -0.16188132308874897,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": -0.32376264617749795
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.0
+          }
+        }
+      },
+      {
+        "cluster": 2,
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.001245801528533568,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.0018689380508404834
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.0006226650062266526
+          }
+        }
+      }
+    ],
+    "withinCluster": [],
+    "observedMixture": [
+      {
+        "population": "observed_C0_C1_C2_mixture",
+        "metric": "eccentricity",
+        "weightingBasis": "morphology_evaluable_tiles_for_metric",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.001966469963232742,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.010560079869197603
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": -0.006627139942732119
+          }
+        }
+      },
+      {
+        "population": "observed_C0_C1_C2_mixture",
+        "metric": "eccentricity",
+        "weightingBasis": "all_frozen_tiles_in_included_clusters",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.0019471994585602004,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.01052153885985252
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": -0.006627139942732119
+          }
+        }
+      },
+      {
+        "population": "observed_C0_C1_C2_mixture",
+        "metric": "area_um2",
+        "weightingBasis": "morphology_evaluable_tiles_for_metric",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 2.5350037833704278,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 1.9511565855760153
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 3.11885098116484
+          }
+        }
+      },
+      {
+        "population": "observed_C0_C1_C2_mixture",
+        "metric": "area_um2",
+        "weightingBasis": "all_frozen_tiles_in_included_clusters",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 2.5336735317575823,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 1.9484960823503243
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 3.11885098116484
+          }
+        }
+      },
+      {
+        "population": "observed_C0_C1_C2_mixture",
+        "metric": "perim_um",
+        "weightingBasis": "morphology_evaluable_tiles_for_metric",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.6533765712795851,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.5599061549310633
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.746846987628107
+          }
+        }
+      },
+      {
+        "population": "observed_C0_C1_C2_mixture",
+        "metric": "perim_um",
+        "weightingBasis": "all_frozen_tiles_in_included_clusters",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.6526584752932063,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.5584699629583056
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.746846987628107
+          }
+        }
+      },
+      {
+        "population": "observed_C0_C1_C2_mixture",
+        "metric": "compactness",
+        "weightingBasis": "morphology_evaluable_tiles_for_metric",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.001420673033228348,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": -0.0004849698534479252
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.003326315919904621
+          }
+        }
+      },
+      {
+        "population": "observed_C0_C1_C2_mixture",
+        "metric": "compactness",
+        "weightingBasis": "all_frozen_tiles_in_included_clusters",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.0014285475600974706,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": -0.0004692207997096798
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.003326315919904621
+          }
+        }
+      },
+      {
+        "population": "observed_C0_C1_C2_mixture",
+        "metric": "solidity",
+        "weightingBasis": "morphology_evaluable_tiles_for_metric",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.0015161599367751744,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.0017840254764195373
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.0012482943971308114
+          }
+        }
+      },
+      {
+        "population": "observed_C0_C1_C2_mixture",
+        "metric": "solidity",
+        "weightingBasis": "all_frozen_tiles_in_included_clusters",
+        "exactBlockedPermutations": 36,
+        "equalCohortEffect": 0.0015165233392346322,
+        "cohortEffects": {
+          "1": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.001784752281338453
+          },
+          "2": {
+            "n_vehicle_mice": 2,
+            "n_plx_mice": 2,
+            "delta_plx_minus_vehicle": 0.0012482943971308114
+          }
+        }
+      }
+    ],
+    "standardized": []
+  },
+  "pooledInference": {
+    "status": "not_performed",
+    "reason": "No naive 4-vs-4 pooled inference is performed. Treatment labels are permuted within each 2-vs-2 cohort and cohort-specific effects receive equal weight."
+  },
+  "resultLayer": {
+    "tissueEnvironmentIdentity": "assets/cluster_biology.json",
+    "treatmentQuestions": "assets/cellular_tissue_restricted_analysis.json",
+    "stage16Or19TreatmentFallbackAllowed": false
+  },
+  "dataStatus": {
+    "stage16WholeTumour": true,
+    "stage19Stratified": true,
+    "stage22ClusterBiology": true,
+    "stage24RestrictedTreatment": true,
+    "treatmentResultClaimsReady": true
+  },
+  "limitations": [
+    "Only 8 mice are available; each cohort has two mice and one WSI per treatment arm.",
+    "The C0–C1–C2 treatment restriction is post-hoc and exploratory; it must be confirmed in an independently specified and replicated analysis.",
+    "Coverage-limited included contexts remain descriptive: C0: 367: 1 tiles, 85 nuclei; 368: 0 tiles, 0 nuclei; 369: 0 tiles, 0 nuclei; 370: 0 tiles, 0 nuclei; C1: 367: 0 tiles, 0 nuclei; 368: 0 tiles, 0 nuclei; 369: 0 tiles, 0 nuclei; 370: 0 tiles, 0 nuclei; C2: 363: 14 tiles, 927 nuclei; 364: 18 tiles, 1136 nuclei; 365: 6 tiles, 401 nuclei; 366: 9 tiles, 606 nuclei",
+    "Mouse is the experimental unit; nuclei and tiles are never treatment replicates.",
+    "Combined exact randomization uses 36 legal within-cohort label allocations; a naive pooled 4-vs-4 analysis is not performed.",
+    "Restricted cluster fractions are compositional and cannot be interpreted independently.",
+    "Observed-mixture effects combine context proportions and within-context morphology.",
+    "The Kitagawa/Oaxaca decomposition and observed-minus-standardized contrast are descriptive, non-causal algebra.",
+    "Classifiers use tiles from the same H&E sections used to define clusters and are not independent pathology validation.",
+    "All cluster identities remain provisional pending pathologist review.",
+    "Only 8 mice are available, with one WSI per mouse.",
+    "Clusters outside the provenance-resolved morphology-evaluable role gate have neoplastic morphology shown as N/A, not zero.",
+    "Cluster labels and nuclear measurements originate from the same H&E sections; classification is internal concordance, not independent validation.",
+    "No anatomical identity, lymph-node identity, necrosis, or drug-affected label is assigned without pathologist review.",
+    "The all-nuclei pooled view overweights large slides and nucleus-rich tiles and is descriptive only.",
+    "Area and perimeter, and several outline features, are correlated; they are complementary views rather than independent confirmations."
+  ],
+  "provenance": {
+    "storyConfig": "config/webapp_story.json",
+    "storyConfigSha256": "f9b6a467fdfa3c02e782d6964035281bb2c039d1dda910cb1cb986ffddde8c3f",
+    "clusterRunId": "kselect_combined_20260801_v1",
+    "selectedK": 6,
+    "tilesHash": "84137ccde0b5aecea603edccbeb8fc91113f74322c5afa2bb683d089f0ba6d70",
+    "stage24": {
+      "asset": "assets/cellular_tissue_restricted_analysis.json",
+      "analysisRunId": "cellular_tissue_restricted_kselect_combined_20260801_v1",
+      "clusterRunId": "kselect_combined_20260801_v1",
+      "selectedK": 6,
+      "tilesHash": "84137ccde0b5aecea603edccbeb8fc91113f74322c5afa2bb683d089f0ba6d70",
+      "sha256": "aa905a762f03c7a2a946a53c633a897436c0ae4def54b20ac245f413e6f747ac"
+    },
+    "sources": [
+      "assets/cluster_biology.json",
+      "assets/cellular_tissue_restricted_analysis.json"
+    ]
+  }
+}
