@@ -1,10 +1,12 @@
-const ASSET_V="20260801023108";
+const ASSET_V="20260825175521";
 
 // shared helpers for the melanoma UNI-v2 explorer
 const COHORT_REGISTRY = Object.freeze({
   group_1:Object.freeze({id:"group_1",label:"Group 1",assetRoot:"assets",context:"WM2664"}),
-  group_2:Object.freeze({id:"group_2",label:"Group 2",assetRoot:"assets/group_2",context:"Group 2's cell line · name pending colleague confirmation"}),
-  combined:Object.freeze({id:"combined",label:"Combined",assetRoot:"assets/combined",context:"cohort-blocked cross-cohort synthesis"})
+  group_2:Object.freeze({id:"group_2",label:"Group 2 Archive",assetRoot:"assets/group_2",context:"Group 2's cell line · archived original scan · name pending colleague confirmation"}),
+  group_2_rescanned:Object.freeze({id:"group_2_rescanned",label:"Group 2 Rescanned",assetRoot:"assets/group_2_rescanned",context:"Group 2's cell line · rescanned WSIs · name pending colleague confirmation"}),
+  combined:Object.freeze({id:"combined",label:"Combined (Archive)",assetRoot:"assets/combined",context:"cohort-blocked synthesis of Group 1 and the archived Group 2 scan"}),
+  combined_rescanned:Object.freeze({id:"combined_rescanned",label:"Group 1 + Group 2 Rescanned",assetRoot:"assets/combined_rescanned",context:"cohort-blocked cross-cohort synthesis"})
 });
 const COHORT_QUERY_KEY="cohort";
 function requestedCohortId(){
@@ -133,14 +135,14 @@ function syncCohortChrome(){
   let wrap=header.querySelector("[data-cohort-switcher]");
   if(!wrap){
     wrap=document.createElement("div");wrap.className="cohort-switcher";wrap.dataset.cohortSwitcher="";
-    wrap.innerHTML='<label for="cohort_selector">Dataset</label><select id="cohort_selector" aria-label="Select dataset"><option value="group_1">Group 1</option><option value="group_2">Group 2</option><option value="combined">Combined</option></select><span class="cohort-context" data-cohort-context></span>';
+    wrap.innerHTML='<label for="cohort_selector">Dataset</label><select id="cohort_selector" aria-label="Select dataset"><option value="group_1">Group 1</option><option value="group_2">Group 2 Archive</option><option value="group_2_rescanned">Group 2 Rescanned</option><option value="combined_rescanned">Group 1 + Group 2 Rescanned</option></select><span class="cohort-context" data-cohort-context></span>';
     const banner=header.querySelector(".banner");header.insertBefore(wrap,banner||null);
   }
   const selector=wrap.querySelector("select"),context=wrap.querySelector("[data-cohort-context]");
   if(selector){selector.value=ACTIVE_COHORT_ID;selector.onchange=()=>{const url=new URL(window.location.href);url.searchParams.set(COHORT_QUERY_KEY,selector.value);window.location.assign(url.toString())}}
   if(context)context.textContent=activeCohort().context;
   const banner=header.querySelector(".banner");
-  if(banner)banner.textContent=ACTIVE_COHORT_ID==="group_1"?"Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered":ACTIVE_COHORT_ID==="combined"?"Preliminary · 8 WSIs across 2 cohorts · cohort-blocked, hypothesis-generating":"Preliminary · Group 2 · n = 2 mice/arm · hypothesis-generating";
+  if(banner)banner.textContent=ACTIVE_COHORT_ID==="group_1"?"Preliminary · n = 2 mice/arm · hypothesis-generating, not statistically powered":(ACTIVE_COHORT_ID==="combined"||ACTIVE_COHORT_ID==="combined_rescanned")?"Preliminary · 8 WSIs across 2 cohorts · cohort-blocked, hypothesis-generating":ACTIVE_COHORT_ID==="group_2_rescanned"?"Preliminary · Group 2 Rescanned · n = 2 mice/arm · hypothesis-generating":"Preliminary · Group 2 Archive · n = 2 mice/arm · hypothesis-generating";
   document.querySelectorAll('a[href]').forEach(a=>{const raw=a.getAttribute("href");if(!raw||raw.startsWith("#"))return;try{const url=new URL(raw,window.location.href);if(url.origin===window.location.origin&&url.pathname.endsWith(".html"))a.href=cohortHref(raw)}catch(_){}});
 }
 document.addEventListener("click",event=>{

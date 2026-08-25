@@ -1,0 +1,119 @@
+{
+  "clusters": {
+    "0": [
+      {
+        "tileId": "367_000845",
+        "mouse": "367",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C0_0_367_000845.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "367_000684",
+        "mouse": "367",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C0_1_367_000684.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "367_000245",
+        "mouse": "367",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C0_2_367_000245.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ],
+    "1": [
+      {
+        "tileId": "370_000537",
+        "mouse": "370",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C1_0_370_000537.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "370_000161",
+        "mouse": "370",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C1_1_370_000161.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "368_000875",
+        "mouse": "368",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C1_2_368_000875.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ],
+    "2": [
+      {
+        "tileId": "369_001708",
+        "mouse": "369",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C2_0_369_001708.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "369_001831",
+        "mouse": "369",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C2_1_369_001831.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "369_001803",
+        "mouse": "369",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C2_2_369_001803.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ],
+    "3": [
+      {
+        "tileId": "369_000184",
+        "mouse": "369",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C3_0_369_000184.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "367_000763",
+        "mouse": "367",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C3_1_367_000763.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "368_000225",
+        "mouse": "368",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C3_2_368_000225.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ],
+    "4": [
+      {
+        "tileId": "370_000470",
+        "mouse": "370",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C4_0_370_000470.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "368_000425",
+        "mouse": "368",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C4_1_368_000425.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "370_001399",
+        "mouse": "370",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C4_2_370_001399.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ]
+  }
+}

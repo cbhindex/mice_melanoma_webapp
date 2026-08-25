@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8">
-<title>Nuclear morphology · whole-tumour baseline</title><link rel="stylesheet" href="style.css?v=20260801023108">
+<title>Nuclear morphology · whole-tumour baseline</title><link rel="stylesheet" href="style.css?v=20260825175521">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
 .cellstory{max-width:1120px;margin:0 auto;padding:24px 20px 64px}.cellhero{border:1px solid #c9d9f0;border-radius:12px;padding:20px;background:#f7faff;margin-bottom:18px}
@@ -20,8 +20,9 @@
     <label for="cohort_selector">Dataset</label>
     <select id="cohort_selector" aria-label="Select dataset">
       <option value="group_1">Group 1</option>
-      <option value="group_2">Group 2</option>
-      <option value="combined">Combined</option>
+      <option value="group_2">Group 2 Archive</option>
+      <option value="group_2_rescanned">Group 2 Rescanned</option>
+      <option value="combined_rescanned">Group 1 + Group 2 Rescanned</option>
     </select>
     <span class="cohort-context" data-cohort-context></span>
   </div>
@@ -68,7 +69,7 @@
   <p><a href="phenotypes.html">Tissue environments</a> asks whether the image phenotypes contain distinguishable nuclei. <a href="experiments.html#q5">Treatment evidence</a> then compares Vehicle and PLX mice within matched environments.</p>
   <p class="unit-note" id="cell_study_limit"><b>Study limit:</b> n = 2 mice per arm. The mouse is the experimental unit; all results are descriptive and hypothesis-generating.</p></section>
 </main>
-<script src="app.js?v=20260801023108"></script><script>
+<script src="app.js?v=20260825175521"></script><script>
 let S,CM;const $=id=>document.getElementById(id),PCFG={responsive:true,displaylogo:false,displayModeBar:false};
 function cellProvenance(payload){return payload&&typeof payload==="object"?(payload.provenance||payload.atlas_provenance||{}):{};}
 const METRICS={
@@ -106,7 +107,7 @@ function assertCellStatsAlignment(meta,stats){
 }
 function setLogicCopy(id,label,text){$(id).innerHTML=`<span class="logic-label">${label}</span>${text}`;}
 function applyCombinedStudyCopy(){
-  if(ACTIVE_COHORT_ID!=="combined")return; // Group 1 and parallel Group 2 retain the original four-mouse presentation
+  if(!["combined","combined_rescanned"].includes(ACTIVE_COHORT_ID))return; // single-cohort views retain the original four-mouse presentation
   setLogicCopy("composition_interpretation","Interpretation","Differences among these eight mouse bars describe whole-slide cellular composition. They do not establish a treatment effect, and they do not identify which tissue environment contains those cells.");
   setLogicCopy("density_question","Question","Within each broad cell class, are nuclei more or less dense in the four PLX slides than in the four Vehicle slides?");
   setLogicCopy("density_method","Method","Divide each mouse's class count by its estimated tissue area. The panels show all eight mouse-level values; nuclei are not treated as independent treatment replicates.");
@@ -123,7 +124,7 @@ function applyCombinedStudyCopy(){
   applyCombinedStudyCopy();
   const total=S.mice.reduce((sum,m)=>sum+Object.values(counts(m)).reduce((a,b)=>a+b,0),0),n=S.mice.length;
   const nv=S.mice.filter(m=>S.arm[m]==="Vehicle").length,np=S.mice.filter(m=>S.arm[m]==="PLX4720").length;
-  $("baseline_status").innerHTML=ACTIVE_COHORT_ID==="combined"
+  $("baseline_status").innerHTML=["combined","combined_rescanned"].includes(ACTIVE_COHORT_ID)
     ?`<b>${total.toLocaleString()} nuclei across ${n} mice</b> (${nv} Vehicle, ${np} PLX4720; two per arm within each cohort). Dots remain mouse-level; treatment-facing inference is cohort-blocked, not naively pooled.`
     :`<b>${total.toLocaleString()} nuclei across four mice</b> (two Vehicle, two PLX4720). Every treatment-facing dot below represents one mouse.`;
   drawComposition();drawDensity();drawMorphology();$("feat").onchange=drawMorphology;

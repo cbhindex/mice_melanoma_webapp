@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tissue environments and nuclear morphology</title><link rel="stylesheet" href="style.css?v=20260801023108">
+<title>Tissue environments and nuclear morphology</title><link rel="stylesheet" href="style.css?v=20260825175521">
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
 .story-shell{max-width:1440px;margin:auto;padding:26px 24px 70px}.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:#667085;font-weight:700}
@@ -14,8 +14,9 @@
     <label for="cohort_selector">Dataset</label>
     <select id="cohort_selector" aria-label="Select dataset">
       <option value="group_1">Group 1</option>
-      <option value="group_2">Group 2</option>
-      <option value="combined">Combined</option>
+      <option value="group_2">Group 2 Archive</option>
+      <option value="group_2_rescanned">Group 2 Rescanned</option>
+      <option value="combined_rescanned">Group 1 + Group 2 Rescanned</option>
     </select>
     <span class="cohort-context" data-cohort-context></span>
   </div>
@@ -46,7 +47,7 @@
     <div class="classifier-grid"><div class="panel"><h3>Held-out-mouse confusion matrix</h3><div id="confusion" class="plot" data-chart-family="confusion_heatmap"></div></div><div class="panel"><h3>What this test means</h3><div id="classifier_summary"></div></div></div>
   </section>
   <details class="technical"><summary>Methods, coverage and limitations</summary><div id="limitations"></div><p><a href="cluster_selection.html">Technical appendix: how the image phenotypes were chosen →</a></p></details>
-</main><script src="app.js?v=20260801023108"></script><script>
+</main><script src="app.js?v=20260825175521"></script><script>
 let B,E,S,T;const $=id=>document.getElementById(id),arr=x=>Array.isArray(x)?x:[],num=x=>x==null?null:Number(x);
 const cid=c=>Number(c.cluster??c.clusterId),metricId=m=>m.metric??m.metricId??m.id;
 const intList=x=>arr(x).map(Number).filter(Number.isFinite),clusterText=(xs,sep="/")=>xs.length?xs.map(x=>`C${x}`).join(sep):"N/A";

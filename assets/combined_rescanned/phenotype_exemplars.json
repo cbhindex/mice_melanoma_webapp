@@ -1,0 +1,165 @@
+{
+  "clusters": {
+    "0": [
+      {
+        "tileId": "363_000607",
+        "mouse": "363",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C0_0_363_000607.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "363_000485",
+        "mouse": "363",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C0_1_363_000485.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "363_000650",
+        "mouse": "363",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C0_2_363_000650.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ],
+    "1": [
+      {
+        "tileId": "364_002935",
+        "mouse": "364",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C1_0_364_002935.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "364_003258",
+        "mouse": "364",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C1_1_364_003258.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "366_003036",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C1_2_366_003036.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ],
+    "2": [
+      {
+        "tileId": "369_000646",
+        "mouse": "369",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C2_0_369_000646.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "367_000684",
+        "mouse": "367",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C2_1_367_000684.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "369_000288",
+        "mouse": "369",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C2_2_369_000288.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ],
+    "3": [
+      {
+        "tileId": "364_004783",
+        "mouse": "364",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C3_0_364_004783.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "364_001226",
+        "mouse": "364",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C3_1_364_001226.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "366_002027",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C3_2_366_002027.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ],
+    "4": [
+      {
+        "tileId": "366_000164",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C4_0_366_000164.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "366_002867",
+        "mouse": "366",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C4_1_366_002867.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "368_000225",
+        "mouse": "368",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C4_2_368_000225.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ],
+    "5": [
+      {
+        "tileId": "369_001708",
+        "mouse": "369",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C5_0_369_001708.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "369_001705",
+        "mouse": "369",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C5_1_369_001705.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "369_001861",
+        "mouse": "369",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C5_2_369_001861.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ],
+    "6": [
+      {
+        "tileId": "368_000875",
+        "mouse": "368",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C6_0_368_000875.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "370_000506",
+        "mouse": "370",
+        "arm": "PLX4720",
+        "src": "assets/phenotypes/C6_1_370_000506.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      },
+      {
+        "tileId": "368_000874",
+        "mouse": "368",
+        "arm": "Vehicle",
+        "src": "assets/phenotypes/C6_2_368_000874.jpg",
+        "renderSource": "direct frozen WSI tile read"
+      }
+    ]
+  }
+}
